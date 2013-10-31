@@ -127,8 +127,8 @@ goog.define = function(name, defaultValue) {
 
 
 /**
- * @define {boolean} DEBUG `--define goog.DEBUG=false` を指定することによってデ
- * バッグコードが製品版に含まれることを簡単に防ぐことができる。例えば、多くの
+ * @define {boolean} `--define goog.DEBUG=false` を指定することによってデバッグ
+ * コードが製品版に含まれることを簡単に防ぐことができる。例えば、多くの
  * `toString()` メソッドは (1) デバッグを目的として使われる、(2) JSコンパイラに
  * とって `toString()` が使われているかどうかを判定することが難しい、という 2
  * つの理由から `if (goog.DEBUG)` というように宣言されることが望ましい。

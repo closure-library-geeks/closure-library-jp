@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * @fileoverview Utilities for manipulating arrays.
+ * @fileoverview 配列を走査するためのユーティリティ。
  *
  */
 
@@ -25,19 +25,19 @@ goog.require('goog.asserts');
 
 
 /**
- * @define {boolean} NATIVE_ARRAY_PROTOTYPES indicates whether the code should
- * rely on Array.prototype functions, if available.
+ * @define {boolean} `NATIVE_ARRAY_PROTOTYPES` `true` にすると `Array.prototype`
+ * の関数が利用可能であればそちらを利用する。`false` であれば利用しない。
  *
- * The Array.prototype functions can be defined by external libraries like
- * Prototype and setting this flag to false forces closure to use its own
- * goog.array implementation.
+ * `Array.prototype` の関数群は `Prototype` のようなライブラリによって定義されて
+ * いる場合がある。この定数が `false` であれば Closure Library の `goog.array`
+ * による実装を使用する。
  *
- * If your javascript can be loaded by a third party site and you are wary about
- * relying on the prototype functions, specify
- * "--define goog.NATIVE_ARRAY_PROTOTYPES=false" to the JSCompiler.
+ * 他のライブラリによるスクリプトが利用可能な状況で、それを利用したくない場合は
+ * コンパイラの引数を以下のように指定する。
+ * `--define goog.NATIVE_ARRAY_PROTOTYPES=false`
  *
- * Setting goog.TRUSTED_SITE to false will automatically set
- * NATIVE_ARRAY_PROTOTYPES to false.
+ * `goog.TRUSTED_SITE` が `false` に設定されている場合は、
+ * `NATIVE_ARRAY_PROTOTYPES` は `false` とみなされる。
  */
 goog.define('goog.NATIVE_ARRAY_PROTOTYPES', goog.TRUSTED_SITE);
 
@@ -49,9 +49,10 @@ goog.array.ArrayLike;
 
 
 /**
- * Returns the last element in an array without removing it.
- * @param {goog.array.ArrayLike} array The array.
- * @return {*} Last item in array.
+ * 最後の配列要素を返す。`Array.prototype.push` とは異なり最後の配列要素は削除さ
+ * れない。
+ * @param {goog.array.ArrayLike} array 処理したい配列。
+ * @return {*} 配列の最終要素。
  */
 goog.array.peek = function(array) {
   return array[array.length - 1];
@@ -59,30 +60,30 @@ goog.array.peek = function(array) {
 
 
 /**
- * Reference to the original {@code Array.prototype}.
+ * 元の `Array.prototype` オブジェクトへの参照。
  * @private
  */
 goog.array.ARRAY_PROTOTYPE_ = Array.prototype;
 
 
-// NOTE(arv): Since most of the array functions are generic it allows you to
-// pass an array-like object. Strings have a length and are considered array-
-// like. However, the 'in' operator does not work on strings so we cannot just
-// use the array path even if the browser supports indexing into strings. We
-// therefore end up splitting the string.
+// 注記(arv): 配列の関数はたいてい配列の”ような”オブジェクトを処理できるように
+// つくられている。たとえば `String` オブジェクトは `length` プロパティをもって
+// いるので配列のようなオブジェクトである。しかしながら、ブラウサによっては `[]`
+// によるアクセスができないため in 演算子は `String` オブジェクトに利用できな
+// い。なので、我々は文字列は `split` で分割するようにした。
 
 
 /**
- * Returns the index of the first element of an array with a specified
- * value, or -1 if the element is not present in the array.
+ * 指定したオブジェクトと一致する最初の要素のインデックスを返す。
+ * 一致する要素がない場合は `-1` が返る。
  *
- * See {@link http://tinyurl.com/developer-mozilla-org-array-indexof}
+ * `http://tinyurl.com/developer-mozilla-org-array-indexof` を参照。
  *
- * @param {goog.array.ArrayLike} arr The array to be searched.
- * @param {*} obj The object for which we are searching.
- * @param {number=} opt_fromIndex The index at which to start the search. If
- *     omitted the search starts at index 0.
- * @return {number} The index of the first matching array element.
+ * @param {goog.array.ArrayLike} arr 検索される配列。
+ * @param {*} obj 検索対象のオブジェクト。
+ * @param {number=} opt_fromIndex 検索を始めるインデックス。省略時は `0` から
+ *     検索が始められる。
+ * @return {number} 一致した最初の要素のインデックス。
  */
 goog.array.indexOf = goog.NATIVE_ARRAY_PROTOTYPES &&
                      goog.array.ARRAY_PROTOTYPE_.indexOf ?
@@ -97,7 +98,8 @@ goog.array.indexOf = goog.NATIVE_ARRAY_PROTOTYPES &&
                Math.max(0, arr.length + opt_fromIndex) : opt_fromIndex);
 
       if (goog.isString(arr)) {
-        // Array.prototype.indexOf uses === so only strings should be found.
+        // `Array.prototype.indexOf` は `===` を使うのだから文字列のみ見つかる
+        // べき。
         if (!goog.isString(obj) || obj.length != 1) {
           return -1;
         }
@@ -113,25 +115,24 @@ goog.array.indexOf = goog.NATIVE_ARRAY_PROTOTYPES &&
 
 
 /**
- * Returns the index of the last element of an array with a specified value, or
- * -1 if the element is not present in the array.
+ * 指定したオブジェクトと一致する最後の要素のインデックスを返す。
+ * 一致する要素がない場合は `-1` が返る。
  *
- * See {@link http://tinyurl.com/developer-mozilla-org-array-lastindexof}
+ * `http://tinyurl.com/developer-mozilla-org-array-indexof` を参照。
  *
- * @param {!Array.<T>|!goog.array.ArrayLike} arr The array to be searched.
- * @param {T} obj The object for which we are searching.
- * @param {?number=} opt_fromIndex The index at which to start the search. If
- *     omitted the search starts at the end of the array.
- * @return {number} The index of the last matching array element.
- * @template T
+ * @param {goog.array.ArrayLike} arr 検索される配列。
+ * @param {*} obj 検索対象のオブジェクト。
+ * @param {number=} opt_fromIndex 検索を始めるインデックス。省略時は最後から検索
+ *     が始められる。
+ * @return {number} 一致した最後の要素のインデックス。
  */
 goog.array.lastIndexOf = goog.NATIVE_ARRAY_PROTOTYPES &&
                          goog.array.ARRAY_PROTOTYPE_.lastIndexOf ?
     function(arr, obj, opt_fromIndex) {
       goog.asserts.assert(arr.length != null);
 
-      // Firefox treats undefined and null as 0 in the fromIndex argument which
-      // leads it to always return -1
+      // Firefox は `undefined` と `null` を `0` のように扱うため常に `-1` が
+      // 返ってきてしまうことがある。
       var fromIndex = opt_fromIndex == null ? arr.length - 1 : opt_fromIndex;
       return goog.array.ARRAY_PROTOTYPE_.lastIndexOf.call(arr, obj, fromIndex);
     } :
@@ -143,7 +144,8 @@ goog.array.lastIndexOf = goog.NATIVE_ARRAY_PROTOTYPES &&
       }
 
       if (goog.isString(arr)) {
-        // Array.prototype.lastIndexOf uses === so only strings should be found.
+        // `Array.prototype.indexOf` は `===` を使うのだから文字列のみ見つかる
+        // べき。
         if (!goog.isString(obj) || obj.length != 1) {
           return -1;
         }
@@ -159,15 +161,16 @@ goog.array.lastIndexOf = goog.NATIVE_ARRAY_PROTOTYPES &&
 
 
 /**
- * Calls a function for each element in an array. Skips holes in the array.
- * See {@link http://tinyurl.com/developer-mozilla-org-array-foreach}
+ * 配列の各要素毎に関数を実行する。配列の穴は無視される。
+ * `http://tinyurl.com/developer-mozilla-org-array-foreach` を参照。
  *
- * @param {Array.<T>|goog.array.ArrayLike} arr Array or array like object over
- *     which to iterate.
- * @param {?function(this: S, T, number, ?): ?} f The function to call for every
- *     element. This function takes 3 arguments (the element, the index and the
- *     array). The return value is ignored.
- * @param {S=} opt_obj The object to be used as the value of 'this' within f.
+ * @param {Array.<T>|goog.array.ArrayLike} arr 繰り返し処理したい配列か配列のよ
+ *     うなオブジェクト。
+ * @param {?function(this: S, T, number, ?): ?} f 各要素について実行される関数。
+ *     この関数は要素の値・インデックス・走査している配列の 3 つの引数をとる。
+ *     戻り値は無視される。この関数は値が設定された要素のみについて実行される。
+ *     削除された値や値が一度も設定されていない要素については実行されない。
+ * @param {S=} opt_obj f を実行する際の `this` に設定されるオブジェクト。
  * @template T,S
  */
 goog.array.forEach = goog.NATIVE_ARRAY_PROTOTYPES &&
@@ -178,7 +181,7 @@ goog.array.forEach = goog.NATIVE_ARRAY_PROTOTYPES &&
       goog.array.ARRAY_PROTOTYPE_.forEach.call(arr, f, opt_obj);
     } :
     function(arr, f, opt_obj) {
-      var l = arr.length;  // must be fixed during loop... see docs
+      var l = arr.length;  // ループ中は変化してはならない。
       var arr2 = goog.isString(arr) ? arr.split('') : arr;
       for (var i = 0; i < l; i++) {
         if (i in arr2) {
@@ -189,21 +192,18 @@ goog.array.forEach = goog.NATIVE_ARRAY_PROTOTYPES &&
 
 
 /**
- * Calls a function for each element in an array, starting from the last
- * element rather than the first.
+ * 配列の末尾から各要素毎に関数を実行する。
  *
- * @param {Array.<T>|goog.array.ArrayLike} arr Array or array
- *     like object over which to iterate.
- * @param {?function(this: S, T, number, ?): ?} f The function to call for every
- *     element. This function
- *     takes 3 arguments (the element, the index and the array). The return
- *     value is ignored.
- * @param {S=} opt_obj The object to be used as the value of 'this'
- *     within f.
+ * @param {Array.<T>|goog.array.ArrayLike} arr 繰り返し処理したい配列か配列のよ
+ *     うなオブジェクト。
+ * @param {?function(this: S, T, number, ?): ?} f 各要素について実行される関数。
+ *     この関数は要素の値・インデックス・走査している配列の 3 つの引数をとる。
+ *     戻り値は無視される。
+ * @param {S=} opt_obj f を実行する際の 'this' に設定されるオブジェクト。
  * @template T,S
  */
 goog.array.forEachRight = function(arr, f, opt_obj) {
-  var l = arr.length;  // must be fixed during loop... see docs
+  var l = arr.length;  // ループ中は変化してはならない。
   var arr2 = goog.isString(arr) ? arr.split('') : arr;
   for (var i = l - 1; i >= 0; --i) {
     if (i in arr2) {
@@ -214,22 +214,19 @@ goog.array.forEachRight = function(arr, f, opt_obj) {
 
 
 /**
- * Calls a function for each element in an array, and if the function returns
- * true adds the element to a new array.
+ * 配列の各要素毎に関数を実行し、戻り値が true であるときの要素からなる新しい配
+ * 列を返す。
  *
- * See {@link http://tinyurl.com/developer-mozilla-org-array-filter}
+ * `http://tinyurl.com/developer-mozilla-org-array-filter` を参照。
  *
- * @param {Array.<T>|goog.array.ArrayLike} arr Array or array
- *     like object over which to iterate.
- * @param {?function(this:S, T, number, ?):boolean} f The function to call for
- *     every element. This function
- *     takes 3 arguments (the element, the index and the array) and must
- *     return a Boolean. If the return value is true the element is added to the
- *     result array. If it is false the element is not included.
- * @param {S=} opt_obj The object to be used as the value of 'this'
- *     within f.
- * @return {!Array} a new array in which only elements that passed the test are
- *     present.
+ * @param {Array.<T>|goog.array.ArrayLike} arr 繰り返し処理したい配列か配列のよ
+ *     うなオブジェクト。
+ * @param {?function(this:S, T, number, ?):boolean} f 各要素について実行される
+ *     関数。この関数は要素の値・インデックス・走査している配列の 3 つの引数を
+ *     とり、戻り値は真偽値でなければならない。 true が返されたときの要素のみ新
+ *     しい配列に追加され、 false が返されたときは要素を追加しない。
+ * @param {S=} opt_obj f を実行する際の `this` に設定されるオブジェクト。
+ * @return {!Array} 戻り値が `true` のときの要素からなる新しい配列。
  * @template T,S
  */
 goog.array.filter = goog.NATIVE_ARRAY_PROTOTYPES &&
@@ -240,13 +237,13 @@ goog.array.filter = goog.NATIVE_ARRAY_PROTOTYPES &&
       return goog.array.ARRAY_PROTOTYPE_.filter.call(arr, f, opt_obj);
     } :
     function(arr, f, opt_obj) {
-      var l = arr.length;  // must be fixed during loop... see docs
+      var l = arr.length;  // ループ中は変化してはならない。
       var res = [];
       var resLength = 0;
       var arr2 = goog.isString(arr) ? arr.split('') : arr;
       for (var i = 0; i < l; i++) {
         if (i in arr2) {
-          var val = arr2[i];  // in case f mutates arr2
+          var val = arr2[i];  // f は arr2 の要素を参照するようにする。
           if (f.call(opt_obj, val, i, arr)) {
             res[resLength++] = val;
           }
@@ -257,20 +254,18 @@ goog.array.filter = goog.NATIVE_ARRAY_PROTOTYPES &&
 
 
 /**
- * Calls a function for each element in an array and inserts the result into a
- * new array.
+ * 与えられた関数を配列のすべての要素に対して呼び出し、その結果からなる新しい配
+ * 列を生成する。
  *
- * See {@link http://tinyurl.com/developer-mozilla-org-array-map}
+ * `http://tinyurl.com/developer-mozilla-org-array-map` を参照。
  *
- * @param {Array.<T>|goog.array.ArrayLike} arr Array or array
- *     like object over which to iterate.
- * @param {?function(this:S, T, number, ?):?} f The function to call for every
- *     element. This function
- *     takes 3 arguments (the element, the index and the array) and should
- *     return something. The result will be inserted into a new array.
- * @param {S=} opt_obj The object to be used as the value of 'this'
- *     within f.
- * @return {!Array} a new array with the results from f.
+ * @param {Array.<T>|goog.array.ArrayLike} arr 繰り返し処理したい配列か配列のよ
+ *     うなオブジェクト。
+ * @param {?function(this:S, T, number, ?):?} f 各要素について実行される関数。
+ *     この関数は要素の値・インデックス・走査している配列の 3 つの引数をとり、
+ *     戻り値を返さなければならない。 この戻り値が返される配列の要素となる。
+ * @param {S=} opt_obj f を実行する際の `this` に設定されるオブジェクト。
+ * @return {!Array} f の戻り値からなる新しい配列。
  * @template T,S
  */
 goog.array.map = goog.NATIVE_ARRAY_PROTOTYPES &&
@@ -281,7 +276,7 @@ goog.array.map = goog.NATIVE_ARRAY_PROTOTYPES &&
       return goog.array.ARRAY_PROTOTYPE_.map.call(arr, f, opt_obj);
     } :
     function(arr, f, opt_obj) {
-      var l = arr.length;  // must be fixed during loop... see docs
+      var l = arr.length;  // ループ中は変化してはならない。
       var res = new Array(l);
       var arr2 = goog.isString(arr) ? arr.split('') : arr;
       for (var i = 0; i < l; i++) {
@@ -294,27 +289,26 @@ goog.array.map = goog.NATIVE_ARRAY_PROTOTYPES &&
 
 
 /**
- * Passes every element of an array into a function and accumulates the result.
+ * 配列の各要素毎に関数を実行し、単一の結果を得る。
  *
- * See {@link http://tinyurl.com/developer-mozilla-org-array-reduce}
+ * `http://tinyurl.com/developer-mozilla-org-array-reduce` を参照。
  *
- * For example:
+ * 例：
+ *
+ * ```
  * var a = [1, 2, 3, 4];
  * goog.array.reduce(a, function(r, v, i, arr) {return r + v;}, 0);
  * returns 10
+ * ```
  *
- * @param {Array.<T>|goog.array.ArrayLike} arr Array or array
- *     like object over which to iterate.
- * @param {?function(this:S, R, T, number, ?) : R} f The function to call for
- *     every element. This function
- *     takes 4 arguments (the function's previous result or the initial value,
- *     the value of the current array element, the current array index, and the
- *     array itself)
- *     function(previousValue, currentValue, index, array).
- * @param {?} val The initial value to pass into the function on the first call.
- * @param {S=} opt_obj  The object to be used as the value of 'this'
- *     within f.
- * @return {R} Result of evaluating f repeatedly across the values of the array.
+ * @param {Array.<T>|goog.array.ArrayLike} arr 走査対象の配列。
+ * @param {?function(this:S, R, T, number, ?) : R} f 各要素毎に実行される関数。
+ *     この関数は前回の結果（または初期値）・今回の配列の要素・今回の要素のイン
+ *     デックス・走査している配列の 4 つの引数をとる。つまり、引数は以下のように
+ *     なる。 `function(previousValue, currentValue, index, array)`
+ * @param {*} val f が最初に実行されるときの previousValue の値。
+ * @param {S=} opt_obj  `f` を実行する際に `this` に設定されるオブジェクト。
+ * @return {R} この配列を `f` によって繰り返し評価した値。
  * @template T,S,R
  */
 goog.array.reduce = goog.NATIVE_ARRAY_PROTOTYPES &&
@@ -336,29 +330,27 @@ goog.array.reduce = goog.NATIVE_ARRAY_PROTOTYPES &&
 
 
 /**
- * Passes every element of an array into a function and accumulates the result,
- * starting from the last element and working towards the first.
+ * 配列の末尾から各要素毎に関数を実行し、単一の結果を得る。
  *
- * See {@link http://tinyurl.com/developer-mozilla-org-array-reduceright}
+ * `http://tinyurl.com/developer-mozilla-org-array-reduceright` を参照。
  *
- * For example:
+ * 例：
+ *
+ * ```
  * var a = ['a', 'b', 'c'];
  * goog.array.reduceRight(a, function(r, v, i, arr) {return r + v;}, '');
  * returns 'cba'
+ * ```
  *
- * @param {Array.<T>|goog.array.ArrayLike} arr Array or array
- *     like object over which to iterate.
- * @param {?function(this:S, R, T, number, ?) : R} f The function to call for
- *     every element. This function
- *     takes 4 arguments (the function's previous result or the initial value,
- *     the value of the current array element, the current array index, and the
- *     array itself)
- *     function(previousValue, currentValue, index, array).
- * @param {?} val The initial value to pass into the function on the first call.
- * @param {S=} opt_obj The object to be used as the value of 'this'
- *     within f.
- * @return {R} Object returned as a result of evaluating f repeatedly across the
- *     values of the array.
+ * @param {Array.<T>|goog.array.ArrayLike} arr 走査対象の配列または配列のような
+ *     オブジェクト。
+ * @param {?function(this:S, R, T, number, ?) : R} f 各要素毎に実行される関数。
+ *     この関数は前回の結果（または初期値）・今回の配列の要素・今回の要素のイン
+ *     デックス・走査している配列の 4 つの引数をとる。つまり、引数は以下のように
+ *     なる。 `function(previousValue, currentValue, index, array)`
+ * @param {*} val f が最初に実行されるときの previousValue の値。
+ * @param {S=} opt_obj  `f` を実行する際に `this` に設定されるオブジェクト。
+ * @return {R} この配列を `f` によって繰り返し評価した値。
  * @template T,S,R
  */
 goog.array.reduceRight = goog.NATIVE_ARRAY_PROTOTYPES &&
@@ -380,20 +372,19 @@ goog.array.reduceRight = goog.NATIVE_ARRAY_PROTOTYPES &&
 
 
 /**
- * Calls f for each element of an array. If any call returns true, some()
- * returns true (without checking the remaining elements). If all calls
- * return false, some() returns false.
+ * `f` を各要素毎に実行し、 `f` の戻り値が `true` であれば直ちに `true` が返され
+ * る（残りの要素は評価されない）。 `f` の戻り値がすべて `false` であれば
+ * `false` が返される。
  *
- * See {@link http://tinyurl.com/developer-mozilla-org-array-some}
+ * `http://tinyurl.com/developer-mozilla-org-array-some` を参照。
  *
- * @param {Array.<T>|goog.array.ArrayLike} arr Array or array
- *     like object over which to iterate.
- * @param {?function(this:S, T, number, ?) : boolean} f The function to call for
- *     for every element. This function takes 3 arguments (the element, the
- *     index and the array) and should return a boolean.
- * @param {S=} opt_obj  The object to be used as the value of 'this'
- *     within f.
- * @return {boolean} true if any element passes the test.
+ * @param {Array.<T>|goog.array.ArrayLike} arr チェック対象の配列または配列のよ
+ *     うなオブジェクト。
+ * @param {?function(this:S, T, number, ?) : boolean} f 各要素毎に実行される関
+ *     数。この関数は配列の要素・インデックス・走査対象の配列の 3 つの引数をと
+ *     り、真偽値を返さなければならない。
+ * @param {S=} opt_obj  f を実行する際に `this` に設定されるオブジェクト。
+ * @return {boolean} 戻り値に true のものがあれば true 。
  * @template T,S
  */
 goog.array.some = goog.NATIVE_ARRAY_PROTOTYPES &&
@@ -404,7 +395,7 @@ goog.array.some = goog.NATIVE_ARRAY_PROTOTYPES &&
       return goog.array.ARRAY_PROTOTYPE_.some.call(arr, f, opt_obj);
     } :
     function(arr, f, opt_obj) {
-      var l = arr.length;  // must be fixed during loop... see docs
+      var l = arr.length;  // ループ中は変化してはならない。
       var arr2 = goog.isString(arr) ? arr.split('') : arr;
       for (var i = 0; i < l; i++) {
         if (i in arr2 && f.call(opt_obj, arr2[i], i, arr)) {
@@ -416,20 +407,19 @@ goog.array.some = goog.NATIVE_ARRAY_PROTOTYPES &&
 
 
 /**
- * Call f for each element of an array. If all calls return true, every()
- * returns true. If any call returns false, every() returns false and
- * does not continue to check the remaining elements.
+ * `f` を各要素毎に実行し、 `f` の戻り値が `false` であれば直ちに `false` が返さ
+ * れる（残りの要素は評価されない）。 `f` の戻り値がすべて `true` であれば
+ * `true` が返される。
  *
- * See {@link http://tinyurl.com/developer-mozilla-org-array-every}
+ * `http://tinyurl.com/developer-mozilla-org-array-every` を参照。
  *
- * @param {Array.<T>|goog.array.ArrayLike} arr Array or array
- *     like object over which to iterate.
- * @param {?function(this:S, T, number, ?) : boolean} f The function to call for
- *     for every element. This function takes 3 arguments (the element, the
- *     index and the array) and should return a boolean.
- * @param {S=} opt_obj The object to be used as the value of 'this'
- *     within f.
- * @return {boolean} false if any element fails the test.
+ * @param {Array.<T>|goog.array.ArrayLike} arr チェック対象の配列または配列のよ
+ *     うなオブジェクト。
+ * @param {?function(this:S, T, number, ?) : boolean} f 各要素毎に実行される関
+ *     数。この関数は配列の要素・インデックス・走査対象の配列の 3 つの引数をと
+ *     り、真偽値を返さなければならない。
+ * @param {S=} opt_obj  f を実行する際に `this` に設定されるオブジェクト。
+ * @return {boolean} 戻り値に `false` のものがあれば `false` 。
  * @template T,S
  */
 goog.array.every = goog.NATIVE_ARRAY_PROTOTYPES &&
@@ -440,7 +430,7 @@ goog.array.every = goog.NATIVE_ARRAY_PROTOTYPES &&
       return goog.array.ARRAY_PROTOTYPE_.every.call(arr, f, opt_obj);
     } :
     function(arr, f, opt_obj) {
-      var l = arr.length;  // must be fixed during loop... see docs
+      var l = arr.length;  // ループ中は変化してはならない。
       var arr2 = goog.isString(arr) ? arr.split('') : arr;
       for (var i = 0; i < l; i++) {
         if (i in arr2 && !f.call(opt_obj, arr2[i], i, arr)) {
@@ -452,15 +442,16 @@ goog.array.every = goog.NATIVE_ARRAY_PROTOTYPES &&
 
 
 /**
- * Counts the array elements that fulfill the predicate, i.e. for which the
- * callback function returns true. Skips holes in the array.
+ * 与えられた条件式を満足する要素の個数をカウントする。たとえば、コールバックが
+ * `true` を返すのならば、配列の穴を無視した要素の個数が返される。
  *
- * @param {!(Array.<T>|goog.array.ArrayLike)} arr Array or array like object
- *     over which to iterate.
- * @param {function(this: S, T, number, ?): boolean} f The function to call for
- *     every element. Takes 3 arguments (the element, the index and the array).
- * @param {S=} opt_obj The object to be used as the value of 'this' within f.
- * @return {number} The number of the matching elements.
+ * @param {Array.<T>|goog.array.ArrayLike} arr 検索される配列または配列のような
+ *     オブジェクト。
+ * @param {?function(this: S, T, number, ?) : boolean} f 各要素毎に実行される関
+ *     数。この関数は配列の要素・インデックス・走査対象の配列の 3 つの引数をと
+ *     り、真偽値を返すべきである。
+ * @param {S=} opt_obj f の実行時に `this` に設定されるオブジェクト。
+ * @return {number} 条件を満足した要素の個数。
  * @template T,S
  */
 goog.array.count = function(arr, f, opt_obj) {
@@ -475,16 +466,14 @@ goog.array.count = function(arr, f, opt_obj) {
 
 
 /**
- * Search an array for the first element that satisfies a given condition and
- * return that element.
- * @param {Array.<T>|goog.array.ArrayLike} arr Array or array
- *     like object over which to iterate.
- * @param {?function(this:S, T, number, ?) : boolean} f The function to call
- *     for every element. This function takes 3 arguments (the element, the
- *     index and the array) and should return a boolean.
- * @param {S=} opt_obj An optional "this" context for the function.
- * @return {T} The first array element that passes the test, or null if no
- *     element is found.
+ * 与えられた条件を満足する最初の要素を返す。
+ * @param {Array.<T>|goog.array.ArrayLike} arr 検索される配列または配列のような
+ *     オブジェクト。
+ * @param {?function(this: S, T, number, ?) : boolean} f 各要素毎に実行される関
+ *     数。この関数は配列の要素・インデックス・走査対象の配列の 3 つの引数をと
+ *     り、真偽値を返すべきである。
+ * @param {S=} opt_obj f の実行時に `this` に設定されるオブジェクト。
+ * @return {T} 条件を満足した最初の要素。条件を満足する要素がなければ `null` 。
  * @template T,S
  */
 goog.array.find = function(arr, f, opt_obj) {
@@ -494,21 +483,19 @@ goog.array.find = function(arr, f, opt_obj) {
 
 
 /**
- * Search an array for the first element that satisfies a given condition and
- * return its index.
- * @param {Array.<T>|goog.array.ArrayLike} arr Array or array
- *     like object over which to iterate.
- * @param {?function(this:S, T, number, ?) : boolean} f The function to call for
- *     every element. This function
- *     takes 3 arguments (the element, the index and the array) and should
- *     return a boolean.
- * @param {S=} opt_obj An optional "this" context for the function.
- * @return {number} The index of the first array element that passes the test,
- *     or -1 if no element is found.
+ * 与えられた条件を満足する最初の要素のインデックスを返す。
+ * @param {Array.<T>|goog.array.ArrayLike} arr 検索される配列または配列のような
+ *     オブジェクト。
+ * @param {?function(this: S, T, number, ?) : boolean} f 各要素毎に実行される関
+ *     数。この関数は配列の要素・インデックス・走査対象の配列の 3 つの引数をと
+ *     り、真偽値を返すべきである。
+ * @param {S=} opt_obj f の実行時に `this` に設定されるオブジェクト。
+ * @return {number} 条件を満足した最初の要素のインデックス。条件を満足する要素が
+ *     なければ `-1` 。
  * @template T,S
  */
 goog.array.findIndex = function(arr, f, opt_obj) {
-  var l = arr.length;  // must be fixed during loop... see docs
+  var l = arr.length;  // ループ中は変化してはならない。
   var arr2 = goog.isString(arr) ? arr.split('') : arr;
   for (var i = 0; i < l; i++) {
     if (i in arr2 && f.call(opt_obj, arr2[i], i, arr)) {
@@ -520,17 +507,14 @@ goog.array.findIndex = function(arr, f, opt_obj) {
 
 
 /**
- * Search an array (in reverse order) for the last element that satisfies a
- * given condition and return that element.
- * @param {Array.<T>|goog.array.ArrayLike} arr Array or array
- *     like object over which to iterate.
- * @param {?function(this:S, T, number, ?) : boolean} f The function to call
- *     for every element. This function
- *     takes 3 arguments (the element, the index and the array) and should
- *     return a boolean.
- * @param {S=} opt_obj An optional "this" context for the function.
- * @return {T} The last array element that passes the test, or null if no
- *     element is found.
+ * 与えられた条件を満足する最後の要素を返す（`goog.array.find` を逆順に実行）。
+ * @param {Array.<T>|goog.array.ArrayLike} arr 検索される配列または配列のような
+ *     オブジェクト。
+ * @param {?function(this: S, T, number, ?) : boolean} f 各要素毎に実行される関
+ *     数。この関数は配列の要素・インデックス・走査対象の配列の 3 つの引数をと
+ *     り、真偽値を返すべきである。
+ * @param {S=} opt_obj f の実行時に `this` に設定されるオブジェクト。
+ * @return {T} 条件を満足した最初の要素。条件を満足する要素がなければ `null` 。
  * @template T,S
  */
 goog.array.findRight = function(arr, f, opt_obj) {
@@ -540,21 +524,20 @@ goog.array.findRight = function(arr, f, opt_obj) {
 
 
 /**
- * Search an array (in reverse order) for the last element that satisfies a
- * given condition and return its index.
- * @param {Array.<T>|goog.array.ArrayLike} arr Array or array
- *     like object over which to iterate.
- * @param {?function(this:S, T, number, ?) : boolean} f The function to call
- *     for every element. This function
- *     takes 3 arguments (the element, the index and the array) and should
- *     return a boolean.
- * @param {Object=} opt_obj An optional "this" context for the function.
- * @return {number} The index of the last array element that passes the test,
- *     or -1 if no element is found.
+ * 与えられた条件を満足する最後の要素のインデックスを返す（
+ * `goog.array.findIndex` を逆順に実行）。
+ * @param {Array.<T>|goog.array.ArrayLike} arr 検索される配列または配列のような
+ *     オブジェクト。
+ * @param {?function(this: S, T, number, ?) : boolean} f 各要素毎に実行される関
+ *     数。この関数は配列の要素・インデックス・走査対象の配列の 3 つの引数をと
+ *     り、真偽値を返すべきである。
+ * @param {S=} opt_obj f の実行時に `this` に設定されるオブジェクト。
+ * @return {number} 条件を満足した最初の要素のインデックス。条件を満足する要素が
+ *     なければ `-1` 。
  * @template T,S
  */
 goog.array.findIndexRight = function(arr, f, opt_obj) {
-  var l = arr.length;  // must be fixed during loop... see docs
+  var l = arr.length;  // ループ中は変化してはならない。
   var arr2 = goog.isString(arr) ? arr.split('') : arr;
   for (var i = l - 1; i >= 0; i--) {
     if (i in arr2 && f.call(opt_obj, arr2[i], i, arr)) {
@@ -566,11 +549,10 @@ goog.array.findIndexRight = function(arr, f, opt_obj) {
 
 
 /**
- * Whether the array contains the given object.
- * @param {goog.array.ArrayLike} arr The array to test for the presence of the
- *     element.
- * @param {*} obj The object for which to test.
- * @return {boolean} true if obj is present.
+ * 与えられた要素が配列に含まれているかを判定する。
+ * @param {goog.array.ArrayLike} arr 要素が含まれているか判定したい配列。
+ * @param {*} obj 判定したい要素。
+ * @return {boolean} 要素が含まれていれば `true` 。
  */
 goog.array.contains = function(arr, obj) {
   return goog.array.indexOf(arr, obj) >= 0;
@@ -578,9 +560,9 @@ goog.array.contains = function(arr, obj) {
 
 
 /**
- * Whether the array is empty.
- * @param {goog.array.ArrayLike} arr The array to test.
- * @return {boolean} true if empty.
+ * 配列が空かどうかを判定する。
+ * @param {goog.array.ArrayLike} arr 判定したい配列。
+ * @return {boolean} 空であれば `true` 。
  */
 goog.array.isEmpty = function(arr) {
   return arr.length == 0;
@@ -588,12 +570,13 @@ goog.array.isEmpty = function(arr) {
 
 
 /**
- * Clears the array.
- * @param {goog.array.ArrayLike} arr Array or array like object to clear.
+ * 配列の全要素を消去する。
+ * @param {goog.array.ArrayLike} arr 初期化したい配列または配列のようなオブジェ
+ *     クト。
  */
 goog.array.clear = function(arr) {
-  // For non real arrays we don't have the magic length so we delete the
-  // indices.
+  // 本物の配列でなければ `*.length = 0` みたいな方法が存在しないので、インデッ
+  // クス毎に削除することにした。
   if (!goog.isArray(arr)) {
     for (var i = arr.length - 1; i >= 0; i--) {
       delete arr[i];
@@ -604,9 +587,9 @@ goog.array.clear = function(arr) {
 
 
 /**
- * Pushes an item into an array, if it's not already in the array.
- * @param {Array.<T>} arr Array into which to insert the item.
- * @param {T} obj Value to add.
+ * 与えられた要素が配列に含まれていなければ、その要素を末尾に追加する。
+ * @param {Array.<T>} arr 挿入したい配列。
+ * @param {T} obj 加えたい値。
  * @template T
  */
 goog.array.insert = function(arr, obj) {
@@ -617,11 +600,11 @@ goog.array.insert = function(arr, obj) {
 
 
 /**
- * Inserts an object at the given index of the array.
- * @param {goog.array.ArrayLike} arr The array to modify.
- * @param {*} obj The object to insert.
- * @param {number=} opt_i The index at which to insert the object. If omitted,
- *      treated as 0. A negative index is counted from the end of the array.
+ * 与えられたインデックスの位置に要素を挿入する。
+ * @param {goog.array.ArrayLike} arr 変更される配列。
+ * @param {*} obj 挿入される要素。
+ * @param {number=} opt_i 要素を挿入したい位置のインデックス。省略時は `0` とみ
+ *     なされる。値が負の場合は末尾からカウントする。
  */
 goog.array.insertAt = function(arr, obj, opt_i) {
   goog.array.splice(arr, opt_i, 0, obj);
@@ -629,11 +612,11 @@ goog.array.insertAt = function(arr, obj, opt_i) {
 
 
 /**
- * Inserts at the given index of the array, all elements of another array.
- * @param {goog.array.ArrayLike} arr The array to modify.
- * @param {goog.array.ArrayLike} elementsToAdd The array of elements to add.
- * @param {number=} opt_i The index at which to insert the object. If omitted,
- *      treated as 0. A negative index is counted from the end of the array.
+ * 与えられたインデックスの位置に配列の全要素を挿入する。
+ * @param {goog.array.ArrayLike} arr 変更される配列。
+ * @param {goog.array.ArrayLike} elementsToAdd 挿入される要素の配列。
+ * @param {number=} opt_i 要素を挿入したい位置のインデックス。省略時は `0` とみ
+ *     なされる。値が負の場合は末尾からカウントする。
  */
 goog.array.insertArrayAt = function(arr, elementsToAdd, opt_i) {
   goog.partial(goog.array.splice, arr, opt_i, 0).apply(null, elementsToAdd);
@@ -641,11 +624,11 @@ goog.array.insertArrayAt = function(arr, elementsToAdd, opt_i) {
 
 
 /**
- * Inserts an object into an array before a specified object.
- * @param {Array.<T>} arr The array to modify.
- * @param {T} obj The object to insert.
- * @param {T=} opt_obj2 The object before which obj should be inserted. If obj2
- *     is omitted or not found, obj is inserted at the end of the array.
+ * 与えられたオブジェクトの前に要素を挿入する。
+ * @param {Array.<T>} arr 変更される配列。
+ * @param {*} obj 挿入される要素。
+ * @param {*=} opt_obj2 この要素の直後に要素が挿入される。もし、`obj2` を省略、
+ *     または見つからない場合、`obj` は配列の末尾に追加される。
  * @template T
  */
 goog.array.insertBefore = function(arr, obj, opt_obj2) {
@@ -659,10 +642,10 @@ goog.array.insertBefore = function(arr, obj, opt_obj2) {
 
 
 /**
- * Removes the first occurrence of a particular value from an array.
- * @param {goog.array.ArrayLike} arr Array from which to remove value.
- * @param {*} obj Object to remove.
- * @return {boolean} True if an element was removed.
+ * 与えられた要素と最初に一致した要素を削除する。
+ * @param {goog.array.ArrayLike} arr 削除したい要素が含まれている配列。
+ * @param {*} obj 削除したい要素。
+ * @return {boolean} 要素を削除した場合は `true` 。
  */
 goog.array.remove = function(arr, obj) {
   var i = goog.array.indexOf(arr, obj);
@@ -675,32 +658,30 @@ goog.array.remove = function(arr, obj) {
 
 
 /**
- * Removes from an array the element at index i
- * @param {goog.array.ArrayLike} arr Array or array like object from which to
- *     remove value.
- * @param {number} i The index to remove.
- * @return {boolean} True if an element was removed.
+ * 与えられたインデックスの要素を削除する。
+ * @param {goog.array.ArrayLike} arr 削除したい要素が含まれている配列または配列
+ *     のようなオブジェクト。
+ * @param {number} i 削除したい要素のインデックス。
+ * @return {boolean} 要素を削除した場合は `true` 。
  */
 goog.array.removeAt = function(arr, i) {
   goog.asserts.assert(arr.length != null);
 
-  // use generic form of splice
-  // splice returns the removed items and if successful the length of that
-  // will be 1
+  // `splice` の標準形を使う。
+  // `splice` は削除に成功すると要素を一つだけ持つ配列を返す。
   return goog.array.ARRAY_PROTOTYPE_.splice.call(arr, i, 1).length == 1;
 };
 
 
 /**
- * Removes the first value that satisfies the given condition.
- * @param {Array.<T>|goog.array.ArrayLike} arr Array or array
- *     like object over which to iterate.
- * @param {?function(this:S, T, number, ?) : boolean} f The function to call
- *     for every element. This function
- *     takes 3 arguments (the element, the index and the array) and should
- *     return a boolean.
- * @param {S=} opt_obj An optional "this" context for the function.
- * @return {boolean} True if an element was removed.
+ * 与えられた条件を満足した最初の要素を削除する。
+ * @param {Array.<T>|goog.array.ArrayLike} arr 削除したい要素の含まれている配
+ *     列。
+ * @param {?function(this:S, T, number, ?) : boolean} f 各要素毎に実行される関
+ *     数。この関数は配列の要素・インデックス・走査対象の配列の 3 つの引数をと
+ *     り、真偽値を返すべきである。
+ * @param {S=} opt_obj f の実行時に `this` に設定されるオブジェクト。
+ * @return {boolean} 要素を削除した場合は `true` 。
  * @template T,S
  */
 goog.array.removeIf = function(arr, f, opt_obj) {
@@ -714,31 +695,34 @@ goog.array.removeIf = function(arr, f, opt_obj) {
 
 
 /**
- * Returns a new array that is the result of joining the arguments.  If arrays
- * are passed then their items are added, however, if non-arrays are passed they
- * will be added to the return array as is.
+ * 与えられたすべての引数を結合した新しい配列を返す。引数が配列の場合はその要素
+ * が新しい配列に追加され、引数が配列でない場合は引数そのものが新しい配列に追加
+ * される。
  *
- * Note that ArrayLike objects will be added as is, rather than having their
- * items added.
+ * 注記： 配列のようなオブジェクトについては、その要素ではなく配列のようなオブ
+ * ジェクトそのものが追加される。
  *
+ * ```
  * goog.array.concat([1, 2], [3, 4]) -> [1, 2, 3, 4]
  * goog.array.concat(0, [1, 2]) -> [0, 1, 2]
  * goog.array.concat([1, 2], null) -> [1, 2, null]
+ * ```
  *
- * There is bug in all current versions of IE (6, 7 and 8) where arrays created
- * in an iframe become corrupted soon (not immediately) after the iframe is
- * destroyed. This is common if loading data via goog.net.IframeIo, for example.
- * This corruption only affects the concat method which will start throwing
- * Catastrophic Errors (#-2147418113).
+ * IE のバージョン 6 〜 8 には、 iframe のなかで配列が作成されてから少し経って
+ * iframe が破壊されるというバグが存在する（配列の作成直後ではない）。
+ * `goog.net.IframeIo` によってデータを読み込んだ場合でも生じうる。
+ * このバグは `concat` メソッドのみのもので、`concat` メソッドは致命的なエラー
+ * (#-2147418113) をあげ始める。
  *
- * See http://endoflow.com/scratch/corrupted-arrays.html for a test case.
+ * `http://endoflow.com/scratch/corrupted-arrays.html` のテストケースを参照
+ * （2012年6月現在デッドリンク。WayBack Machine にアーカイブなし）。
  *
- * Internally goog.array should use this, so that all methods will continue to
- * work on these broken array objects.
+ * 内部的にはこれを使う可能性があるので、すべてのメソッドはこれらの壊れた配列を
+ * 扱えるように修正する必要がある。
  *
- * @param {...*} var_args Items to concatenate.  Arrays will have each item
- *     added, while primitives and objects will be added as is.
- * @return {!Array} The new resultant array.
+ * @param {...*} var_args 結合したいオブジェクト。 配列の場合は各要素が追加され
+ *     る。プリミティブな値やオブジェクトはそのものが追加される。
+ * @return {!Array} 結合された新しい配列。
  */
 goog.array.concat = function(var_args) {
   return goog.array.ARRAY_PROTOTYPE_.concat.apply(
@@ -747,19 +731,17 @@ goog.array.concat = function(var_args) {
 
 
 /**
- * Converts an object to an array.
- * @param {goog.array.ArrayLike} object  The object to convert to an array.
- * @return {!Array} The object converted into an array. If object has a
- *     length property, every property indexed with a non-negative number
- *     less than length will be included in the result. If object does not
- *     have a length property, an empty array will be returned.
+ * 与えられたオブジェクトを配列に変換する。
+ * @param {goog.array.ArrayLike} object 配列に変換したいオブジェクト。
+ * @return {!Array} オブジェクトを変換した配列。オブジェクトが `length` プロパ
+ *     ティを持つ場合、正の値のインデックスを持つすべての要素は追加される。
+ *     もしオブジェクトが `length` プロパティをもたない場合、空配列が返される。
  */
 goog.array.toArray = function(object) {
   var length = object.length;
 
-  // If length is not a number the following it false. This case is kept for
-  // backwards compatibility since there are callers that pass objects that are
-  // not array like.
+  // もし `length` が数値でない場合にこの式は false を返す。この場合は配列のよ
+  // うでないオブジェクトを渡す関数のために後方互換性を保つ。
   if (length > 0) {
     var rv = new Array(length);
     for (var i = 0; i < length; i++) {
@@ -772,44 +754,50 @@ goog.array.toArray = function(object) {
 
 
 /**
- * Does a shallow copy of an array.
- * @param {goog.array.ArrayLike} arr  Array or array-like object to clone.
- * @return {!Array} Clone of the input array.
+ * 配列をシャローコピー（浅いコピー：配列はコピーされるが要素の参照は変わらな
+ * い）する。
+ * @param {goog.array.ArrayLike} arr シャローコピーされる配列。
+ * @return {!Array} 与えられた配列のコピー。
  */
 goog.array.clone = goog.array.toArray;
 
 
 /**
- * Extends an array with another array, element, or "array like" object.
- * This function operates 'in-place', it does not create a new Array.
+ * 配列または配列のようなオブジェクトに与えられたオブジェクトを破壊的に追加す
+ * る。このメソッドは破壊的なので新しい配列は作成されない。
  *
- * Example:
+ * 例：
+ *
+ * ```
  * var a = [];
  * goog.array.extend(a, [0, 1]);
  * a; // [0, 1]
  * goog.array.extend(a, 2);
  * a; // [0, 1, 2]
+ * ```
  *
- * @param {Array} arr1  The array to modify.
- * @param {...*} var_args The elements or arrays of elements to add to arr1.
+ * @param {Array} arr1 変更される配列。
+ * @param {...*} var_args arr1 に追加されるオブジェクトまたは配列。配列の場合は
+ *     要素が追加される。
  */
 goog.array.extend = function(arr1, var_args) {
   for (var i = 1; i < arguments.length; i++) {
     var arr2 = arguments[i];
-    // If we have an Array or an Arguments object we can just call push
-    // directly.
+    // 配列または `Arguments` オブジェクトであれば `push` を呼び出せばよい。
     var isArrayLike;
     if (goog.isArray(arr2) ||
-        // Detect Arguments. ES5 says that the [[Class]] of an Arguments object
-        // is "Arguments" but only V8 and JSC/Safari gets this right. We instead
-        // detect Arguments by checking for array like and presence of "callee".
+        // `Arguments` オブジェクトかどうかを判定。ECMA Script 5 では、
+        // `'[[Class]]'` となるが、 V8・JSC・Safari は `'Arguments'` を返す。
+        // なので、配列のようなオブジェクトかどうかを判定した上で `callee` プロ
+        // パティの存在によって判定することにした。
         (isArrayLike = goog.isArrayLike(arr2)) &&
-            // The getter for callee throws an exception in strict mode
-            // according to section 10.6 in ES5 so check for presence instead.
+            // ECMA Script の 10.6 節によれば `callee` のゲッターは strict モー
+            // ドで警告される。なので、このように確かめることにした。
             Object.prototype.hasOwnProperty.call(arr2, 'callee')) {
       arr1.push.apply(arr1, arr2);
     } else if (isArrayLike) {
-      // Otherwise loop over arr2 to prevent copying the object.
+      // それ以外の場合はオブジェクトのコピーを防ぐためにループさせてコピーす
+      // る。
       var len1 = arr1.length;
       var len2 = arr2.length;
       for (var j = 0; j < len2; j++) {
@@ -823,19 +811,16 @@ goog.array.extend = function(arr1, var_args) {
 
 
 /**
- * Adds or removes elements from an array. This is a generic version of Array
- * splice. This means that it might work on other objects similar to arrays,
- * such as the arguments object.
+ * 要素を配列に追加または配列から削除する。これは標準的な `Array#splice` なので
+ * `Arguments` のような配列のようなオブジェクトでも同様に動作すると思われる。
  *
- * @param {goog.array.ArrayLike} arr The array to modify.
- * @param {number|undefined} index The index at which to start changing the
- *     array. If not defined, treated as 0.
- * @param {number} howMany How many elements to remove (0 means no removal. A
- *     value below 0 is treated as zero and so is any other non number. Numbers
- *     are floored).
- * @param {...*} var_args Optional, additional elements to insert into the
- *     array.
- * @return {!Array} the removed elements.
+ * @param {goog.array.ArrayLike} arr 変更される配列。
+ * @param {number|undefined} index 配列を変更する範囲の最初のインデックス。もし
+ *     定義されていない場合は 0 とみなされる。
+ * @param {number} howMany 削除する要素の数。0 であれば削除しない。負の値や数値
+ *     でない場合は 0 として処理される。小数は切り捨てられる。
+ * @param {...*} var_args 追加する要素。省略可能。
+ * @return {!Array} 削除された要素の配列。
  */
 goog.array.splice = function(arr, index, howMany, var_args) {
   goog.asserts.assert(arr.length != null);
@@ -846,25 +831,23 @@ goog.array.splice = function(arr, index, howMany, var_args) {
 
 
 /**
- * Returns a new array from a segment of an array. This is a generic version of
- * Array slice. This means that it might work on other objects similar to
- * arrays, such as the arguments object.
+ * 配列の一部分からなる新しい配列を返す。これは標準的な `Array#slice` と同様の
+ * 振る舞いをするので `Arguments` のような配列のようなオブジェクトでも同様に動作
+ * すると思われる。
  *
- * @param {Array.<T>|goog.array.ArrayLike} arr The array from
- * which to copy a segment.
- * @param {number} start The index of the first element to copy.
- * @param {number=} opt_end The index after the last element to copy.
- * @return {!Array.<T>} A new array containing the specified segment of the
- *     original array.
+ * @param {Array.<T>|goog.array.ArrayLike} arr 一部分を複製したい配列。
+ * @param {number} start 複製する範囲の最初のインデックス。
+ * @param {number=} opt_end 複製する範囲の最後のインデックス。
+ * @return {!Array.<T>} 与えられた配列の一部分からなる新しい配列。
  * @template T
  */
 goog.array.slice = function(arr, start, opt_end) {
   goog.asserts.assert(arr.length != null);
 
-  // passing 1 arg to slice is not the same as passing 2 where the second is
-  // null or undefined (in that case the second argument is treated as 0).
-  // we could use slice on the arguments object and then use apply instead of
-  // testing the length
+  // 引数が 1 つの場合と 2 つの場合では挙動が異なる。後者は 第二引数が null か
+  // `undefined` とみなされる（つまり `0` とみなされる）。 `apply` の代わりに引
+  // 数の数を確かめることで `Arguments` オブジェクトにも `slice` を使うことがで
+  // きる。
   if (arguments.length <= 2) {
     return goog.array.ARRAY_PROTOTYPE_.slice.call(arr, start);
   } else {
@@ -874,34 +857,28 @@ goog.array.slice = function(arr, start, opt_end) {
 
 
 /**
- * Removes all duplicates from an array (retaining only the first
- * occurrence of each array element).  This function modifies the
- * array in place and doesn't change the order of the non-duplicate items.
+ * 重複したすべての要素を削除する（最初の要素は残される）。この関数は破壊的に配
+ * 列を変更する。重複がない場合にもオーダーは変わらない。
  *
- * For objects, duplicates are identified as having the same unique ID as
- * defined by {@link goog.getUid}.
+ * オブジェクトの一致判定には `goog.getUid` による値が用いられる。
  *
- * Alternatively you can specify a custom hash function that returns a unique
- * value for each item in the array it should consider unique.
+ * 同じオブジェクトについて一意の識別子を返すハッシュ関数を指定できる。
  *
- * Runtime: N,
- * Worstcase space: 2N (no dupes)
+ * 実行時間のオーダー： N,
+ * 実行に要する容量： 2N （ほんとだよ！）
  *
- * @param {Array.<T>|goog.array.ArrayLike} arr The array from which to remove
- *     duplicates.
- * @param {Array=} opt_rv An optional array in which to return the results,
- *     instead of performing the removal inplace.  If specified, the original
- *     array will remain unchanged.
- * @param {function(T):string=} opt_hashFn An optional function to use to
- *     apply to every item in the array. This function should return a unique
- *     value for each item in the array it should consider unique.
+ * @param {goog.array.ArrayLike} arr 重複を削除したい配列。
+ * @param {Array=} opt_rv 結果を格納するための配列。これが指定されている場合、
+ *     arr は変更されず、 opt_rv に結果が上書きされる。
+ * @param {function(T):string=} opt_hashFn 配列要素毎に呼び出される省略可能な関
+ *     数。この関数は、同じオブジェクトについては一意の識別子を返す必要がある。
  * @template T
  */
 goog.array.removeDuplicates = function(arr, opt_rv, opt_hashFn) {
   var returnArray = opt_rv || arr;
   var defaultHashFn = function(item) {
-    // Prefix each type with a single character representing the type to
-    // prevent conflicting keys (e.g. true and 'true').
+    // key の衝突（true と 'true'）を防ぐためにオブジェクトの種類の頭文字をオブ
+    // ジェクトの種類をあらわす値として用いる。
     return goog.isObject(current) ? 'o' + goog.getUid(current) :
         (typeof current).charAt(0) + current;
   };
@@ -921,28 +898,25 @@ goog.array.removeDuplicates = function(arr, opt_rv, opt_hashFn) {
 
 
 /**
- * Searches the specified array for the specified target using the binary
- * search algorithm.  If no opt_compareFn is specified, elements are compared
- * using <code>goog.array.defaultCompare</code>, which compares the elements
- * using the built in < and > operators.  This will produce the expected
- * behavior for homogeneous arrays of String(s) and Number(s). The array
- * specified <b>must</b> be sorted in ascending order (as defined by the
- * comparison function).  If the array is not sorted, results are undefined.
- * If the array contains multiple instances of the specified target value, any
- * of these instances may be found.
+ * 与えられた配列の中から検索対象のインデックスを 2 分探索によって探す。
+ * `opt_compareFn` が与えられていない場合、要素は組み込みの `<` と `>` 演算子に
+ * よる評価をおこなう `goog.array.defaultCompare` によって比較される。これは、
+ * 文字列または数値のみを正しく比較できる。
+ * 配列は昇順（比較関数による）で配列されていなければならない。もし配列がソート
+ * されていない場合は結果は `undefined` になる。もし配列のなかに複数のターゲット
+ * がある場合、そのいずれかが見つかる。
  *
- * Runtime: O(log n)
+ * 実行時間のオーダー： O(log n)
  *
- * @param {goog.array.ArrayLike} arr The array to be searched.
- * @param {*} target The sought value.
- * @param {Function=} opt_compareFn Optional comparison function by which the
- *     array is ordered. Should take 2 arguments to compare, and return a
- *     negative number, zero, or a positive number depending on whether the
- *     first argument is less than, equal to, or greater than the second.
- * @return {number} Lowest index of the target value if found, otherwise
- *     (-(insertion point) - 1). The insertion point is where the value should
- *     be inserted into arr to preserve the sorted property.  Return value >= 0
- *     iff target is found.
+ * @param {goog.array.ArrayLike} arr 検索される配列。
+ * @param {*} target 検索対象の値。
+ * @param {Function=} opt_compareFn 配列の順を定めている比較関数。省略可能。
+ *     2 つの引数が与えられ、戻り値が負の場合・`0` の場合・正の場合について、そ
+ *     れぞれ第一引数が第二引数より小さい・等しい・大きい場合と対応する。
+ * @return {number} 検索対象が見つかった場合は最も小さいインデックス。それ以外の
+ *     場合は、`-(比較地点) - 1` 。 比較地点は、与えられた配列中に検索対象が存
+ *     在した場合のインデックスと一致する。検索対象が見つかった場合は正の値が返
+ *     る。
  */
 goog.array.binarySearch = function(arr, target, opt_compareFn) {
   return goog.array.binarySearch_(arr,
@@ -952,26 +926,23 @@ goog.array.binarySearch = function(arr, target, opt_compareFn) {
 
 
 /**
- * Selects an index in the specified array using the binary search algorithm.
- * The evaluator receives an element and determines whether the desired index
- * is before, at, or after it.  The evaluator must be consistent (formally,
- * goog.array.map(goog.array.map(arr, evaluator, opt_obj), goog.math.sign)
- * must be monotonically non-increasing).
+ * 与えられた配列の各要素を 2 分探索のようにして評価していく。
+ * 評価関数は選択したい要素のインデックスが今のインデックスより小さい・ここ・
+ * 大きいのどれなのかを指定する。
+ * 評価関数は一貫性している必要がある（形式的にいえば
+ * `goog.array.map(goog.array.map(arr, evaluator, opt_obj), goog.math.sign)`
+ * が単調非増加でなければならない）。
  *
- * Runtime: O(log n)
+ * 実行時間のオーダー: O(log n)
  *
- * @param {goog.array.ArrayLike} arr The array to be searched.
- * @param {Function} evaluator Evaluator function that receives 3 arguments
- *     (the element, the index and the array). Should return a negative number,
- *     zero, or a positive number depending on whether the desired index is
- *     before, at, or after the element passed to it.
- * @param {Object=} opt_obj The object to be used as the value of 'this'
- *     within evaluator.
- * @return {number} Index of the leftmost element matched by the evaluator, if
- *     such exists; otherwise (-(insertion point) - 1). The insertion point is
- *     the index of the first element for which the evaluator returns negative,
- *     or arr.length if no such element exists. The return value is non-negative
- *     iff a match is found.
+ * @param {goog.array.ArrayLike} arr 検索したい配列。
+ * @param {Function} evaluator 評価関数は今の要素・インデックス・検索対象の配列
+ *     の 3 つの引数をとる。前方・現在の位置・後方のインデックスを探したい場合に
+ *     戻り値はそれぞれ負・ `0` ・正の値をとるべきである。
+ * @param {Object=} opt_obj 評価関数の実行時に `this` に設定されるオブジェクト。
+ * @return {number} 比較関数によって一致した最も左の要素のインデックス。それ以外
+ *     の場合は、`-(比較地点) - 1` 。 もし要素が見つからなかった場合、比較地点は
+ *     負の値か `arr.length` となる。検索対象が見つかった場合は正の値が返る。
  */
 goog.array.binarySelect = function(arr, evaluator, opt_obj) {
   return goog.array.binarySearch_(arr, evaluator, true /* isEvaluator */,
@@ -980,36 +951,31 @@ goog.array.binarySelect = function(arr, evaluator, opt_obj) {
 
 
 /**
- * Implementation of a binary search algorithm which knows how to use both
- * comparison functions and evaluators. If an evaluator is provided, will call
- * the evaluator with the given optional data object, conforming to the
- * interface defined in binarySelect. Otherwise, if a comparison function is
- * provided, will call the comparison function against the given data object.
+ * 2 分探索の比較関数と評価関数の実行手順を司る実装。引数が評価関数の場合は
+ * `goog.array.binarySelect` のようにして評価関数のコンテキストを指定できる。
+ * 引数が比較関数の場合には評価関数のコンテキストは指定できない。
  *
- * This implementation purposefully does not use goog.bind or goog.partial for
- * performance reasons.
+ * この実装はパフォーマンスにまつわる理由で `goog.bind` や `goog.partial` を
+ * 用いていない。
  *
- * Runtime: O(log n)
+ * 実行時間のオーダー： O(log n)
  *
- * @param {goog.array.ArrayLike} arr The array to be searched.
- * @param {Function} compareFn Either an evaluator or a comparison function,
- *     as defined by binarySearch and binarySelect above.
- * @param {boolean} isEvaluator Whether the function is an evaluator or a
- *     comparison function.
- * @param {*=} opt_target If the function is a comparison function, then this is
- *     the target to binary search for.
- * @param {Object=} opt_selfObj If the function is an evaluator, this is an
-  *    optional this object for the evaluator.
- * @return {number} Lowest index of the target value if found, otherwise
- *     (-(insertion point) - 1). The insertion point is where the value should
- *     be inserted into arr to preserve the sorted property.  Return value >= 0
- *     iff target is found.
+ * @param {goog.array.ArrayLike} arr 検索したい配列。
+ * @param {Function} compareFn  評価関数と比較関数のどちらか。
+ * @param {boolean} isEvaluator `compareFn` が評価関数か否か。
+ * @param {*=} opt_target `compareFn` が比較関数の場合は検索対象のオブジェクト。
+ * @param {Object=} opt_selfObj `compareFn` が評価関数の場合のコンテキストオブ
+ *     ジェクト。
+ * @return {number} 検索対象が見つかった場合は最も小さいインデックス。それ以外の
+ *     場合は、`-(比較地点) - 1` 。 比較地点は、与えられた配列中に検索対象が存在
+ *     した場合のインデックスと一致する。検索対象が見つかった場合は正の値が返
+ *     る。
  * @private
  */
 goog.array.binarySearch_ = function(arr, compareFn, isEvaluator, opt_target,
     opt_selfObj) {
-  var left = 0;  // inclusive
-  var right = arr.length;  // exclusive
+  var left = 0;  // は範囲に含まれる
+  var right = arr.length;  // は範囲に含まれない
   var found;
   while (left < right) {
     var middle = (left + right) >> 1;
@@ -1023,35 +989,32 @@ goog.array.binarySearch_ = function(arr, compareFn, isEvaluator, opt_target,
       left = middle + 1;
     } else {
       right = middle;
-      // We are looking for the lowest index so we can't return immediately.
+      // 最も小さいインデックスを返したいので直ちに値は返さない。
       found = !compareResult;
     }
   }
-  // left is the index if found, or the insertion point otherwise.
-  // ~left is a shorthand for -left - 1.
+  // `left` は見つかった場合のインデックス。見つからなかった場合は比較地点。
+  // `~left` は `-left - 1` の省略形（`~` はビット反転演算子）。
   return found ? left : ~left;
 };
 
 
 /**
- * Sorts the specified array into ascending order.  If no opt_compareFn is
- * specified, elements are compared using
- * <code>goog.array.defaultCompare</code>, which compares the elements using
- * the built in < and > operators.  This will produce the expected behavior
- * for homogeneous arrays of String(s) and Number(s), unlike the native sort,
- * but will give unpredictable results for heterogenous lists of strings and
- * numbers with different numbers of digits.
+ * 与えられた配列を昇順でソートする。 `opt_compare_Fn` が省略された場合は
+ * 組み込みの `<` と `>` で評価する `goog.array.defaultCompare` が用いられる。
+ * この評価関数は文字列か数値によって構成される配列を正しく評価できる。
+ * このメソッドでは 評価関数によって値が一致したと判定された要素の並び順は
+ * 保証されない。
  *
- * This sort is not guaranteed to be stable.
+ * このソートは安定であることを保証されない。
  *
- * Runtime: Same as <code>Array.prototype.sort</code>
+ * 実行時間： `Array.prototype.sort` と同じ
  *
- * @param {Array.<T>} arr The array to be sorted.
- * @param {?function(T,T):number=} opt_compareFn Optional comparison
- *     function by which the
- *     array is to be ordered. Should take 2 arguments to compare, and return a
- *     negative number, zero, or a positive number depending on whether the
- *     first argument is less than, equal to, or greater than the second.
+ * @param {Array.<T>} arr ソートしたい配列。
+ * @param {?function(T,T):number=} opt_compareFn 配列の順を定めている比較関数。
+ *     省略可能。 2 つの引数が与えられ、戻り値が負の場合・`0` の場合・正の場合に
+ *     ついて、それぞれ第一引数より第二引数が小なり・等しい・大なりの場合と対応
+ *     する。
  * @template T
  */
 goog.array.sort = function(arr, opt_compareFn) {
@@ -1064,21 +1027,20 @@ goog.array.sort = function(arr, opt_compareFn) {
 
 
 /**
- * Sorts the specified array into ascending order in a stable way.  If no
- * opt_compareFn is specified, elements are compared using
- * <code>goog.array.defaultCompare</code>, which compares the elements using
- * the built in < and > operators.  This will produce the expected behavior
- * for homogeneous arrays of String(s) and Number(s).
+ * 与えられた配列を安定的な方法でソートする。 opt_compare_Fn が省略された場合は
+ * 組み込みの `<` と `>` で評価する `goog.array.defaultCompare` が用いられる。
+ * この評価関数は文字列か数値によって構成される配列を正しく評価できる。
  *
- * Runtime: Same as <code>Array.prototype.sort</code>, plus an additional
- * O(n) overhead of copying the array twice.
+ * このソートでは値が等しいと判定された場合、インデックスの大小で評価される。
  *
- * @param {Array.<T>} arr The array to be sorted.
- * @param {?function(T, T): number=} opt_compareFn Optional comparison function
- *     by which the array is to be ordered. Should take 2 arguments to compare,
- *     and return a negative number, zero, or a positive number depending on
- *     whether the first argument is less than, equal to, or greater than the
- *     second.
+ * 実行時間： `Array.prototype.sort` と同じだが、 O(n) のオーダーで配列を 2 回
+ * コピーする分のオーバーヘッドが加わる。
+ *
+ * @param {Array.<T>} arr ソートしたい配列。
+ * @param {?function(T,T):number=} opt_compareFn 配列の順を定めている比較関数。
+ *     省略可能。 2 つの引数が与えられ、戻り値が負の場合・`0` の場合・正の場合に
+ *     ついて、それぞれ第一引数より第二引数が小なり・等しい・大なりの場合と対応
+ *     する。
  * @template T
  */
 goog.array.stableSort = function(arr, opt_compareFn) {
@@ -1097,15 +1059,16 @@ goog.array.stableSort = function(arr, opt_compareFn) {
 
 
 /**
- * Sorts an array of objects by the specified object key and compare
- * function. If no compare function is provided, the key values are
- * compared in ascending order using <code>goog.array.defaultCompare</code>.
- * This won't work for keys that get renamed by the compiler. So use
- * {'foo': 1, 'bar': 2} rather than {foo: 1, bar: 2}.
- * @param {Array.<Object>} arr An array of objects to sort.
- * @param {string} key The object key to sort by.
- * @param {Function=} opt_compareFn The function to use to compare key
- *     values.
+ * オブジェクトからなる配列を指定されたキーの要素でソートする。`opt_compare_Fn`
+ * が省略された場合は組み込みの `<` と `>` で評価する
+ * `goog.array.defaultCompare` が用いられる。
+ * このメソッドはコンパイラによってリネームされた場合に正しく動作しない。
+ * なので `{foo: 1, bar: 2}` ではなく `{'foo': 1, 'bar': 2}` と書かなければなら
+ * ない。
+ *
+ * @param {Array.<Object>} arr ソートしたいオブジェクトからなる配列。
+ * @param {string} key ソートの際に用いるキー。
+ * @param {Function=} opt_compareFn 値を比較する関数。
  */
 goog.array.sortObjectsByKey = function(arr, key, opt_compareFn) {
   var compare = opt_compareFn || goog.array.defaultCompare;
@@ -1116,15 +1079,14 @@ goog.array.sortObjectsByKey = function(arr, key, opt_compareFn) {
 
 
 /**
- * Tells if the array is sorted.
- * @param {!Array.<T>} arr The array.
- * @param {?function(T,T):number=} opt_compareFn Function to compare the
- *     array elements.
- *     Should take 2 arguments to compare, and return a negative number, zero,
- *     or a positive number depending on whether the first argument is less
- *     than, equal to, or greater than the second.
- * @param {boolean=} opt_strict If true no equal elements are allowed.
- * @return {boolean} Whether the array is sorted.
+ * 配列がソート済みかどうかを判定する。
+ * @param {!Array.<T>} arr 配列。
+ * @param {?function(T,T):number=} opt_compareFn 配列の順を定めている比較関数。
+ *     省略可能。 2 つの引数が与えられ、戻り値が負の場合・`0` の場合・正の場合に
+ *     ついて、それぞれ第一引数より第二引数が小なり・等しい・大なりの場合と対応
+ *     する。
+ * @param {boolean=} opt_strict `true` にすると値が等しい場合も `false` を返す。
+ * @return {boolean} 配列がソート済みかどうか。
  * @template T
  */
 goog.array.isSorted = function(arr, opt_compareFn, opt_strict) {
@@ -1140,17 +1102,15 @@ goog.array.isSorted = function(arr, opt_compareFn, opt_strict) {
 
 
 /**
- * Compares two arrays for equality. Two arrays are considered equal if they
- * have the same length and their corresponding elements are equal according to
- * the comparison function.
+ * 2 つの配列が等しいかどうかを判定する。2 つの配列の要素数が同じで含まれている
+ * 要素が比較関数によってすべて等しいかどうかを判定される。
  *
- * @param {goog.array.ArrayLike} arr1 The first array to compare.
- * @param {goog.array.ArrayLike} arr2 The second array to compare.
- * @param {Function=} opt_equalsFn Optional comparison function.
- *     Should take 2 arguments to compare, and return true if the arguments
- *     are equal. Defaults to {@link goog.array.defaultCompareEquality} which
- *     compares the elements using the built-in '===' operator.
- * @return {boolean} Whether the two arrays are equal.
+ * @param {goog.array.ArrayLike} arr1 判定する配列。
+ * @param {goog.array.ArrayLike} arr2 判定する配列。
+ * @param {Function=} opt_equalsFn 省略可能な比較関数。2 つの引数が一致すれば
+ *     `true` 、一致しなければ `false` を返す。省略時は組み込みの `===` 演算子を
+ *     用いる `goog.array.defaultCompareEquality` が使われる。
+ * @return {boolean} 2 つの配列が等しいかどうか。
  */
 goog.array.equals = function(arr1, arr2, opt_equalsFn) {
   if (!goog.isArrayLike(arr1) || !goog.isArrayLike(arr2) ||
@@ -1169,11 +1129,11 @@ goog.array.equals = function(arr1, arr2, opt_equalsFn) {
 
 
 /**
- * @deprecated Use {@link goog.array.equals}.
- * @param {goog.array.ArrayLike} arr1 See {@link goog.array.equals}.
- * @param {goog.array.ArrayLike} arr2 See {@link goog.array.equals}.
- * @param {Function=} opt_equalsFn See {@link goog.array.equals}.
- * @return {boolean} See {@link goog.array.equals}.
+ * @deprecated `goog.array.equals` を使うべき。
+ * @param {goog.array.ArrayLike} arr1 `goog.array.equals` を参照。
+ * @param {goog.array.ArrayLike} arr2 `goog.array.equals` を参照。
+ * @param {Function=} opt_equalsFn `goog.array.equals` を参照。
+ * @return {boolean} `goog.array.equals` を参照。
  */
 goog.array.compare = function(arr1, arr2, opt_equalsFn) {
   return goog.array.equals(arr1, arr2, opt_equalsFn);
@@ -1181,17 +1141,15 @@ goog.array.compare = function(arr1, arr2, opt_equalsFn) {
 
 
 /**
- * 3-way array compare function.
- * @param {!goog.array.ArrayLike} arr1 The first array to compare.
- * @param {!goog.array.ArrayLike} arr2 The second array to compare.
- * @param {?function(?, ?): number=} opt_compareFn Optional comparison function
- *     by which the array is to be ordered. Should take 2 arguments to compare,
- *     and return a negative number, zero, or a positive number depending on
- *     whether the first argument is less than, equal to, or greater than the
- *     second.
- * @return {number} Negative number, zero, or a positive number depending on
- *     whether the first argument is less than, equal to, or greater than the
- *     second.
+ * 2 つの配列の大小または一致を判定する。
+ * @param {!goog.array.ArrayLike} arr1 判定する配列。
+ * @param {!goog.array.ArrayLike} arr2 判定する配列。
+ * @param {?function(?,?): number=} opt_compareFn 配列の順を定めている比較関数。
+ *     省略可能。 2 つの引数が与えられ、戻り値が負の場合・`0` の場合・正の場合に
+ *     ついて、それぞれ第一引数が第二引数より小さい・等しい・大きい場合と対応す
+ *     る。
+ * @return {number} 負・ `0` ・正の場合について、それぞれ `arr1` が `arr2`
+ *     よりが小さい・等しい・大きい場合と対応する。
  */
 goog.array.compare3 = function(arr1, arr2, opt_compareFn) {
   var compare = opt_compareFn || goog.array.defaultCompare;
@@ -1207,12 +1165,11 @@ goog.array.compare3 = function(arr1, arr2, opt_compareFn) {
 
 
 /**
- * Compares its two arguments for order, using the built in < and >
- * operators.
- * @param {*} a The first object to be compared.
- * @param {*} b The second object to be compared.
- * @return {number} A negative number, zero, or a positive number as the first
- *     argument is less than, equal to, or greater than the second.
+ * 2 つの値を組み込みの `<` と `>` 演算子によって比較する。
+ * @param {*} a 比較する要素。
+ * @param {*} b 比較する要素。
+ * @return {number} 負・ `0` ・正の場合について、それぞれ `a` が `b` よりが小さ
+ *     い・等しい・大きい場合と対応する。
  */
 goog.array.defaultCompare = function(a, b) {
   return a > b ? 1 : a < b ? -1 : 0;
@@ -1220,10 +1177,10 @@ goog.array.defaultCompare = function(a, b) {
 
 
 /**
- * Compares its two arguments for equality, using the built in === operator.
- * @param {*} a The first object to compare.
- * @param {*} b The second object to compare.
- * @return {boolean} True if the two arguments are equal, false otherwise.
+ * 2 つの値を組み込みの `===` 演算子によって比較する。
+ * @param {*} a 比較する要素。
+ * @param {*} b 比較する要素。
+ * @return {boolean} 一致すれば `true`、 一致しなければ `false` 。
  */
 goog.array.defaultCompareEquality = function(a, b) {
   return a === b;
@@ -1231,16 +1188,15 @@ goog.array.defaultCompareEquality = function(a, b) {
 
 
 /**
- * Inserts a value into a sorted array. The array is not modified if the
- * value is already present.
- * @param {Array.<T>} array The array to modify.
- * @param {T} value The object to insert.
- * @param {?function(T,T):number=} opt_compareFn Optional comparison function by
- *     which the
- *     array is ordered. Should take 2 arguments to compare, and return a
- *     negative number, zero, or a positive number depending on whether the
- *     first argument is less than, equal to, or greater than the second.
- * @return {boolean} True if an element was inserted.
+ * ソートされた配列の中に値を挿入する。値が既に存在している場合、配列は変更され
+ * ない。
+ * @param {Array.<T>} array 変更される配列。
+ * @param {T} value 挿入されるオブジェクト。
+ * @param {?function(T,T): number=} opt_compareFn 配列の順を定めている比較関数。
+ *     省略可能。 2 つの引数が与えられ、戻り値が負の場合・`0` の場合・正の場合に
+ *     ついて、それぞれ第一引数が第二引数より小さい・等しい・大きい場合と対応す
+ *     る。
+ * @return {boolean} 要素が追加されたのならば、`true`。
  * @template T
  */
 goog.array.binaryInsert = function(array, value, opt_compareFn) {
@@ -1254,14 +1210,13 @@ goog.array.binaryInsert = function(array, value, opt_compareFn) {
 
 
 /**
- * Removes a value from a sorted array.
- * @param {Array} array The array to modify.
- * @param {*} value The object to remove.
- * @param {Function=} opt_compareFn Optional comparison function by which the
- *     array is ordered. Should take 2 arguments to compare, and return a
- *     negative number, zero, or a positive number depending on whether the
- *     first argument is less than, equal to, or greater than the second.
- * @return {boolean} True if an element was removed.
+ * ソートされた配列から与えられた値と一致する値を削除する。
+ * @param {Array} array 変更される配列。
+ * @param {*} value 削除されるオブジェクト。
+ * @param {Function=} opt_compareFn 配列の順を定めている比較関数。省略可能。
+ *     2 つの引数が与えられ、戻り値が負の場合・`0` の場合・正の場合について、そ
+ *     れぞれ第一引数が第二引数より小さい・等しい・大きい場合と対応する。
+ * @return {boolean} 値が削除されれば `true`。
  */
 goog.array.binaryRemove = function(array, value, opt_compareFn) {
   var index = goog.array.binarySearch(array, value, opt_compareFn);
@@ -1270,17 +1225,18 @@ goog.array.binaryRemove = function(array, value, opt_compareFn) {
 
 
 /**
- * Splits an array into disjoint buckets according to a splitting function.
- * @param {Array.<T>} array The array.
- * @param {function(this:S, T,number,Array.<T>):?} sorter Function to call for
- *     every element.  This takes 3 arguments (the element, the index and the
- *     array) and must return a valid object key (a string, number, etc), or
- *     undefined, if that object should not be placed in a bucket.
- * @param {S=} opt_obj The object to be used as the value of 'this' within
+ * 与えられた配列の各要素を判別関数によってオブジェクトのなかの配列ごとに分別し
+ * て格納する。
+ * @param {Array.<T>} array 配列。
+ * @param {function(T,number,Array.<T>):?} sorter 各要素について実行される関数。
+ *     この関数は、現在の要素・インデックス・与えられた配列の 3 つの引数をとる
+ *     戻り値はオブジェクトのキーにできるもの（文字列、数値など）で互いに異なっ
+ *     ている必要がある。戻り値が `undefined` の場合、その要素は追加されない。
+ * @template T
+ * @param {S=} opt_obj 評価関数の実行時に `this` に設定されるオブジェクト。
  *     sorter.
- * @return {!Object} An object, with keys being all of the unique return values
- *     of sorter, and values being arrays containing the items for
- *     which the splitter returned that key.
+ * @return {!Object} sorter によって生成されたユニークなキーにマッピングされた配
+ *     列要からなるオブジェクト。
  * @template T,S
  */
 goog.array.bucket = function(array, sorter, opt_obj) {
@@ -1290,7 +1246,7 @@ goog.array.bucket = function(array, sorter, opt_obj) {
     var value = array[i];
     var key = sorter.call(opt_obj, value, i, array);
     if (goog.isDef(key)) {
-      // Push the value to the right bucket, creating it if necessary.
+      // 配列が未定義の場合は空配列を代入する。
       var bucket = buckets[key] || (buckets[key] = []);
       bucket.push(value);
     }
@@ -1301,19 +1257,15 @@ goog.array.bucket = function(array, sorter, opt_obj) {
 
 
 /**
- * Creates a new object built from the provided array and the key-generation
- * function.
- * @param {Array.<T>|goog.array.ArrayLike} arr Array or array like object over
- *     which to iterate whose elements will be the values in the new object.
- * @param {?function(this:S, T, number, ?) : string} keyFunc The function to
- *     call for every element. This function takes 3 arguments (the element, the
- *     index and the array) and should return a string that will be used as the
- *     key for the element in the new object. If the function returns the same
- *     key for more than one element, the value for that key is
- *     implementation-defined.
- * @param {S=} opt_obj The object to be used as the value of 'this'
- *     within keyFunc.
- * @return {!Object.<T>} The new object.
+ * キー値生成関数によって配列から新しいオブジェクトを作成する。
+ * @param {Array.<T>|goog.array.ArrayLike} arr 新しいオブジェクトに追加される要
+ *     素を持つ、配列または配列のようなオブジェクト。
+ * @param {?function(this:S, T, number, ?) : string} keyFunc この関数は要素毎に
+ *     呼び出される。この関数は要素・インデックス・与えられた配列の3つの引数を取
+ *     り、新しいオブジェクトのキー値となる文字列を返さなければならない。もし、
+ *     一度の処理の中で同じキー値が返された場合の処理は実装依存になる。
+ * @param {S=} opt_obj 評価関数の実行時に `this` に設定されるオブジェクト。
+ * @return {!Object.<T>} 作成されたオブジェクト。
  * @template T,S
  */
 goog.array.toObject = function(arr, keyFunc, opt_obj) {
@@ -1326,24 +1278,22 @@ goog.array.toObject = function(arr, keyFunc, opt_obj) {
 
 
 /**
- * Creates a range of numbers in an arithmetic progression.
+ * 与えられた数値の範囲で、等差数列を作成する。
  *
- * Range takes 1, 2, or 3 arguments:
- * <pre>
- * range(5) is the same as range(0, 5, 1) and produces [0, 1, 2, 3, 4]
- * range(2, 5) is the same as range(2, 5, 1) and produces [2, 3, 4]
- * range(-2, -5, -1) produces [-2, -3, -4]
- * range(-2, -5, 1) produces [], since stepping by 1 wouldn't ever reach -5.
- * </pre>
+ * この関数は1〜3の引数を取る：
  *
- * @param {number} startOrEnd The starting value of the range if an end argument
- *     is provided. Otherwise, the start value is 0, and this is the end value.
- * @param {number=} opt_end The optional end value of the range.
- * @param {number=} opt_step The step size between range values. Defaults to 1
- *     if opt_step is undefined or 0.
- * @return {!Array.<number>} An array of numbers for the requested range. May be
- *     an empty array if adding the step would not converge toward the end
- *     value.
+ * - `range(5)` は `range(0, 5, 1)` と等価。 `[0, 1, 2, 3, 4]` を返す。
+ * - `range(2, 5)` は `range(2, 5, 1)` と等価。 `[2, 3, 4]` を返す。
+ * - `range(-2, -5, -1)` は `[-2, -3, -4]`　を返す。
+ * - `range(-2, -5, 1)` は `1` ずつ足しても `-5` に到達しないので `[]` を返す。
+ *
+ * @param {number} startOrEnd 数列の終値が与えられていれば、数列の始値。そうでな
+ *     い場合は、 0 が始値とみなされ、これが終値とみなされる。
+ * @param {number=} opt_end 数列の終値。省略可能。
+ * @param {number=} opt_step 数列の公差。省略時、あるいは `0` のとき、 `1` とみ
+ *     なされる。
+ * @return {!Array.<number>} 与えられた範囲の等差数列。公差をいくら足しても終値
+ *     に到達しない場合は空配列。
  */
 goog.array.range = function(startOrEnd, opt_end, opt_step) {
   var array = [];
@@ -1374,11 +1324,11 @@ goog.array.range = function(startOrEnd, opt_end, opt_step) {
 
 
 /**
- * Returns an array consisting of the given value repeated N times.
+ * 値が N 回繰り返された配列を返す。
  *
- * @param {*} value The value to repeat.
- * @param {number} n The repeat count.
- * @return {!Array} An array with the repeated value.
+ * @param {*} value 繰り返すオブジェクト。
+ * @param {number} n 繰り返す回数。
+ * @return {!Array} 繰り返されたオブジェクトからなる配列。
  */
 goog.array.repeat = function(value, n) {
   var array = [];
@@ -1390,11 +1340,10 @@ goog.array.repeat = function(value, n) {
 
 
 /**
- * Returns an array consisting of every argument with all arrays
- * expanded in-place recursively.
+ * 与えられた要素を平たい配列に変換する。要素が配列の場合は再帰的に処理される。
  *
- * @param {...*} var_args The values to flatten.
- * @return {!Array} An array containing the flattened values.
+ * @param {...*} var_args 平たい配列に変換したいオブジェクト。
+ * @return {!Array} 与えられたオブジェクトからなる平たい配列。
  */
 goog.array.flatten = function(var_args) {
   var result = [];
@@ -1411,17 +1360,16 @@ goog.array.flatten = function(var_args) {
 
 
 /**
- * Rotates an array in-place. After calling this method, the element at
- * index i will be the element previously at index (i - n) %
- * array.length, for all values of i between 0 and array.length - 1,
- * inclusive.
+ * 配列を破壊的にローテート（要素をずらす）する。このメソッドが実行された後の
+ * `i` 番目の要素は前の `(i - n) % array.length` 番目の要素になる。すべての `i`
+ * は `0` から `array.length - 1` の範囲に収まる。
  *
- * For example, suppose list comprises [t, a, n, k, s]. After invoking
- * rotate(array, 1) (or rotate(array, -4)), array will comprise [s, t, a, n, k].
+ * 例えば、 `[t, a, n, k, s]` が与えられ、 `rotate(array, 1)` （または
+ * `rotate(array, -4)` ）が実行されると配列は `[s, t, a, n, k]` のようになる。
  *
- * @param {!Array.<T>} array The array to rotate.
- * @param {number} n The amount to rotate.
- * @return {!Array.<T>} The array.
+ * @param {!Array.<T>} array ローテートしたい配列。
+ * @param {number} n ローテ—トする回数。
+ * @return {!Array.<T>} 配列。
  * @template T
  */
 goog.array.rotate = function(array, n) {
@@ -1440,38 +1388,36 @@ goog.array.rotate = function(array, n) {
 
 
 /**
- * Moves one item of an array to a new position keeping the order of the rest
- * of the items. Example use case: keeping a list of JavaScript objects
- * synchronized with the corresponding list of DOM elements after one of the
- * elements has been dragged to a new position.
- * @param {!(Array|Arguments|{length:number})} arr The array to modify.
- * @param {number} fromIndex Index of the item to move between 0 and
- *     {@code arr.length - 1}.
- * @param {number} toIndex Target index between 0 and {@code arr.length - 1}.
+ * 配列要素を別の位置に移動する。
+ * たとえば、DOM 要素を別の場所にドラッグする際の処理などで使える。
+ *
+ * @param {!(Array|Arguments|{length:number})} arr 修正したい配列。
+ * @param {number} fromIndex 配列要素のインデックス（`0` 〜 `arr.length - 1`）。
+ * @param {number} toIndex 異動先のインデックス（`0` 〜 `arr.length - 1`）.
  */
 goog.array.moveItem = function(arr, fromIndex, toIndex) {
   goog.asserts.assert(fromIndex >= 0 && fromIndex < arr.length);
   goog.asserts.assert(toIndex >= 0 && toIndex < arr.length);
-  // Remove 1 item at fromIndex.
+  // 指定した配列要素を `fromIndex` から削除。
   var removedItems = goog.array.ARRAY_PROTOTYPE_.splice.call(arr, fromIndex, 1);
-  // Insert the removed item at toIndex.
+  // 削除した配列要素を `toIndex` に挿入。
   goog.array.ARRAY_PROTOTYPE_.splice.call(arr, toIndex, 0, removedItems[0]);
-  // We don't use goog.array.insertAt and goog.array.removeAt, because they're
-  // significantly slower than splice.
+  // `goog.array.insertArrayAt` や `goog.array.removeAt` は遅いので使わない。
 };
 
 
 /**
- * Creates a new array for which the element at position i is an array of the
- * ith element of the provided arrays.  The returned array will only be as long
- * as the shortest array provided; additional values are ignored.  For example,
- * the result of zipping [1, 2] and [3, 4, 5] is [[1,3], [2, 4]].
+ * 与えられた配列の同じ位置の要素を要素とした配列を配列にまとめて返す。
+ * 返される配列はもっとも小さい配列の要素数にあわせられ、余った要素は無視され
+ * る。例えば、`[1, 2]` と `[3, 4, 5]` が与えられた場合、結果は
+ * `[[1,3], [2, 4]]` となる。
  *
- * This is similar to the zip() function in Python.  See {@link
- * http://docs.python.org/library/functions.html#zip}
+ * これは Python の `zip()` と同じような働きをする。
+ * `http://docs.python.org/library/functions.html#zip` を参照。
  *
- * @param {...!goog.array.ArrayLike} var_args Arrays to be combined.
- * @return {!Array.<!Array>} A new array of arrays created from provided arrays.
+ * @param {...!goog.array.ArrayLike} var_args 要素を取り出す配列。
+ * @return {!Array.<!Array>} 与えられた要素がインデックス毎にまとめられた新しい
+ *      配列。
  */
 goog.array.zip = function(var_args) {
   if (!arguments.length) {
@@ -1482,7 +1428,7 @@ goog.array.zip = function(var_args) {
     var value = [];
     for (var j = 0; j < arguments.length; j++) {
       var arr = arguments[j];
-      // If i is larger than the array length, this is the shortest array.
+      // もし、 i が arr.length よりも大きければこれが最も小さい配列。
       if (i >= arr.length) {
         return result;
       }
@@ -1494,24 +1440,22 @@ goog.array.zip = function(var_args) {
 
 
 /**
- * Shuffles the values in the specified array using the Fisher-Yates in-place
- * shuffle (also known as the Knuth Shuffle). By default, calls Math.random()
- * and so resets the state of that random number generator. Similarly, may reset
- * the state of the any other specified random number generator.
+ * 与えられた配列の要素を Fisher-Yates のアルゴリズム（ Knush のシャッフルとして
+ * 知られている ）によって破壊的にシャッフルする。標準では `Math.random()` が
+ * 利用されるが、乱数生成関数を指定することもできる。
  *
- * Runtime: O(n)
+ * 実行時間のオーダー： O(n)
  *
- * @param {!Array} arr The array to be shuffled.
- * @param {function():number=} opt_randFn Optional random function to use for
- *     shuffling.
- *     Takes no arguments, and returns a random number on the interval [0, 1).
- *     Defaults to Math.random() using JavaScript's built-in Math library.
+ * @param {!Array} arr シャッフルしたい配列。
+ * @param {function():number=} opt_randFn シャッフルで利用する乱数生成関数。
+ *     省略可能。引数はとらず、 `0` 〜 `1` までの値を返す関数でなければならな
+ *     い。省略時は組み込みの `Math.random()` が用いられる。
  */
 goog.array.shuffle = function(arr, opt_randFn) {
   var randFn = opt_randFn || Math.random;
 
   for (var i = arr.length - 1; i > 0; i--) {
-    // Choose a random array index in [0, i] (inclusive with i).
+    // 0 〜 i のインデックスを選択する。
     var j = Math.floor(randFn() * (i + 1));
 
     var tmp = arr[i];
