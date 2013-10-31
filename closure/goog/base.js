@@ -15,9 +15,9 @@
 /**
  * @fileoverview Bootstrap for the Google JS Library (Closure).
  *
- * In uncompiled mode base.js will write out Closure's deps file, unless the
- * global <code>CLOSURE_NO_DEPS</code> is set to true.  This allows projects to
- * include their own deps file(s) from different locations.
+ * もし、 {@link goog.CLOSURE_NO_DEPS} が `true` のとき、コンパイルされていない
+ * base.js は依存関係ファイルを書き出す。これによって異なる環境下でそれぞれが依
+ * 存関係を解決するのことができるようになる。
  *
  *
  * @provideGoog
@@ -25,16 +25,15 @@
 
 
 /**
- * @define {boolean} Overridden to true by the compiler when --closure_pass
- *     or --mark_as_compiled is specified.
+ * @define {boolean} `--closure_pass` か `--mark_as_compiled` が指定された場合
+ *     に、 コンパイラによって `true` に上書きされる。
  */
 var COMPILED = false;
 
 
 /**
- * Base namespace for the Closure library.  Checks to see goog is already
- * defined in the current scope before assigning to prevent clobbering if
- * base.js is loaded more than once.
+ * Closure Library のトップレベル名前空間。現在のスコープで既に `goog` が定義さ
+ * れている場合には、繰り返し定義されてしまうことを防ぐ。
  *
  * @const
  */
@@ -42,61 +41,59 @@ var goog = goog || {};
 
 
 /**
- * Reference to the global context.  In most cases this will be 'window'.
+ * グローバルコンテキストへの参照。たいていの場合は `window`。
  */
 goog.global = this;
 
 
 /**
- * A hook for overriding the define values in uncompiled mode.
+ * 未コンパイルモードのときに定義値を上書きするためのフック。
  *
- * In uncompiled mode, {@code CLOSURE_DEFINES} may be defined before loading
- * base.js.  If a key is defined in {@code CLOSURE_DEFINES}, {@code goog.define}
- * will use the value instead of the default value.  This allows flags to be
- * overwritten without compilation (this is normally accomplished with the
- * compiler's "define" flag).
+ * 未コンパイルモードでは `CLOSURE_DEFINES` は base.js のロード後に定義される可
+ * 能性がある。もし、`CLOSURE_DEFINES` にあるキーが定義されているならば、
+ * `goog.define` はこの定義値を優先的に利用する。つまり、コンパイルしないでも、
+ * 定義値を上書きできるということである（通常では、この定義値はコンパイラの
+ * `define` オプションによって上書きされる）。
  *
- * Example:
- * <pre>
+ * 例:
+ * ```
  *   var CLOSURE_DEFINES = {'goog.DEBUG': false};
- * </pre>
- *
+ * ```
  * @type {Object.<string, (string|number|boolean)>|undefined}
  */
 goog.global.CLOSURE_DEFINES;
 
 
 /**
- * Builds an object structure for the provided namespace path, ensuring that
- * names that already exist are not overwritten. For example:
- * "a.b.c" -> a = {};a.b={};a.b.c={};
- * Used by goog.provide and goog.exportSymbol.
- * @param {string} name name of the object that this file defines.
- * @param {*=} opt_object the object to expose at the end of the path.
- * @param {Object=} opt_objectToExportTo The object to add the path to; default
- *     is |goog.global|.
+ * 名前空間パスからオブジェクト階層を構築する。名前が既に定義されていた場合は上
+ * 書きしない。
+ * 例："a.b.c" -> a = {};a.b={};a.b.c={};
+ * `goog.provide`、`goog.exportSymbol` で使う。
+ * @param {string} name 対象となっているオブジェクトの属する名前空間の名前パス。
+ * @param {*=} opt_object 名前パスの末尾で定義されているオブジェクト。省略可能。
+ * @param {Object=} opt_objectToExportTo オブジェクトを追加する際のスコープ。省
+ *     略時は {@link goog.global} 。
  * @private
  */
 goog.exportPath_ = function(name, opt_object, opt_objectToExportTo) {
   var parts = name.split('.');
   var cur = opt_objectToExportTo || goog.global;
 
-  // Internet Explorer exhibits strange behavior when throwing errors from
-  // methods externed in this manner.  See the testExportSymbolExceptions in
-  // base_test.html for an example.
+  // Internet Explorer ではこのやり方で外部出力してエラーが投げられた場合は異な
+  // る挙動を示す。 base_test.html 中の `testExportSymbolExceptions` の例を参
+  // 照。
   if (!(parts[0] in cur) && cur.execScript) {
     cur.execScript('var ' + parts[0]);
   }
 
-  // Certain browsers cannot parse code in the form for((a in b); c;);
-  // This pattern is produced by the JSCompiler when it collapses the
-  // statement above into the conditional loop below. To prevent this from
-  // happening, use a for-loop and reserve the init logic as below.
+  // いくつかのブラウザは `for((a in b); c;);` の形式のコードを解釈できない。こ
+  // のパターンは JS コンパイラによって下の文が書き換えられたときに生じる。これ
+  // を防止するために for 文 を使い、下のような初期化ロジックを用意する。
 
-  // Parentheses added to eliminate strict JS warning in Firefox.
+  // Firefox での strict モードにおける警告を避けるために括弧を用いる。
   for (var part; parts.length && (part = parts.shift());) {
     if (!parts.length && opt_object !== undefined) {
-      // last part and we have an object; use it
+      // part が最後の要素で opt_object が与えられていればそれを用いる。
       cur[part] = opt_object;
     } else if (cur[part]) {
       cur = cur[part];
@@ -108,13 +105,14 @@ goog.exportPath_ = function(name, opt_object, opt_objectToExportTo) {
 
 
 /**
- * Defines a named value. In uncompiled mode, the value is retreived from
- * CLOSURE_DEFINES if the object is defined and has the property specified,
- * and otherwise used the defined defaultValue. When compiled, the default
- * can be overridden using compiler command-line options.
+ * 値を命名して定義する。
  *
- * @param {string} name The distinguished name to provide.
- * @param {string|number|boolean} defaultValue
+ * 未コンパイルモードで `goog.global.CLOSURE_DEFINES` に該当する値が存在すれば、
+ * これを使う。存在しなければ、初期値が使われる。コンパイルするときに初期値をコ
+ * ンパイラのコマンドラインオプションで上書きできる。
+ *
+ * @param {string} name 定義する値の名前。
+ * @param {string|number|boolean} defaultValue 初期値。
  */
 goog.define = function(name, defaultValue) {
   var value = defaultValue;
@@ -129,68 +127,68 @@ goog.define = function(name, defaultValue) {
 
 
 /**
- * @define {boolean} DEBUG is provided as a convenience so that debugging code
- * that should not be included in a production js_binary can be easily stripped
- * by specifying --define goog.DEBUG=false to the JSCompiler. For example, most
- * toString() methods should be declared inside an "if (goog.DEBUG)" conditional
- * because they are generally used for debugging purposes and it is difficult
- * for the JSCompiler to statically determine whether they are used.
+ * @define {boolean} DEBUG `--define goog.DEBUG=false` を指定することによってデ
+ * バッグコードが製品版に含まれることを簡単に防ぐことができる。例えば、多くの
+ * `toString()` メソッドは (1) デバッグを目的として使われる、(2) JSコンパイラに
+ * とって `toString()` が使われているかどうかを判定することが難しい、という 2
+ * つの理由から `if (goog.DEBUG)` というように宣言されることが望ましい。
  */
 goog.DEBUG = true;
 
 
 /**
- * @define {string} LOCALE defines the locale being used for compilation. It is
- * used to select locale specific data to be compiled in js binary. BUILD rule
- * can specify this value by "--define goog.LOCALE=<locale_name>" as JSCompiler
- * option.
+ * @define {string} LOCALE はコンパイルする際の言語を定義する。地域特有のデータ
+ * を用いる場合に選択するとよい。JS コンパイラの実行時に
+ * `--define goog.LOCALE=locale_name` というように指定する。
  *
- * Take into account that the locale code format is important. You should use
- * the canonical Unicode format with hyphen as a delimiter. Language must be
- * lowercase, Language Script - Capitalized, Region - UPPERCASE.
- * There are few examples: pt-BR, en, en-US, sr-Latin-BO, zh-Hans-CN.
+ * アカウントの中では地域特有のコードは重要である。ハイフンを区切り文字とした標
+ * 準的な Unicode で指定する必要がある。言語（小文字） - 国・地域（大文字）のよ
+ * うに指定する。
+ * 例：`'ja-JP'`、`'en'`、`'en-US'`、`'sr-Latin-BO'`、`'zh-Hans-CN'`
  *
- * See more info about locale codes here:
- * http://www.unicode.org/reports/tr35/#Unicode_Language_and_Locale_Identifiers
+ * 地域・言語情報の詳細は以下を参照。{@link
+ * http://www.unicode.org/reports/tr35/#Unicode_Language_and_Locale_Identifiers}
  *
- * For language codes you should use values defined by ISO 693-1. See it here
- * http://www.w3.org/WAI/ER/IG/ert/iso639.htm. There is only one exception from
- * this rule: the Hebrew language. For legacy reasons the old code (iw) should
- * be used instead of the new code (he), see http://wiki/Main/IIISynonyms.
+ * 言語コードは ISO 639-1によって定義されている値を指定する。{@link
+ * http://www.w3.org/WAI/ER/IG/ert/iso639.htm} を参照。
+ * 注記： ヘブライ言語については新コード(he)ではなく旧コード(iw)を使うほうがよ
+ * い。{@link see http://wiki/Main/IIISynonyms} を参照（デッドリンク）。
  */
-goog.define('goog.LOCALE', 'en');  // default to en
+goog.define('goog.LOCALE', 'en');  // デフォルトはen（英語）
 
 
 /**
- * @define {boolean} Whether this code is running on trusted sites.
+ * @define {boolean} このスクリプトが動作するサイトは信頼できるサイトであれば、
+ *     `true` 。
  *
- * On untrusted sites, several native functions can be defined or overridden by
- * external libraries like Prototype, Datejs, and JQuery and setting this flag
- * to false forces closure to use its own implementations when possible.
+ * 信頼されていないサイトとは、いくつかのネイティブ関数を Prototype や Datejs 、
+ * jQuery などが上書きしているサイトのこと。このフラグを `false` にすれば、
+ * Closure Library は自身で実装した関数を用いる（可能であれば）。
  *
- * If your JavaScript can be loaded by a third party site and you are wary about
- * relying on non-standard implementations, specify
- * "--define goog.TRUSTED_SITE=false" to the JSCompiler.
+ * もし、あなたのスクリプトが第三者のサイトに読み込まれる場合や、非標準なネイ
+ * ティブ関数実装がある場合は、`--define goog.TRUSTED_SITE=false`を設定す
+ * るとよい。
  */
 goog.define('goog.TRUSTED_SITE', true);
 
 
 /**
- * Creates object stubs for a namespace.  The presence of one or more
- * goog.provide() calls indicate that the file defines the given
- * objects/namespaces.  Build tools also scan for provide/require statements
- * to discern dependencies, build dependency files (see deps.js), etc.
+ * オブジェクトスタブ（空の名前空間）を作成する。 `goog.provide()` はそのファイ
+ * ルの提供する名前空間/オブジェクトを定義する。ビルドツールはこの
+ * provide/require 文から依存関係を把握し、依存関係の記述ファイル dep.js を生成
+ * する。
  * @see goog.require
- * @param {string} name Namespace provided by this file in the form
- *     "goog.package.part".
+ * @param {string} name このファイルが提供する名前空間を
+ *     `"goog.package.part"` のようにして指定する。
  */
 goog.provide = function(name) {
   if (!COMPILED) {
-    // Ensure that the same namespace isn't provided twice. This is intended
-    // to teach new developers that 'goog.provide' is effectively a variable
-    // declaration. And when JSCompiler transforms goog.provide into a real
-    // variable declaration, the compiled JS should work the same as the raw
-    // JS--even when the raw JS uses goog.provide incorrectly.
+    // 名前空間が 2 度定義されないようにする。これは変数宣言に影響を与えることを
+    // 新しい開発者に悟らせる意図がある。JS コンパイラが goog.provide を実際の変
+    // 数宣言へと変換されたとき、コンパイルされた JS は元の JS と同じように動作
+    // しなければならない。したがって、間違った goog.provide の使い方を含むコー
+    // ドのコンパイルの結果が動作しないのと同様に、コンパイル前の JS も動作して
+    // はならない。
     if (goog.isProvided_(name)) {
       throw Error('Namespace "' + name + '" already declared.');
     }
@@ -210,15 +208,14 @@ goog.provide = function(name) {
 
 
 /**
- * Marks that the current file should only be used for testing, and never for
- * live code in production.
+ * このファイルがテスト目的のファイルで製品コードに含まれないようにマークする。
  *
- * In the case of unit tests, the message may optionally be an exact namespace
- * for the test (e.g. 'goog.stringTest'). The linter will then ignore the extra
- * provide (if not explicitly defined in the code).
+ * ユニットテストの場合、このメッセージは名前空間（例：`goog.stringTest`）でも
+ * よい。このとき、 Linter は外部からの `provide` を無視する（明示的に定義してい
+ * なければ）。
  *
- * @param {string=} opt_message Optional message to add to the error that's
- *     raised when used in production code.
+ * @param {string=} opt_message 除去されないまま製品コードに含まれてしまった場合
+ *      のエラーメッセージに追記される文字列。省略可能。
  */
 goog.setTestOnly = function(opt_message) {
   if (COMPILED && !goog.DEBUG) {
@@ -232,10 +229,11 @@ goog.setTestOnly = function(opt_message) {
 if (!COMPILED) {
 
   /**
-   * Check if the given name has been goog.provided. This will return false for
-   * names that are available only as implicit namespaces.
-   * @param {string} name name of the object to look for.
-   * @return {boolean} Whether the name has been provided.
+   * 与えられた名前パスで既に `goog.provide` されているかどうかを判定する。
+   * `goog.implicitNamespaces_` に与えられた名前が存在する場合に `false` が返さ
+   * れる。
+   * @param {string} name 判定したい名前パス。
+   * @return {boolean} 与えられた名前パスで既に定義されていれば `true` 。
    * @private
    */
   goog.isProvided_ = function(name) {
@@ -243,9 +241,9 @@ if (!COMPILED) {
   };
 
   /**
-   * Namespaces implicitly defined by goog.provide. For example,
-   * goog.provide('goog.events.Event') implicitly declares that 'goog' and
-   * 'goog.events' must be namespaces.
+   * 名前空間は暗黙的に `goog.provide` によって定義される。例えば、
+   * `goog.provide('goog.events.Event')` が実行された場合には暗黙的に `goog` と
+   * `goog.events` が名前空間として宣言されている。
    *
    * @type {Object}
    * @private
@@ -255,14 +253,13 @@ if (!COMPILED) {
 
 
 /**
- * Returns an object based on its fully qualified external name.  If you are
- * using a compilation pass that renames property names beware that using this
- * function will not find renamed properties.
+ * 外部にある完全な名前パスをもつオブジェクトを返す。コンパイルされた場合にはプ
+ * ロパティがリネームされるため、プロパティ名には注意すること。
  *
- * @param {string} name The fully qualified name.
- * @param {Object=} opt_obj The object within which to look; default is
- *     |goog.global|.
- * @return {?} The value (object or primitive) or, if not found, null.
+ * @param {string} name 完全な名前パス。
+ * @param {Object=} opt_obj オブジェクトをこの名前空間から探す。省略時は
+ *     `goog.global` 。
+ * @return {?} プリミティブな値かオブジェクト。見つからなかった場合は `null` 。
  */
 goog.getObjectByName = function(name, opt_obj) {
   var parts = name.split('.');
@@ -279,12 +276,13 @@ goog.getObjectByName = function(name, opt_obj) {
 
 
 /**
- * Globalizes a whole namespace, such as goog or goog.lang.
+ * 与えられた名前空間のすべてのメンバをグローバルに追加する（`goog` や
+ * `goog.lang` のように）。
  *
- * @param {Object} obj The namespace to globalize.
- * @param {Object=} opt_global The object to add the properties to.
- * @deprecated Properties may be explicitly exported to the global scope, but
- *     this should no longer be done in bulk.
+ * @param {Object} obj グローバルに追加するメンバを含む名前空間。
+ * @param {Object=} opt_global メンバが追加される名前空間。省略可能。
+ * @deprecated プロパティをグローバルスコープに追加することはできるものの、大き
+ *     い名前空間のなかで実行されるべきでない。
  */
 goog.globalize = function(obj, opt_global) {
   var global = opt_global || goog.global;
@@ -295,12 +293,11 @@ goog.globalize = function(obj, opt_global) {
 
 
 /**
- * Adds a dependency from a file to the files it requires.
- * @param {string} relPath The path to the js file.
- * @param {Array} provides An array of strings with the names of the objects
- *                         this file provides.
- * @param {Array} requires An array of strings with the names of the objects
- *                         this file requires.
+ * このファイルに必要なファイルを依存関係に追加する。
+ * @param {string} relPath この JavaScript のパス。
+ * @param {Array} provides このファイルが定義するオブジェクトの名前からなる配
+ *     列。
+ * @param {Array} requires このファイルに必要なオブジェクトの名前からなる配列。
  */
 goog.addDependency = function(relPath, provides, requires) {
   if (goog.DEPENDENCIES_ENABLED) {
@@ -345,25 +342,25 @@ goog.addDependency = function(relPath, provides, requires) {
 
 
 /**
- * @define {boolean} Whether to enable the debug loader.
+ * @define {boolean} true ならデバッグローダーを有効にする。
  *
- * If enabled, a call to goog.require() will attempt to load the namespace by
- * appending a script tag to the DOM (if the namespace has been registered).
+ * これが有効にされていて、名前空間が既に登録されていれば `goog.provide` はスク
+ * リプトタグを DOM に追加することで名前空間を読み込む。
  *
- * If disabled, goog.require() will simply assert that the namespace has been
- * provided (and depend on the fact that some outside tool correctly ordered
- * the script).
+ * もし無効にすると `goog.provide` は名前空間を既に読込済みの状態にする。
+ * つまり、他の仕組みによってスクリプトを読み込まなければならない。
  */
 goog.define('goog.ENABLE_DEBUG_LOADER', true);
 
 
 /**
- * Implements a system for the dynamic resolution of dependencies that works in
- * parallel with the BUILD system. Note that all calls to goog.require will be
- * stripped by the JSCompiler when the --closure_pass option is used.
+ * 動的に依存関係を解決する関数。これはビルダー上でも動作する。
+ * `--closire_pass` オプションが設定されている場合、JS コンパイラはこの関数を
+ * 読み込むオブジェクトに書き換える。
  * @see goog.provide
- * @param {string} name Namespace to include (as was given in goog.provide()) in
- *     the form "goog.package.part".
+ * @param {string} name 読み込みたい名前空間を `"goog.package.part" `のように記
+ *     述した名前パス。名前空間は `goog.provide` によって定義されている必要があ
+ *     る。
  */
 goog.require = function(name) {
 
@@ -400,53 +397,55 @@ goog.require = function(name) {
 
 
 /**
- * Path for included scripts.
+ * ライブラリの読込の基準となる URI 。
  * @type {string}
  */
 goog.basePath = '';
 
 
 /**
- * A hook for overriding the base path.
+ * コンパイラによる書き換えられる基準パス。 `goog.basePath` に置き換わる。
  * @type {string|undefined}
  */
 goog.global.CLOSURE_BASE_PATH;
 
 
 /**
- * Whether to write out Closure's deps file. By default, the deps are written.
+ * `true` ならば Closure 用の依存関係用ファイルを読み込む。 falsely ならば
+ * {@link goog.basePath} 直下の deps.js が読み込まれる。
  * @type {boolean|undefined}
  */
 goog.global.CLOSURE_NO_DEPS;
 
 
 /**
- * A function to import a single script. This is meant to be overridden when
- * Closure is being run in non-HTML contexts, such as web workers. It's defined
- * in the global scope so that it can be set before base.js is loaded, which
- * allows deps.js to be imported properly.
+ * スクリプトを読み込むための関数。これは、 web workers のような Closure が HTML
+ * ではない環境で動作することを想定して用意されている。この関数はグローバルスコ
+ * ープで定義できるため、 base.js よりも前に読み込むことができる。この関数によっ
+ * て非 HTML 環境でも deps.js による適切なインポートができる。
  *
- * The function is passed the script source, which is a relative URI. It should
- * return true if the script was imported, false otherwise.
+ * この関数は相対 URI によってスクリプトをインポートできる必要がある。この関数
+ * は、スクリプトが無事インポートできたら `true` を返し、それ以外の場合には
+ * `false` を返すことが望ましい。
  */
 goog.global.CLOSURE_IMPORT_SCRIPT;
 
 
 /**
- * Null function used for default values of callbacks, etc.
- * @return {void} Nothing.
+ * 零関数。コールバックの初期値などで使われる。
+ * @return {void} なし。
  */
 goog.nullFunction = function() {};
 
 
 /**
- * The identity function. Returns its first argument.
+ * 恒等関数。常に最初の引数を返す。
  *
- * @param {*=} opt_returnValue The single value that will be returned.
- * @param {...*} var_args Optional trailing arguments. These are ignored.
- * @return {?} The first argument. We can't know the type -- just pass it along
- *      without type.
- * @deprecated Use goog.functions.identity instead.
+ * @param {*=} opt_returnValue 返される唯一の値。
+ * @param {...*} var_args 無視される追加の引数。戻り値に影響しない。
+ * @return {?} 最初の引数。実際に実行されるまでは戻り値が何かを特定することがで
+ *      きない。
+ * @deprecated {@link goog.functions.identity} を使うべき。
  */
 goog.identityFunction = function(opt_returnValue, var_args) {
   return opt_returnValue;
@@ -454,17 +453,21 @@ goog.identityFunction = function(opt_returnValue, var_args) {
 
 
 /**
- * When defining a class Foo with an abstract method bar(), you can do:
- * Foo.prototype.bar = goog.abstractMethod
+ * 抽象クラスやインターフェースのメソッドの初期値として使う関数。
+ * サブクラスがこのメソッドのオーバーライドを忘れる・失敗するとエラーが投げられ
+ * る。
  *
- * Now if a subclass of Foo fails to override bar(), an error will be thrown
- * when bar() is invoked.
+ * 抽象クラス {@code Foo} のメソッド {@code bar()} を定義することを考えると：
+ * ```
+ * Foo.prototype.bar = goog.abstractMethod;
+ * ```
  *
- * Note: This does not take the name of the function to override as an argument
- * because that would make it more difficult to obfuscate our JavaScript code.
+ * 脚注：
+ * 引数なども含めてオーバーライドされることを考え、より抽象化するために関数名は
+ * 設定されていない。
  *
  * @type {!Function}
- * @throws {Error} when invoked to indicate the method should be overridden.
+ * @throws {Error} この関数をオーバーライドするべきであったことを警告する。
  */
 goog.abstractMethod = function() {
   throw Error('unimplemented abstract method');
@@ -472,10 +475,10 @@ goog.abstractMethod = function() {
 
 
 /**
- * Adds a {@code getInstance} static method that always returns the same
- * instance object.
- * @param {!Function} ctor The constructor for the class to add the static
- *     method to.
+ * 常に同じインスタンスを返す静的メソッド（クラスメソッド） `getInstance` を定義
+ * する。
+ * @param {!Function} ctor 唯一のインスタンスを返すメソッドを加えたい静的オブ
+ *     ジェクト。
  */
 goog.addSingletonGetter = function(ctor) {
   ctor.getInstance = function() {
@@ -483,7 +486,7 @@ goog.addSingletonGetter = function(ctor) {
       return ctor.instance_;
     }
     if (goog.DEBUG) {
-      // NOTE: JSCompiler can't optimize away Array#push.
+      // NOTE: JS コンパイラは `Array#push` を最適化できない。
       goog.instantiatedSingletons_[goog.instantiatedSingletons_.length] = ctor;
     }
     return ctor.instance_ = new ctor;
@@ -492,9 +495,10 @@ goog.addSingletonGetter = function(ctor) {
 
 
 /**
- * All singleton classes that have been instantiated, for testing. Don't read
- * it directly, use the {@code goog.testing.singleton} module. The compiler
- * removes this variable if unused.
+ * テストのためにインスタンス化されたすべてのシングルトンクラスが格納される。
+ * ただし、これを直接読み込んではならない。 `goog.testing.singleton` モジュール
+ * を使うべきである。これによって、コンパイラはこの変数が使われていない場合に除
+ * 去することができるようになる。
  * @type {!Array.<!Function>}
  * @private
  */
@@ -502,16 +506,17 @@ goog.instantiatedSingletons_ = [];
 
 
 /**
- * True if goog.dependencies_ is available.
- * @const {boolean}
+ * `goog.dependencies_` が有効ならば `true` 。
+ * @const
+ * @type {boolean}
  */
 goog.DEPENDENCIES_ENABLED = !COMPILED && goog.ENABLE_DEBUG_LOADER;
 
 
 if (goog.DEPENDENCIES_ENABLED) {
   /**
-   * Object used to keep track of urls that have already been added. This record
-   * allows the prevention of circular dependencies.
+   * URL が既に追加されているかどうかを記録するためのオブジェクト。このレコード
+   * は循環依存を防ぐために使われる。
    * @type {Object}
    * @private
    */
@@ -519,35 +524,34 @@ if (goog.DEPENDENCIES_ENABLED) {
 
 
   /**
-   * This object is used to keep track of dependencies and other data that is
-   * used for loading scripts.
+   * 依存関係と読み込むスクリプトのデータを記録するためのオブジェクト。
    * @private
    * @type {Object}
    */
   goog.dependencies_ = {
-    pathToNames: {}, // 1 to many
-    nameToPath: {}, // 1 to 1
-    requires: {}, // 1 to many
-    // Used when resolving dependencies to prevent us from visiting file twice.
+    pathToNames: {}, // 1 以上
+    nameToPath: {}, // 1 対 1
+    requires: {}, // 1 以上
+    // 依存しているファイルが複数回読み込まれることを防ぐ。
     visited: {},
-    written: {} // Used to keep track of script files we have written.
+    written: {} // 既にスクリプトに書き込み済みかどうかを記録しておく
   };
 
 
   /**
-   * Tries to detect whether is in the context of an HTML document.
-   * @return {boolean} True if it looks like HTML document.
+   * HTML 環境かどうかを判定する。
+   * @return {boolean} HTML 環境であれば `true` 。
    * @private
    */
   goog.inHtmlDocument_ = function() {
     var doc = goog.global.document;
     return typeof doc != 'undefined' &&
-           'write' in doc;  // XULDocument misses write.
+           'write' in doc;  // XULDocument では `write` が存在しない。
   };
 
 
   /**
-   * Tries to detect the base path of base.js script that bootstraps Closure.
+   * 起動時に base.js ファイルがあるファイルパスを得るための関数。
    * @private
    */
   goog.findBasePath_ = function() {
@@ -559,8 +563,8 @@ if (goog.DEPENDENCIES_ENABLED) {
     }
     var doc = goog.global.document;
     var scripts = doc.getElementsByTagName('script');
-    // Search backwards since the current script is in almost all cases the one
-    // that has base.js.
+    // 現在のスクリプトの後ろから検索する（たいていの場合、base.js はここにあ
+    // る）。
     for (var i = scripts.length - 1; i >= 0; --i) {
       var src = scripts[i].src;
       var qmark = src.lastIndexOf('?');
@@ -574,9 +578,10 @@ if (goog.DEPENDENCIES_ENABLED) {
 
 
   /**
-   * Imports a script if, and only if, that script hasn't already been imported.
-   * (Must be called at execution time)
-   * @param {string} src Script source.
+   * スクリプトをインポートする。インポートは既にインポートされている場合にはお
+   * こなわれない。
+   * 実行する際に必ず呼び出されなければならない。
+   * @param {string} src スクリプトのファイルパス。
    * @private
    */
   goog.importScript_ = function(src) {
@@ -589,25 +594,25 @@ if (goog.DEPENDENCIES_ENABLED) {
 
 
   /**
-   * The default implementation of the import function. Writes a script tag to
-   * import the script.
+   * 関数をインポートするための標準的関数。インポートはスクリプトタグを書き込む
+   * 方法でおこなわれる。
    *
-   * @param {string} src The script source.
-   * @return {boolean} True if the script was imported, false otherwise.
+   * @param {string} src インポートするファイルのパス。
+   * @return {boolean} インポートに成功すれば `true` 。失敗すれば `false` 。
    * @private
    */
   goog.writeScriptTag_ = function(src) {
     if (goog.inHtmlDocument_()) {
       var doc = goog.global.document;
 
-      // If the user tries to require a new symbol after document load,
-      // something has gone terribly wrong. Doing a document.write would
-      // wipe out the page.
+      // ユーザーが新しいシンボルを `document` のと読み込み後に行うことは、正し
+      // い使用方法ではない。このとき、`document.write` 、はページを消してしま
+      // う。
       if (doc.readyState == 'complete') {
-        // Certain test frameworks load base.js multiple times, which tries
-        // to write deps.js each time. If that happens, just fail silently.
-        // These frameworks wipe the page between each load of base.js, so this
-        // is OK.
+        // テストフレームワークでは、 base.js を複数回読み込む可能性があり、この
+        // とき、deps.js も読み込まれる。これについはエラーを吐かずに失敗を通知
+        // する。これらのフレームワークでは、base.js の読み込み中にページを一掃
+        // するので、問題ない。
         var isDeps = /\bdeps.js$/.test(src);
         if (isDeps) {
           return false;
@@ -626,12 +631,12 @@ if (goog.DEPENDENCIES_ENABLED) {
 
 
   /**
-   * Resolves dependencies based on the dependencies added using addDependency
-   * and calls importScript_ in the correct order.
+   * `goog.addDependency` によって追加された依存関係を解決する。
+   * スクリプトは `goog.importScript_` によって正しい順番で呼び出される。
    * @private
    */
   goog.writeScripts_ = function() {
-    // The scripts we need to write this time.
+    // この関数実行時に書き込まれることが望ましい。
     var scripts = [];
     var seenScript = {};
     var deps = goog.dependencies_;
@@ -641,8 +646,7 @@ if (goog.DEPENDENCIES_ENABLED) {
         return;
       }
 
-      // We have already visited this one. We can get here if we have cyclic
-      // dependencies.
+      // この場合はすでに読み込まれている。循環依存がある場合は `true` になる。
       if (path in deps.visited) {
         if (!(path in seenScript)) {
           seenScript[path] = true;
@@ -655,8 +659,8 @@ if (goog.DEPENDENCIES_ENABLED) {
 
       if (path in deps.requires) {
         for (var requireName in deps.requires[path]) {
-          // If the required name is defined, we assume that it was already
-          // bootstrapped by other means.
+          // 与えられた名前が既に定義されていれば、別な手段によって読み込まれた
+          // と見なす。
           if (!goog.isProvided_(requireName)) {
             if (requireName in deps.nameToPath) {
               visitNode(deps.nameToPath[requireName]);
@@ -690,10 +694,11 @@ if (goog.DEPENDENCIES_ENABLED) {
 
 
   /**
-   * Looks at the dependency rules and tries to determine the script file that
-   * fulfills a particular rule.
-   * @param {string} rule In the form goog.namespace.Class or project.script.
-   * @return {?string} Url corresponding to the rule, or null.
+   * スクリプトファイルのパスを依存関係データから検索して返す。
+   * @param {string} rule `"goog.namespace.Class"` または `"project.script"` の
+   *     形式で記述された名前。
+   * @return {?string} `rule` に関係するファイルの URL 。見つからなかった場合は
+   *     `null` 。
    * @private
    */
   goog.getPathFromDeps_ = function(rule) {
@@ -706,7 +711,7 @@ if (goog.DEPENDENCIES_ENABLED) {
 
   goog.findBasePath_();
 
-  // Allow projects to manage the deps files themselves.
+  // 依存関係を Closure Library が管理できるようならば実行する。
   if (!goog.global.CLOSURE_NO_DEPS) {
     goog.importScript_(goog.basePath + 'deps.js');
   }
@@ -715,61 +720,59 @@ if (goog.DEPENDENCIES_ENABLED) {
 
 
 //==============================================================================
-// Language Enhancements
+// 言語の拡張
 //==============================================================================
 
 
 /**
- * This is a "fixed" version of the typeof operator.  It differs from the typeof
- * operator in such a way that null returns 'null' and arrays return 'array'.
- * @param {*} value The value to get the type of.
- * @return {string} The name of the type.
+ * これは `typeof` 演算子(改)である。この `typeof` 演算子は `null` が与えられた
+ * 場合は `'null'` を返し、配列が与えられた場合は `'array'` を返す。
+ * @param {*} value 型を調べたいオブジェクト。
+ * @return {string} 型の名前。
  */
 goog.typeOf = function(value) {
   var s = typeof value;
   if (s == 'object') {
     if (value) {
-      // Check these first, so we can avoid calling Object.prototype.toString if
-      // possible.
+      // まず、可能であれば `Object.prototype.toString` が呼ばれることを避ける。
       //
-      // IE improperly marshals tyepof across execution contexts, but a
-      // cross-context object will still return false for "instanceof Object".
+      // IE では `typeof` が実行コンテキストによって不適切にまとめられている。
+      // しかし、横断コンテキストでは `instanceof Object` は `false` を返す。
       if (value instanceof Array) {
         return 'array';
       } else if (value instanceof Object) {
         return s;
       }
 
-      // HACK: In order to use an Object prototype method on the arbitrary
-      //   value, the compiler requires the value be cast to type Object,
-      //   even though the ECMA spec explicitly allows it.
+      // HACK: `Object` の `prototype` メソッドは任意の値で使うことができる。
+      // コンパイラでは `Object` が投げられなければならないが、 ECMA の仕様によ
+      // ればこの方法でもよい。
       var className = Object.prototype.toString.call(
           /** @type {Object} */ (value));
-      // In Firefox 3.6, attempting to access iframe window objects' length
-      // property throws an NS_ERROR_FAILURE, so we need to special-case it
-      // here.
+      // Firefox 3.6 では iframe の `window` オブジェクトの `length` プロパティ
+      // にアクセスすると `NS_ERROR_FAILURE` というエラーが発生する。しかし、こ
+      // れは特別なケースである。
       if (className == '[object Window]') {
         return 'object';
       }
 
-      // We cannot always use constructor == Array or instanceof Array because
-      // different frames have different Array objects. In IE6, if the iframe
-      // where the array was created is destroyed, the array loses its
-      // prototype. Then dereferencing val.splice here throws an exception, so
-      // we can't use goog.isFunction. Calling typeof directly returns 'unknown'
-      // so that will work. In this case, this function will return false and
-      // most array functions will still work because the array is still
-      // array-like (supports length and []) even though it has lost its
-      // prototype.
-      // Mark Miller noticed that Object.prototype.toString
-      // allows access to the unforgeable [[Class]] property.
-      //  15.2.4.2 Object.prototype.toString ( )
-      //  When the toString method is called, the following steps are taken:
-      //      1. Get the [[Class]] property of this object.
-      //      2. Compute a string value by concatenating the three strings
-      //         "[object ", Result(1), and "]".
-      //      3. Return Result(2).
-      // and this behavior survives the destruction of the execution context.
+      // `constructor == Array` または `instance of Array` という方法は違うフ
+      // レームの配列オブジェクトに使うことができない。 IE6 では、iframe のなか
+      // で配列が作られるとその配列は破壊されるうえに、`prototype` オブジェクト
+      // が失われてしまう。このとき、 `val.splice` の参照が切れるので
+      // `goog.isFunction` を使うとエラーが発生する。この場合、元の `typeof` 演
+      // 算子を直接呼び出せば '`unknown`' が返されるために判定できる。この状況の
+      // 配列は、配列みたいなオブジェクトとして振る舞うので多くの配列関数は動作
+      // でき、`slice` は `false` を返す。
+      // Mark Miller 氏によればこの方法は偽造不能な `Class` プロパティにアクセス
+      // できる。
+      //  15.2.4.2 `Object.prototype.toString ( )`
+      //  `toString` メソッドが呼出されると、次のステップが取られる:
+      //      1. このオブジェクトの `[[Class]]` プロパティを取得。
+      //      2. 3 つの文字列 `"[object ", Result(1), "]"` を連結した文字列を算出
+      //         する。
+      //      3. `Result(2)` を返す。
+      // この振る舞いは先の実行コンテキストによる破壊に耐えることができる。
       if ((className == '[object Array]' ||
            // In IE all non value types are wrapped as objects across window
            // boundaries (not iframe though) so we have to do object detection
@@ -782,20 +785,22 @@ goog.typeOf = function(value) {
           )) {
         return 'array';
       }
-      // HACK: There is still an array case that fails.
-      //     function ArrayImpostor() {}
-      //     ArrayImpostor.prototype = [];
-      //     var impostor = new ArrayImpostor;
-      // this can be fixed by getting rid of the fast path
-      // (value instanceof Array) and solely relying on
-      // (value && Object.prototype.toString.vall(value) === '[object Array]')
-      // but that would require many more function calls and is not warranted
-      // unless closure code is receiving objects from untrusted sources.
+      // HACK: これでも配列の判定が失敗するときがある。
+      //
+      // ```
+      // function ArrayImpostor() {}
+      // ArrayImpostor.prototype = [];
+      // var impostor = new ArrayImpostor;
+      // ```
+      //
+      // これは `valur instanceof Array` の使用を避け、かつ
+      // `value && Object.prototype.toString.vall(value) === '[object Array]'`
+      // とすれば解決できるが、関数呼び出しが増えるため、Closure Libraryではこれ
+      // を担保しない。
 
-      // IE in cross-window calls does not correctly marshal the function type
-      // (it appears just as an object) so we cannot use just typeof val ==
-      // 'function'. However, if the object has a call property, it is a
-      // function.
+      // IEのウィンドウをまたぐ呼び出しでは関数型が正しく評価できない（オブジェ
+      // クトだと判定される）ので、`typeof val == 'function'` が利用できない。
+      // しかし、このオブジェクトが `call` プロパティをもつならば関数である。
       if ((className == '[object Function]' ||
           typeof value.call != 'undefined' &&
           typeof value.propertyIsEnumerable != 'undefined' &&
@@ -808,10 +813,10 @@ goog.typeOf = function(value) {
     }
 
   } else if (s == 'function' && typeof value.call == 'undefined') {
-    // In Safari typeof nodeList returns 'function', and on Firefox typeof
-    // behaves similarly for HTML{Applet,Embed,Object}, Elements and RegExps. We
-    // would like to return object for those and we can detect an invalid
-    // function by making sure that the function object has a call method.
+    // Safari では `typeof nodeList` は `'function'` を返し、 Firefox の
+    // `typeof` でも HTML（`Applet`、`Embed` 、`Object`）や `Element`、`RegExp`
+    // も同様に振る舞う。ここでは、不適切な `function` オブジェクトを `call`
+    // プロパティの有無で検知し、これら全てについて `object` を返すことにした。
     return 'object';
   }
   return s;
@@ -819,12 +824,12 @@ goog.typeOf = function(value) {
 
 
 /**
- * Returns true if the specified value is not undefined.
- * WARNING: Do not use this to test if an object has a property. Use the in
- * operator instead.  Additionally, this function assumes that the global
- * undefined variable has not been redefined.
- * @param {*} val Variable to test.
- * @return {boolean} Whether variable is defined.
+ * 与えられた値が `undefined` でなければ `true` を返す。
+ * 警告: この関数はオブジェクトのプロパティを確かめるために使ってはならない。
+ * この用途では `in` 演算子をつかうべき。また、この関数はグローバルで定義された
+ * `undefined` 値が書き換えられていない状況を想定している。
+ * @param {*} val テストしたい値。
+ * @return {boolean} 値が定義されていれば `true` 。
  */
 goog.isDef = function(val) {
   return val !== undefined;
@@ -832,9 +837,9 @@ goog.isDef = function(val) {
 
 
 /**
- * Returns true if the specified value is null.
- * @param {*} val Variable to test.
- * @return {boolean} Whether variable is null.
+ * 与えられた値が `null` であれば `true` を返す。
+ * @param {*} val テストしたい値。
+ * @return {boolean} 値が `null` であれば `true` 。
  */
 goog.isNull = function(val) {
   return val === null;
@@ -842,20 +847,20 @@ goog.isNull = function(val) {
 
 
 /**
- * Returns true if the specified value is defined and not null.
- * @param {*} val Variable to test.
- * @return {boolean} Whether variable is defined and not null.
+ * 与えられた値が定義されていて、かつ `null` でないときに `true` を返す。
+ * @param {*} val テストしたい値。
+ * @return {boolean} 値が定義されていて `null` でなければ `true` 。
  */
 goog.isDefAndNotNull = function(val) {
-  // Note that undefined == null.
+  // undefined == null は真であることに注意
   return val != null;
 };
 
 
 /**
- * Returns true if the specified value is an array.
- * @param {*} val Variable to test.
- * @return {boolean} Whether variable is an array.
+ * 与えられた値が配列であれば `true` を返す。
+ * @param {*} val テストしたい値。
+ * @return {boolean} 値が配列であれば `true` 。
  */
 goog.isArray = function(val) {
   return goog.typeOf(val) == 'array';
@@ -863,11 +868,11 @@ goog.isArray = function(val) {
 
 
 /**
- * Returns true if the object looks like an array. To qualify as array like
- * the value needs to be either a NodeList or an object with a Number length
- * property.
- * @param {*} val Variable to test.
- * @return {boolean} Whether variable is an array.
+ * 与えられた値が配列のようなオブジェクトであれば `true` を返す。配列のようなオ
+ * ブジェクトとは `NoodeList` や `length` プロパティが存在して、それが数値である
+ * ようなオブジェクトのことである。
+ * @param {*} val テストしたい値。
+ * @return {boolean} 値が配列みたいなオブジェクトであれば `true` 。
  */
 goog.isArrayLike = function(val) {
   var type = goog.typeOf(val);
@@ -876,10 +881,10 @@ goog.isArrayLike = function(val) {
 
 
 /**
- * Returns true if the object looks like a Date. To qualify as Date-like the
- * value needs to be an object and have a getFullYear() function.
- * @param {*} val Variable to test.
- * @return {boolean} Whether variable is a like a Date.
+ * 'Date' のようなオブジェクトであれば 'true' を返す。`Date` みたいなオブジェク
+ * トとは `getFullYear()` のようなメソッドをもつオブジェクトのことである。
+ * @param {*} val テストしたい値。
+ * @return {boolean} 値が Date みたいなオブジェクトであれば `true` 。
  */
 goog.isDateLike = function(val) {
   return goog.isObject(val) && typeof val.getFullYear == 'function';
@@ -887,9 +892,9 @@ goog.isDateLike = function(val) {
 
 
 /**
- * Returns true if the specified value is a string.
- * @param {*} val Variable to test.
- * @return {boolean} Whether variable is a string.
+ * 値が文字列であれば `true` を返す。
+ * @param {*} val テストしたい値。
+ * @return {boolean} 値が文字列であれば `true` 。
  */
 goog.isString = function(val) {
   return typeof val == 'string';
@@ -897,9 +902,9 @@ goog.isString = function(val) {
 
 
 /**
- * Returns true if the specified value is a boolean.
- * @param {*} val Variable to test.
- * @return {boolean} Whether variable is boolean.
+ * 値が真偽値であれば `true` を返す。
+ * @param {*} val テストしたい値。
+ * @return {boolean} 値が真偽値であれば `true` 。
  */
 goog.isBoolean = function(val) {
   return typeof val == 'boolean';
@@ -907,9 +912,9 @@ goog.isBoolean = function(val) {
 
 
 /**
- * Returns true if the specified value is a number.
- * @param {*} val Variable to test.
- * @return {boolean} Whether variable is a number.
+ * 値が数値であれば `true` を返す。
+ * @param {*} val テストしたい値。
+ * @return {boolean} 値が数値であれば `true` 。
  */
 goog.isNumber = function(val) {
   return typeof val == 'number';
@@ -917,9 +922,9 @@ goog.isNumber = function(val) {
 
 
 /**
- * Returns true if the specified value is a function.
- * @param {*} val Variable to test.
- * @return {boolean} Whether variable is a function.
+ * 値が関数であれば `true` を返す。
+ * @param {*} val テストしたい値。
+ * @return {boolean} 値が関数であれば `true` 。
  */
 goog.isFunction = function(val) {
   return goog.typeOf(val) == 'function';
@@ -927,29 +932,28 @@ goog.isFunction = function(val) {
 
 
 /**
- * Returns true if the specified value is an object.  This includes arrays and
- * functions.
- * @param {*} val Variable to test.
- * @return {boolean} Whether variable is an object.
+ * 値がオブジェクトであれば `true` を返す。この場合オブジェクトは、配列や関数を
+ * 含む。
+ * @param {*} val テストしたい値。
+ * @return {boolean} 値がオブジェクトであれば `true` 。
  */
 goog.isObject = function(val) {
   var type = typeof val;
   return type == 'object' && val != null || type == 'function';
-  // return Object(val) === val also works, but is slower, especially if val is
-  // not an object.
+  // `return Object(val) === val` でもよいが、これは値がオブジェクトでないときに
+  // 遅い。
 };
 
 
 /**
- * Gets a unique ID for an object. This mutates the object so that further calls
- * with the same object as a parameter returns the same value. The unique ID is
- * guaranteed to be unique across the current session amongst objects that are
- * passed into {@code getUid}. There is no guarantee that the ID is unique or
- * consistent across sessions. It is unsafe to generate unique ID for function
- * prototypes.
+ * 与えられたオブジェクトのユニークな値（識別子）を返す。一度 `getUid` と通した
+ * オブジェクトが与えられた場合には識別子は変化しない。`getUid` を通したオブジェ
+ * クトの識別子は、現在のセッションのなかで同一であることが保証される。つまり、
+ * セッションをまたいだ場合には保証されない。ユニークな値が関数の `prototype` オ
+ * ブジェクトに与えられた場合は動作が不安定となる。
  *
- * @param {Object} obj The object to get the unique ID for.
- * @return {number} The unique ID for the object.
+ * @param {Object} obj ユニークな値を取得したいオブジェクト。
+ * @return {number} このオブジェクトのユニークな値。
  */
 goog.getUid = function(obj) {
   // TODO(arv): Make the type stricter, do not accept null.
@@ -963,12 +967,12 @@ goog.getUid = function(obj) {
 
 
 /**
- * Whether the given object is alreay assigned a unique ID.
+ * オブジェクトが識別子をもっているかどうかを判定する。
  *
- * This does not modify the object.
+ * このメソッドによってオブジェクトが変更されることはない。
  *
- * @param {Object} obj The object to check.
- * @return {boolean} Whether there an assigned unique id for the object.
+ * @param {Object} obj 判定したいオブジェクト。
+ * @return {boolean} 識別子が既につけられているかどうか。
  */
 goog.hasUid = function(obj) {
   return !!obj[goog.UID_PROPERTY_];
@@ -976,10 +980,9 @@ goog.hasUid = function(obj) {
 
 
 /**
- * Removes the unique ID from an object. This is useful if the object was
- * previously mutated using {@code goog.getUid} in which case the mutation is
- * undone.
- * @param {Object} obj The object to remove the unique ID field from.
+ * オブジェクトからユニークな値を消去する。これは識別子をもつオブジェクトが変化
+ * していて `goog.getUid` の値を変えたい場合に使うことができる。
+ * @param {Object} obj ユニークな識別子を取り除きたいオブジェクト。
  */
 goog.removeUid = function(obj) {
   // TODO(arv): Make the type stricter, do not accept null.
@@ -998,8 +1001,8 @@ goog.removeUid = function(obj) {
 
 
 /**
- * Name for unique ID property. Initialized in a way to help avoid collisions
- * with other closure JavaScript on the same page.
+ * ユニークな ID のプロパティ名。この作業によって 1 つのページで違う Closure が
+ * 動作する際に衝突を回避的できる。
  * @type {string}
  * @private
  */
@@ -1007,7 +1010,7 @@ goog.UID_PROPERTY_ = 'closure_uid_' + ((Math.random() * 1e9) >>> 0);
 
 
 /**
- * Counter for UID.
+ * ユニークな ID のカウンタ。
  * @type {number}
  * @private
  */
@@ -1015,37 +1018,37 @@ goog.uidCounter_ = 0;
 
 
 /**
- * Adds a hash code field to an object. The hash code is unique for the
- * given object.
- * @param {Object} obj The object to get the hash code for.
- * @return {number} The hash code for the object.
- * @deprecated Use goog.getUid instead.
+ * ハッシュをオブジェクトに追加する。このハッシュはオブジェクト毎に固有の値で
+ * ある。
+ * @param {Object} obj ハッシュを作成したいオブジェクト。
+ * @return {number} このオブジェクトのハッシュ値。
+ * @deprecated `goog.getUid` を使うべき。
  */
 goog.getHashCode = goog.getUid;
 
 
 /**
- * Removes the hash code field from an object.
- * @param {Object} obj The object to remove the field from.
- * @deprecated Use goog.removeUid instead.
+ * ハッシュをオブジェクトから削除する。
+ * @param {Object} obj ハッシュを取り除きたいオブジェクト。
+ * @deprecated `goog.getUid` を使うべき。
  */
 goog.removeHashCode = goog.removeUid;
 
 
 /**
- * Clones a value. The input may be an Object, Array, or basic type. Objects and
- * arrays will be cloned recursively.
+ * 与えられた値を複製する。オブジェクト・配列・基本的な型が与えられた場合には、
+ * 再帰的に複製される。
  *
- * WARNINGS:
- * <code>goog.cloneObject</code> does not detect reference loops. Objects that
- * refer to themselves will cause infinite recursion.
+ * 警告：`goog.cloneObject` は循環参照を検知できない。オブジェクトが自身を参照す
+ * る場合には無限に再帰処理がおこなわれてしまう。
  *
- * <code>goog.cloneObject</code> is unaware of unique identifiers, and copies
- * UIDs created by <code>getUid</code> into cloned results.
+ * 警告：`goog.cloneObject` はユニークな値が複製されることを防げない。
+ * `goog.getUid` によって作られたユニークな値も複製されてしまう。
  *
- * @param {*} obj The value to clone.
- * @return {*} A clone of the input value.
- * @deprecated goog.cloneObject is unsafe. Prefer the goog.object methods.
+ * @param {*} obj 複製したいオブジェクト。
+ * @return {*} 複製されたオブジェクト。
+ * @deprecated {@link goog.cloneObject} は安全でない。{@link goog.object} のメ
+ *      ソッドの方がよい。
  */
 goog.cloneObject = function(obj) {
   var type = goog.typeOf(obj);
@@ -1065,18 +1068,16 @@ goog.cloneObject = function(obj) {
 
 
 /**
- * A native implementation of goog.bind.
- * @param {Function} fn A function to partially apply.
- * @param {Object|undefined} selfObj Specifies the object which this should
- *     point to when the function is run.
- * @param {...*} var_args Additional arguments that are partially applied to the
- *     function.
- * @return {!Function} A partially-applied form of the function bind() was
- *     invoked as a method of.
+ * ネイティブな `goog.bind` を利用する実装。
+ * @param {Function} fn 部分適用したい関数。
+ * @param {Object|undefined} selfObj 与えられた関数の `this` に束縛したいオブ
+ *     ジェクト。
+ * @param {...*} var_args 関数の部分適用で与えられる可変長引数。
+ * @return {!Function} 引数の部分適用 + `this` が束縛された新しい関数。
  * @private
- * @suppress {deprecated} The compiler thinks that Function.prototype.bind is
- *     deprecated because some people have declared a pure-JS version.
- *     Only the pure-JS version is truly deprecated.
+ * @suppress {deprecated} コンパイラは `Function.prototype.bind` を廃止すべきだ
+ *     としている。これは、一部の人が純粋な JavaScript によって実装していたため
+ *     である。純粋な JavaScript で実装されているのであれば、廃止すべきである。
  */
 goog.bindNative_ = function(fn, selfObj, var_args) {
   return /** @type {!Function} */ (fn.call.apply(fn.bind, arguments));
@@ -1084,14 +1085,12 @@ goog.bindNative_ = function(fn, selfObj, var_args) {
 
 
 /**
- * A pure-JS implementation of goog.bind.
- * @param {Function} fn A function to partially apply.
- * @param {Object|undefined} selfObj Specifies the object which this should
- *     point to when the function is run.
- * @param {...*} var_args Additional arguments that are partially applied to the
- *     function.
- * @return {!Function} A partially-applied form of the function bind() was
- *     invoked as a method of.
+ * ネイティブなコードを使わない、 JavaScript のみによる `goog.bind` の実装。
+ * @param {Function} fn 部分適用したい関数。
+ * @param {Object|undefined} selfObj 与えられた関数の `this` に束縛したいオブ
+ *     ジェクト。
+ * @param {...*} var_args 関数の部分適用で与えられる可変長引数。
+ * @return {!Function} 引数の部分適用 + `this` が束縛された新しい関数。
  * @private
  */
 goog.bindJs_ = function(fn, selfObj, var_args) {
@@ -1117,18 +1116,18 @@ goog.bindJs_ = function(fn, selfObj, var_args) {
 
 
 /**
- * Partially applies this function to a particular 'this object' and zero or
- * more arguments. The result is a new function with some arguments of the first
- * function pre-filled and the value of this 'pre-specified'.
+ * 与えられたオブジェクトが関数の `this` オブジェクトとなるような、部分適用され
+ * た新しい関数を返す。引数が指定された場合は、新しい関数の引数の前に与えられ
+ * る。引数も新しい関数に与えられる（関数の部分適用 + `this` の束縛）。
  *
- * Remaining arguments specified at call-time are appended to the pre-specified
- * ones.
+ * こちらも参照： `goog.partial`
  *
- * Also see: {@link #partial}.
+ * 引数の振る舞い：
  *
- * Usage:
- * <pre>var barMethBound = bind(myFunction, myObj, 'arg1', 'arg2');
- * barMethBound('arg3', 'arg4');</pre>
+ * ```
+ * var barMethBound = goog.bind(myFunction, myObj, 'arg1', 'arg2');
+ * barMethBound('arg3', 'arg4');
+ * ```
  *
  * @param {?function(this:T, ...)} fn A function to partially apply.
  * @param {T} selfObj Specifies the object which this should point to when the
@@ -1143,12 +1142,11 @@ goog.bindJs_ = function(fn, selfObj, var_args) {
 goog.bind = function(fn, selfObj, var_args) {
   // TODO(nicksantos): narrow the type signature.
   if (Function.prototype.bind &&
-      // NOTE(nicksantos): Somebody pulled base.js into the default Chrome
-      // extension environment. This means that for Chrome extensions, they get
-      // the implementation of Function.prototype.bind that calls goog.bind
-      // instead of the native one. Even worse, we don't want to introduce a
-      // circular dependency between goog.bind and Function.prototype.bind, so
-      // we have to hack this to make sure it works correctly.
+      // NOTE(nicksantos): Chrome extension 環境で base.js を利用している人がい
+      // て、その人は Function.prototype.bind に goog.bind を実装してしまってい
+      // る。そうすると、この関数はネイティブな Function.prototype.bind があると
+      // 勘違いして循環参照を起こしてしまう。この場合でも巧く動くようにハックし
+      // ないとね。
       Function.prototype.bind.toString().indexOf('native code') != -1) {
     goog.bind = goog.bindNative_;
   } else {
@@ -1159,23 +1157,23 @@ goog.bind = function(fn, selfObj, var_args) {
 
 
 /**
- * Like bind(), except that a 'this object' is not required. Useful when the
- * target function is already bound.
+ * `goog.bind` と似た動作をするが、関数が部分適用された関数を返す。
  *
- * Usage:
- * var g = partial(f, arg1, arg2);
+ * 引数の振る舞い：
+ *
+ * ```
+ * var g = goog.partial(f, arg1, arg2);
  * g(arg3, arg4);
+ * ```
  *
- * @param {Function} fn A function to partially apply.
- * @param {...*} var_args Additional arguments that are partially applied to fn.
- * @return {!Function} A partially-applied form of the function bind() was
- *     invoked as a method of.
+ * @param {Function} fn 部分適用したい関数。
+ * @param {...*} var_args 部分適用された関数に与えられる可変長引数。
+ * @return {!Function} 引数が部分適用された新しい関数。
  */
 goog.partial = function(fn, var_args) {
   var args = Array.prototype.slice.call(arguments, 1);
   return function() {
-    // Clone the array (with slice()) and append additional arguments
-    // to the existing arguments.
+    // 配列を `slice()` で複製し、既存の引数にさらに引数を追加する。
     var newArgs = args.slice();
     newArgs.push.apply(newArgs, arguments);
     return fn.apply(this, newArgs);
@@ -1184,48 +1182,47 @@ goog.partial = function(fn, var_args) {
 
 
 /**
- * Copies all the members of a source object to a target object. This method
- * does not work on all browsers for all objects that contain keys such as
- * toString or hasOwnProperty. Use goog.object.extend for this purpose.
- * @param {Object} target Target.
- * @param {Object} source Source.
+ * 片方のオブジェクトのすべてのメンバをもう一方のオブジェクトに加える。
+ * この関数は toString や hasOwnProperty のような名前のキーがある場合は動作しな
+ * い。この目的では `goog.object.extend` を使うべき。
+ * @param {Object} target メンバが追加されるオブジェクト。
+ * @param {Object} source 追加したいメンバをもつオブジェクト。
  */
 goog.mixin = function(target, source) {
   for (var x in source) {
     target[x] = source[x];
   }
 
-  // For IE7 or lower, the for-in-loop does not contain any properties that are
-  // not enumerable on the prototype object (for example, isPrototypeOf from
-  // Object.prototype) but also it will not include 'replace' on objects that
-  // extend String and change 'replace' (not that it is common for anyone to
-  // extend anything except Object).
+  // IE7 以前では、`for in` ループが `prototype` の列挙可能なプロパティを含ま
+  // す（たとえば、`Object.prototype` の `isPrototypeOf`）、そして、文字列を拡張
+  // したオブジェクトの `replace` も同様に含まれない（`Object` を継承するようで
+  // あればすべて同様）。
 };
 
 
 /**
- * @return {number} An integer value representing the number of milliseconds
- *     between midnight, January 1, 1970 and the current time.
+ * @return {number} 1970 年 1 月から今までに経過した時間をミリ秒の単位で返す。
  */
 goog.now = (goog.TRUSTED_SITE && Date.now) || (function() {
-  // Unary plus operator converts its operand to a number which in the case of
-  // a date is done by calling getTime().
+  // 正の単項演算によって数値へと変換されるため、`getTime()` の実行と等価であ
+  // る。
   return +new Date();
 });
 
 
 /**
- * Evals JavaScript in the global scope.  In IE this uses execScript, other
- * browsers use goog.global.eval. If goog.global.eval does not evaluate in the
- * global scope (for example, in Safari), appends a script tag instead.
- * Throws an exception if neither execScript or eval is defined.
- * @param {string} script JavaScript string.
+ * グローバルスコープで JavaScript を実行する。 IE 上であれば `execScript` を使
+ * い、IE 以外のブラウザでは `goog.global.eval` を使う。もし、 Safari のよ
+ * うに `goog.global.eval` がグローバルスコープで実行されない場合はスクリプトタ
+ * グの埋め込みよって実現する。 `execScript` か `eval` が定義されていなければ
+ * エラーが発生する。
+ * @param {string} script JavaScript 文字列。
  */
 goog.globalEval = function(script) {
   if (goog.global.execScript) {
     goog.global.execScript(script, 'JavaScript');
   } else if (goog.global.eval) {
-    // Test to see if eval works
+    // `eval` が動作するかテストする
     if (goog.evalWorksForGlobals_ == null) {
       goog.global.eval('var _et_ = 1;');
       if (typeof goog.global['_et_'] != 'undefined') {
@@ -1243,8 +1240,9 @@ goog.globalEval = function(script) {
       var scriptElt = doc.createElement('script');
       scriptElt.type = 'text/javascript';
       scriptElt.defer = false;
-      // Note(user): can't use .innerHTML since "t('<test>')" will fail and
-      // .text doesn't work in Safari 2.  Therefore we append a text node.
+      // ユーザーへの注意：`Safari 2で失敗するので、`t('<test>')` を
+      // `.innerHTML` や `.text` で使ってはいけない。なので、テキストノードで追
+      // 加している。
       scriptElt.appendChild(doc.createTextNode(script));
       doc.body.appendChild(scriptElt);
       doc.body.removeChild(scriptElt);
@@ -1256,9 +1254,8 @@ goog.globalEval = function(script) {
 
 
 /**
- * Indicates whether or not we can call 'eval' directly to eval code in the
- * global scope. Set to a Boolean by the first call to goog.globalEval (which
- * empirically tests whether eval works for globals). @see goog.globalEval
+ * `eval` によってグローバルスコープで関すが実行できるようであれば `true` にセッ
+ * トされる。値は `goog.globalEval` の初回の呼び出しのタイミングでセットされる。
  * @type {?boolean}
  * @private
  */
@@ -1266,8 +1263,8 @@ goog.evalWorksForGlobals_ = null;
 
 
 /**
- * Optional map of CSS class names to obfuscated names used with
- * goog.getCssName().
+ * `goog.setCssNameMapping` で設定された CSS クラス名を保存しておくためのオブ
+ * ジェクト。
  * @type {Object|undefined}
  * @private
  * @see goog.setCssNameMapping
@@ -1276,8 +1273,10 @@ goog.cssNameMapping_;
 
 
 /**
- * Optional obfuscation style for CSS class names. Should be set to either
- * 'BY_WHOLE' or 'BY_PART' if defined.
+ * `goog.getCssName` の引数が CSS クラス名そのものなのか、 CSS クラス名の集まり
+ * なのかを判断するための値。 CSS クラス名そのものであれば `'BY_WHOLE'` 、CSS
+ * クラス名の断片であれば `'BY_PART'` 。 undefined は `'BY_PART'` だとみなされ
+ * る。
  * @type {string|undefined}
  * @private
  * @see goog.setCssNameMapping
@@ -1286,35 +1285,44 @@ goog.cssNameMappingStyle_;
 
 
 /**
- * Handles strings that are intended to be used as CSS class names.
+ * 与えられた文字列から対応する CSS クラス名を返す。
  *
- * This function works in tandem with @see goog.setCssNameMapping.
+ * この関数は `goog.setCssNameMapping` と連携して動作する。
  *
- * Without any mapping set, the arguments are simple joined with a hyphen and
- * passed through unaltered.
+ * CSS クラス名が見つからない場合は与えられた文字列がそのまま返される。
+ * `opt_modifier` が指定されている場合は `-` 繋がりの文字列が返される。
  *
- * When there is a mapping, there are two possible styles in which these
- * mappings are used. In the BY_PART style, each part (i.e. in between hyphens)
- * of the passed in css name is rewritten according to the map. In the BY_WHOLE
- * style, the full css name is looked up in the map directly. If a rewrite is
- * not specified by the map, the compiler will output a warning.
+ * CSS クラス名マップが与えられた場合は、 `BY_PART` と`BY_WHOLE` の 2 つの引数の
+ * 形式が利用できる。 `BY_PART` の場合、引数は `-` 繋がりの複数の文字列として扱
+ * われ、ぞれぞれマップが該当する CSS クラス名に変換されて返される。`BY_WHOLE`
+ * の場合は、与えられた文字列そのものに該当する CSS クラス名が返される。
  *
- * When the mapping is passed to the compiler, it will replace calls to
- * goog.getCssName with the strings from the mapping, e.g.
- *     var x = goog.getCssName('foo');
- *     var y = goog.getCssName(this.baseClass, 'active');
- *  becomes:
- *     var x= 'foo';
- *     var y = this.baseClass + '-active';
+ * CSS クラス名マップがコンパイルされた場合、 `goog.getCssName` は以下のように書
+ * き換えられる。
+ * 例：
  *
- * If one argument is passed it will be processed, if two are passed only the
- * modifier will be processed, as it is assumed the first argument was generated
- * as a result of calling goog.getCssName.
+ * ```
+ * var x = goog.getCssName('foo');
+ * var y = goog.getCssName(this.baseClass, 'active');
+ * ```
  *
- * @param {string} className The class name.
- * @param {string=} opt_modifier A modifier to be appended to the class name.
- * @return {string} The class name or the concatenation of the class name and
- *     the modifier.
+ * は、
+ *
+ * ```
+ * var x= 'foo';
+ * var y = this.baseClass + '-active';
+ * ```
+ *
+ * のように書き換えられる。
+ *
+ * この関数は引数の数によって処理が異なる。
+ * 引数が 1 つだけ指定された場合は、この引数が変換される。引数が 2 つ指定された
+ * 場合は 2 つめの引数のみが変換される。したがって、この場合は 1 つめの引数をあ
+ * らかじめ `goog.getCssName` によって変換しておくことが望ましい。
+ *
+ * @param {string} className CSS クラス名。
+ * @param {string=} opt_modifier CSS クラス名に付加する CSS クラス名。
+ * @return {string} 実際の CSS クラス名の文字列。
  */
 goog.getCssName = function(className, opt_modifier) {
   var getMapping = function(cssName) {
@@ -1350,27 +1358,29 @@ goog.getCssName = function(className, opt_modifier) {
 
 
 /**
- * Sets the map to check when returning a value from goog.getCssName(). Example:
- * <pre>
+ * `goog.getCssName` で返すための CSS クラス名マップを登録する。
+ *
+ * ```
  * goog.setCssNameMapping({
  *   "goog": "a",
  *   "disabled": "b",
  * });
  *
  * var x = goog.getCssName('goog');
- * // The following evaluates to: "a a-b".
+ * // これはこのように解釈される: "a a-b".
  * goog.getCssName('goog') + ' ' + goog.getCssName(x, 'disabled')
- * </pre>
- * When declared as a map of string literals to string literals, the JSCompiler
- * will replace all calls to goog.getCssName() using the supplied map if the
- * --closure_pass flag is set.
+ * ```
  *
- * @param {!Object} mapping A map of strings to strings where keys are possible
- *     arguments to goog.getCssName() and values are the corresponding values
- *     that should be returned.
- * @param {string=} opt_style The style of css name mapping. There are two valid
- *     options: 'BY_PART', and 'BY_WHOLE'.
- * @see goog.getCssName for a description.
+ * もし、文字列をキーとしてプロパティはすべての文字列であるオブジェクトリテラル
+ * が与えられ、さらにコンパイラに `--closure_pass` が指定されていた場合、すべて
+ * の `goog.getCssName` は文字列に置き換えられる。
+ *
+ * @param {!Object} mapping `goog.getCssName` の引数で指定するための文字列-文字
+ *     列形式のマップ。プロパティは {@link goog.getCssName} で返される文字列と一
+ *     致するようにする。
+ * @param {string=} opt_style CSS マップの形式。 `BY_PART`、`BY_WHOLE` が指定で
+ *     きる。
+ * @see goog.getCssName
  */
 goog.setCssNameMapping = function(mapping, opt_style) {
   goog.cssNameMapping_ = mapping;
@@ -1379,15 +1389,14 @@ goog.setCssNameMapping = function(mapping, opt_style) {
 
 
 /**
- * To use CSS renaming in compiled mode, one of the input files should have a
- * call to goog.setCssNameMapping() with an object literal that the JSCompiler
- * can extract and use to replace all calls to goog.getCssName(). In uncompiled
- * mode, JavaScript code should be loaded before this base.js file that declares
- * a global variable, CLOSURE_CSS_NAME_MAPPING, which is used below. This is
- * to ensure that the mapping is loaded before any calls to goog.getCssName()
- * are made in uncompiled mode.
+ * CSS クラス名変換マップを書き換えするためのグローバルオブジェクト。
  *
- * A hook for overriding the CSS name mapping.
+ * コンパイラが `goog.getCssName` と CSS クラス名の置き換えを有効にしていた場
+ * 合、スクリプトのうちどれかひとつは `goog.setCssNameMapping` によって変換用
+ * マップを定義していなければならない。もし、コンパイルしない状態で動作させると
+ * きは、 base.js ファイルが読み込まれる前にグローバルスコープで読み込むようにし
+ * ておくべきである。その場合、グローバルスコープでマップを
+ * `CLOSURE_CSS_NAME_MAPPING` の名前で宣言しておくことで読み込むことができる。
  * @type {Object|undefined}
  */
 goog.global.CLOSURE_CSS_NAME_MAPPING;
@@ -1401,20 +1410,22 @@ if (!COMPILED && goog.global.CLOSURE_CSS_NAME_MAPPING) {
 
 
 /**
- * Gets a localized message.
+ * ローカライズされたメッセージを得る `goog.getMsg` の抽象的な実装。
  *
- * This function is a compiler primitive. If you give the compiler a localized
- * message bundle, it will replace the string at compile-time with a localized
- * version, and expand goog.getMsg call to a concatenated string.
+ * この関数はコンパイラプリミティブである。コンパイラにローカライズされたメッセ
+ * ージファイルと一緒に渡すと、文字列はコンパイル時に置換されたのち結合される
+ * （圧縮後はただの文字列リテラルになるということ）。
  *
- * Messages must be initialized in the form:
- * <code>
+ * メッセージはこの形式で初期化すること：
+ *
+ * ```
  * var MSG_NAME = goog.getMsg('Hello {$placeholder}', {'placeholder': 'world'});
- * </code>
+ * ```
  *
- * @param {string} str Translatable string, places holders in the form {$foo}.
- * @param {Object=} opt_values Map of place holder name to value.
- * @return {string} message with placeholders filled.
+ * @param {string} str ローカライズしたい部分を '{$foo}' という形式で記述した文
+ *     字列。
+ * @param {Object=} opt_values ローカライズ文字列のマップ。
+ * @return {string} message ローカライズされた文字列。
  */
 goog.getMsg = function(str, opt_values) {
   var values = opt_values || {};
@@ -1427,19 +1438,22 @@ goog.getMsg = function(str, opt_values) {
 
 
 /**
- * Gets a localized message. If the message does not have a translation, gives a
- * fallback message.
+ * ローカライズされたメッセージを取得する。翻訳がなければだいたいメッセージを返
+ * す。
+ * この関数は、まだすべての言語で翻訳されていない新しいメッセージを追加する場合
+ * に便利である。
  *
- * This is useful when introducing a new message that has not yet been
- * translated into all languages.
+ * この関数はコンパイラプリミティブである。この形式で使用すること：
  *
- * This function is a compiler primtive. Must be used in the form:
- * <code>var x = goog.getMsgWithFallback(MSG_A, MSG_B);</code>
- * where MSG_A and MSG_B were initialized with goog.getMsg.
+ * ```
+ * var x = goog.getMsgWithFallback(MSG_A, MSG_B);
+ * ```
  *
- * @param {string} a The preferred message.
- * @param {string} b The fallback message.
- * @return {string} The best translated message.
+ * `MSG_A` と `MSG_B` は `goog.getMsg` によって初期化される。
+ *
+ * @param {string} a 優先されるメッセージ。
+ * @param {string} b 代替メッセージ。
+ * @return {string} 翻訳されたメッセージ。なければ代替メッセージ。
  */
 goog.getMsgWithFallback = function(a, b) {
   return a;
@@ -1447,20 +1461,28 @@ goog.getMsgWithFallback = function(a, b) {
 
 
 /**
- * Exposes an unobfuscated global namespace path for the given object.
- * Note that fields of the exported object *will* be obfuscated, unless they are
- * exported in turn via this function or goog.exportProperty.
+ * 与えられたオブジェクトをコンパイラによるリネームから保護する。
+ * ただし、オブジェクトのメンバはリネームから **保護されない** 。
+ * この用途の場合は、`goog.exportProperty` を使うべきである。
  *
- * Also handy for making public items that are defined in anonymous closures.
+ * パブリックなオブジェクトを無名関数のクロージャから作成する際に役に立つ。
  *
- * ex. goog.exportSymbol('public.path.Foo', Foo);
+ * 例：
  *
- * ex. goog.exportSymbol('public.path.Foo.staticFunction', Foo.staticFunction);
- *     public.path.Foo.staticFunction();
+ * ```
+ * goog.exportSymbol('public.path.Foo', Foo);
+ * ```
  *
- * ex. goog.exportSymbol('public.path.Foo.prototype.myMethod',
- *                       Foo.prototype.myMethod);
- *     new public.path.Foo().myMethod();
+ * ```
+ * goog.exportSymbol('public.path.Foo.staticFunction', Foo.staticFunction);
+ * public.path.Foo.staticFunction();
+ * ```
+ *
+ * ```
+ * goog.exportSymbol('public.path.Foo.prototype.myMethod',
+ *                   Foo.prototype.myMethod);
+ * new public.path.Foo().myMethod();
+ * ```
  *
  * @param {string} publicPath Unobfuscated name to export.
  * @param {*} object Object the name should point to.
@@ -1473,9 +1495,17 @@ goog.exportSymbol = function(publicPath, object, opt_objectToExportTo) {
 
 
 /**
- * Exports a property unobfuscated into the object's namespace.
- * ex. goog.exportProperty(Foo, 'staticFunction', Foo.staticFunction);
- * ex. goog.exportProperty(Foo.prototype, 'myMethod', Foo.prototype.myMethod);
+ * 与えられたオブジェクトのメンバをコンパイラによるリネームから保護する。
+ *
+ * 例：
+ *
+ * ```
+ * goog.exportProperty(Foo, 'staticFunction', Foo.staticFunction);
+ * ```
+ *
+ * ```
+ * goog.exportProperty(Foo.prototype, 'myMethod', Foo.prototype.myMethod);
+ * ```
  * @param {Object} object Object whose static property is being exported.
  * @param {string} publicName Unobfuscated name to export.
  * @param {*} symbol Object the name should point to.
@@ -1486,10 +1516,13 @@ goog.exportProperty = function(object, publicName, symbol) {
 
 
 /**
- * Inherit the prototype methods from one constructor into another.
+/**
+ * 与えられたコンストラクタの `prototype` のメソッドを別のコンストラクタに継承
+ * する。
  *
- * Usage:
- * <pre>
+ * 使い方：
+ *
+ * ```
  * function ParentClass(a, b) { }
  * ParentClass.prototype.foo = function(a) { }
  *
@@ -1499,21 +1532,20 @@ goog.exportProperty = function(object, publicName, symbol) {
  * goog.inherits(ChildClass, ParentClass);
  *
  * var child = new ChildClass('a', 'b', 'see');
- * child.foo(); // This works.
- * </pre>
+ * child.foo(); // works
+ * ```
  *
- * In addition, a superclass' implementation of a method can be invoked as
- * follows:
+ * サブクラスからスーパークラスにアクセスしたい場合は以下のようにやる。
  *
- * <pre>
+ * ```
  * ChildClass.prototype.foo = function(a) {
  *   ChildClass.superClass_.foo.call(this, a);
- *   // Other code here.
+ *   // other code
  * };
- * </pre>
+ * ```
  *
- * @param {Function} childCtor Child class.
- * @param {Function} parentCtor Parent class.
+ * @param {Function} childCtor 子クラス.
+ * @param {Function} parentCtor 親クラス.
  */
 goog.inherits = function(childCtor, parentCtor) {
   /** @constructor */
@@ -1527,27 +1559,27 @@ goog.inherits = function(childCtor, parentCtor) {
 
 
 /**
- * Call up to the superclass.
+ * スーパークラスを呼び出す。
  *
- * If this is called from a constructor, then this calls the superclass
- * contsructor with arguments 1-N.
+ * サブクラスのコンストラクタで呼び出した場合は、 1 つ以上の引数付きで親クラ
+ * スのコンストラクタを実行する。
  *
- * If this is called from a prototype method, then you must pass the name of the
- * method as the second argument to this function. If you do not, you will get a
- * runtime error. This calls the superclass' method with arguments 2-N.
+ * `prototype` のメソッドから呼び出した場合は、 2 つめの引数でこのメソッドの名前
+ * を指定する必要がある。名前を指定しなかった場合はランタイムエラーが投げられ
+ * る。このメソッドは 2 つ以上の引数でスーパークラスのメソッドを実行する。
  *
- * This function only works if you use goog.inherits to express inheritance
- * relationships between your classes.
+ * この関数は `goog.inherits` がなされたクラス上でのみ動作できる。
  *
- * This function is a compiler primitive. At compile-time, the compiler will do
- * macro expansion to remove a lot of the extra overhead that this function
- * introduces. The compiler will also enforce a lot of the assumptions that this
- * function makes, and treat it as a compiler error if you break them.
+ * この関数はコンパイラプリミティブである。コンパイルの際にはマクロ展開が行わ
+ * れ、このコードによるオーバーヘッドが取り除かれる。この関数を使うときにはいく
+ * つかの取り決めに従う必要がある。その取り決めに違反があればコンパイラがエラー
+ * を投げる。
  *
- * @param {!Object} me Should always be "this".
- * @param {*=} opt_methodName The method name if calling a super method.
- * @param {...*} var_args The rest of the arguments.
- * @return {*} The return value of the superclass method.
+ * @param {!Object} me たいていは `this` 。
+ * @param {*=} opt_methodName スーパークラスのメソッドを呼び出すときにはそのメ
+ *     ソッド名。
+ * @param {...*} var_args スーパークラスの関数に与えられる可変長引数。
+ * @return {*} スーパークラスのメソッドによる戻り値。
  */
 goog.base = function(me, opt_methodName, var_args) {
   var caller = arguments.callee.caller;
@@ -1561,7 +1593,7 @@ goog.base = function(me, opt_methodName, var_args) {
   }
 
   if (caller.superClass_) {
-    // This is a constructor. Call the superclass constructor.
+    // これはコンストラクタなのでスーパークラスのコンストラクタを呼び出す。
     return caller.superClass_.constructor.apply(
         me, Array.prototype.slice.call(arguments, 1));
   }
@@ -1577,10 +1609,10 @@ goog.base = function(me, opt_methodName, var_args) {
     }
   }
 
-  // If we did not find the caller in the prototype chain, then one of two
-  // things happened:
-  // 1) The caller is an instance method.
-  // 2) This method was not called by the right caller.
+  // もし呼び出し先がプロトタイプチェーンのなかから見つからなければ次のうちどち
+  // らかの場合である。
+  // 1) 呼び出し先はインスタンスメソッドである場合
+  // 2) 正しい呼び出し先でなかった場合
   if (me[opt_methodName] === caller) {
     return me.constructor.prototype[opt_methodName].apply(me, args);
   } else {
@@ -1592,13 +1624,12 @@ goog.base = function(me, opt_methodName, var_args) {
 
 
 /**
- * Allow for aliasing within scope functions.  This function exists for
- * uncompiled code - in compiled code the calls will be inlined and the aliases
- * applied.  In uncompiled code the function is simply run since the aliases as
- * written are valid JavaScript.
- * @param {function()} fn Function to call.  This function can contain aliases
- *     to namespaces (e.g. "var dom = goog.dom") or classes
- *     (e.g. "var Timer = goog.Timer").
+ * スコープ関数の中でエイリアス（別名）を使えるようにする。この関数はコンパイラ
+ * によってインラインに書き換えられる。コンパイルされていない場合はそのまま実行
+ * される。
+ * @param {function()} fn エイリアスが適用される。この関数は名前空間のエイリアス
+ *     を含むことができる。（例：`var dom = goog.dom`）または（例：
+ *     `var Timer = goog.Timer`）。
  */
 goog.scope = function(fn) {
   fn.call(goog.global);
