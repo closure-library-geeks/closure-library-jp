@@ -1,6 +1,5 @@
-Closure Library is a powerful, low level JavaScript library designed
-for building complex and scalable web applications. It is used by many
-major Google web applications, such as Gmail and Google Docs.
+Closure Libraryとは、スケーラブルで複雑なWebアプリケーションを開発するための低レイヤーからなるJavaScriptライブラリです。
+Gmail や Google Docs など、多くの有名な Google web アプリケーションに採用されています。
 
-For more information about Closure Library, visit:
+Closure Libraryについては：
 http://code.google.com/closure/library
