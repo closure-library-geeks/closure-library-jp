@@ -15,7 +15,7 @@
 /**
  * @fileoverview Bootstrap for the Google JS Library (Closure).
  *
- * もし、 {@link goog.CLOSURE_NO_DEPS} が `true` のとき、コンパイルされていない
+ * もし、 `goog.CLOSURE_NO_DEPS` が `true` のとき、コンパイルされていない
  * base.js は依存関係ファイルを書き出す。これによって異なる環境下でそれぞれが依
  * 存関係を解決するのことができるようになる。
  *
