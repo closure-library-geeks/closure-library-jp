@@ -72,7 +72,7 @@ goog.global.CLOSURE_DEFINES;
  * @param {string} name 対象となっているオブジェクトの属する名前空間の名前パス。
  * @param {*=} opt_object 名前パスの末尾で定義されているオブジェクト。省略可能。
  * @param {Object=} opt_objectToExportTo オブジェクトを追加する際のスコープ。省
- *     略時は {@link goog.global} 。
+ *     略時は `goog.global` 。
  * @private
  */
 goog.exportPath_ = function(name, opt_object, opt_objectToExportTo) {
