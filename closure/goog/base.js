@@ -146,13 +146,21 @@ goog.DEBUG = true;
  * うに指定する。
  * 例：`'ja-JP'`、`'en'`、`'en-US'`、`'sr-Latin-BO'`、`'zh-Hans-CN'`
  *
- * 地域・言語情報の詳細は以下を参照。{@link
- * http://www.unicode.org/reports/tr35/#Unicode_Language_and_Locale_Identifiers}
+ * 地域・言語情報の詳細は以下を参照。
  *
- * 言語コードは ISO 639-1によって定義されている値を指定する。{@link
- * http://www.w3.org/WAI/ER/IG/ert/iso639.htm} を参照。
+ * ```
+ * http://www.unicode.org/reports/tr35/#Unicode_Language_and_Locale_Identifiers}
+ * ```
+ *
+ * 言語コードは ISO 639-1によって定義されている値を指定する。
+ *
+ * ```
+ * http://www.w3.org/WAI/ER/IG/ert/iso639.htm
+ * ```
+ *
+ * を参照。
  * 注記： ヘブライ言語については新コード(he)ではなく旧コード(iw)を使うほうがよ
- * い。{@link see http://wiki/Main/IIISynonyms} を参照（デッドリンク）。
+ * い。`http://wiki/Main/IIISynonyms` を参照（デッドリンク）。
  */
 goog.define('goog.LOCALE', 'en');  // デフォルトはen（英語）
 
@@ -412,7 +420,7 @@ goog.global.CLOSURE_BASE_PATH;
 
 /**
  * `true` ならば Closure 用の依存関係用ファイルを読み込む。 falsely ならば
- * {@link goog.basePath} 直下の deps.js が読み込まれる。
+ * `goog.basePath` 直下の deps.js が読み込まれる。
  * @type {boolean|undefined}
  */
 goog.global.CLOSURE_NO_DEPS;
@@ -445,7 +453,7 @@ goog.nullFunction = function() {};
  * @param {...*} var_args 無視される追加の引数。戻り値に影響しない。
  * @return {?} 最初の引数。実際に実行されるまでは戻り値が何かを特定することがで
  *      きない。
- * @deprecated {@link goog.functions.identity} を使うべき。
+ * @deprecated `goog.functions.identity` を使うべき。
  */
 goog.identityFunction = function(opt_returnValue, var_args) {
   return opt_returnValue;
@@ -457,7 +465,8 @@ goog.identityFunction = function(opt_returnValue, var_args) {
  * サブクラスがこのメソッドのオーバーライドを忘れる・失敗するとエラーが投げられ
  * る。
  *
- * 抽象クラス {@code Foo} のメソッド {@code bar()} を定義することを考えると：
+ * 抽象クラス `Foo` のメソッド `bar()` を定義することを考えると：
+ *
  * ```
  * Foo.prototype.bar = goog.abstractMethod;
  * ```
@@ -1047,8 +1056,8 @@ goog.removeHashCode = goog.removeUid;
  *
  * @param {*} obj 複製したいオブジェクト。
  * @return {*} 複製されたオブジェクト。
- * @deprecated {@link goog.cloneObject} は安全でない。{@link goog.object} のメ
- *      ソッドの方がよい。
+ * @deprecated `goog.cloneObject` は安全でない。`goog.object` のメソッドの方が
+ *     よい。
  */
 goog.cloneObject = function(obj) {
   var type = goog.typeOf(obj);
@@ -1376,7 +1385,7 @@ goog.getCssName = function(className, opt_modifier) {
  * の `goog.getCssName` は文字列に置き換えられる。
  *
  * @param {!Object} mapping `goog.getCssName` の引数で指定するための文字列-文字
- *     列形式のマップ。プロパティは {@link goog.getCssName} で返される文字列と一
+ *     列形式のマップ。プロパティは `goog.getCssName` で返される文字列と一
  *     致するようにする。
  * @param {string=} opt_style CSS マップの形式。 `BY_PART`、`BY_WHOLE` が指定で
  *     きる。
@@ -1403,8 +1412,9 @@ goog.global.CLOSURE_CSS_NAME_MAPPING;
 
 
 if (!COMPILED && goog.global.CLOSURE_CSS_NAME_MAPPING) {
-  // This does not call goog.setCssNameMapping() because the JSCompiler
-  // requires that goog.setCssNameMapping() be called with an object literal.
+  // ここでは、`goog.setCssNameMapping()` を用いない。
+  // `goog.setCssNameMapping()` をオブジェクトリテラルを引数として呼び出すこと
+  // が、コンパイラから要求されているからである。
   goog.cssNameMapping_ = goog.global.CLOSURE_CSS_NAME_MAPPING;
 }
 
