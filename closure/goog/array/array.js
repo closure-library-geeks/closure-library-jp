@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * @fileoverview 配列を走査するためのユーティリティ。
+ * @fileoverview 配列を操作するためのユーティリティ。
  *
  */
 
@@ -164,13 +164,13 @@ goog.array.lastIndexOf = goog.NATIVE_ARRAY_PROTOTYPES &&
  * 配列の各要素毎に関数を実行する。配列の穴は無視される。
  * `http://tinyurl.com/developer-mozilla-org-array-foreach` を参照。
  *
- * @param {Array.<T>|goog.array.ArrayLike} arr 繰り返し処理したい配列か配列のよ
- *     うなオブジェクト。
+ * @param {Array.<T>|goog.array.ArrayLike} arr 走査したい配列か配列のような
+ *     オブジェクト。
  * @param {?function(this: S, T, number, ?): ?} f 各要素について実行される関数。
  *     この関数は要素の値・インデックス・走査している配列の 3 つの引数をとる。
  *     戻り値は無視される。この関数は値が設定された要素のみについて実行される。
  *     削除された値や値が一度も設定されていない要素については実行されない。
- * @param {S=} opt_obj f を実行する際の `this` に設定されるオブジェクト。
+ * @param {S=} opt_obj `f` を実行する際の `this` に設定されるオブジェクト。
  * @template T,S
  */
 goog.array.forEach = goog.NATIVE_ARRAY_PROTOTYPES &&
@@ -194,12 +194,12 @@ goog.array.forEach = goog.NATIVE_ARRAY_PROTOTYPES &&
 /**
  * 配列の末尾から各要素毎に関数を実行する。
  *
- * @param {Array.<T>|goog.array.ArrayLike} arr 繰り返し処理したい配列か配列のよ
- *     うなオブジェクト。
+ * @param {Array.<T>|goog.array.ArrayLike} arr 走査したい配列か配列のような
+ *     オブジェクト。
  * @param {?function(this: S, T, number, ?): ?} f 各要素について実行される関数。
  *     この関数は要素の値・インデックス・走査している配列の 3 つの引数をとる。
  *     戻り値は無視される。
- * @param {S=} opt_obj f を実行する際の 'this' に設定されるオブジェクト。
+ * @param {S=} opt_obj `f` を実行する際の 'this' に設定されるオブジェクト。
  * @template T,S
  */
 goog.array.forEachRight = function(arr, f, opt_obj) {
@@ -219,13 +219,13 @@ goog.array.forEachRight = function(arr, f, opt_obj) {
  *
  * `http://tinyurl.com/developer-mozilla-org-array-filter` を参照。
  *
- * @param {Array.<T>|goog.array.ArrayLike} arr 繰り返し処理したい配列か配列のよ
- *     うなオブジェクト。
+ * @param {Array.<T>|goog.array.ArrayLike} arr 走査したい配列か配列のような
+ *     オブジェクト。
  * @param {?function(this:S, T, number, ?):boolean} f 各要素について実行される
  *     関数。この関数は要素の値・インデックス・走査している配列の 3 つの引数を
- *     とり、戻り値は真偽値でなければならない。 true が返されたときの要素のみ新
- *     しい配列に追加され、 false が返されたときは要素を追加しない。
- * @param {S=} opt_obj f を実行する際の `this` に設定されるオブジェクト。
+ *     とり、戻り値は真偽値のほうがよい。 `true` が返されたときの要素のみ新しい
+ *     配列に追加され、 `false` が返されたときは要素を追加しない。
+ * @param {S=} opt_obj `f` を実行する際の `this` に設定されるオブジェクト。
  * @return {!Array} 戻り値が `true` のときの要素からなる新しい配列。
  * @template T,S
  */
@@ -243,7 +243,7 @@ goog.array.filter = goog.NATIVE_ARRAY_PROTOTYPES &&
       var arr2 = goog.isString(arr) ? arr.split('') : arr;
       for (var i = 0; i < l; i++) {
         if (i in arr2) {
-          var val = arr2[i];  // f は arr2 の要素を参照するようにする。
+          var val = arr2[i];  // `f` は `arr2` の要素を参照するようにする。
           if (f.call(opt_obj, val, i, arr)) {
             res[resLength++] = val;
           }
@@ -259,13 +259,13 @@ goog.array.filter = goog.NATIVE_ARRAY_PROTOTYPES &&
  *
  * `http://tinyurl.com/developer-mozilla-org-array-map` を参照。
  *
- * @param {Array.<T>|goog.array.ArrayLike} arr 繰り返し処理したい配列か配列のよ
- *     うなオブジェクト。
+ * @param {Array.<T>|goog.array.ArrayLike} arr 走査したい配列か配列のような
+ *     オブジェクト。
  * @param {?function(this:S, T, number, ?):?} f 各要素について実行される関数。
  *     この関数は要素の値・インデックス・走査している配列の 3 つの引数をとり、
  *     戻り値を返さなければならない。 この戻り値が返される配列の要素となる。
- * @param {S=} opt_obj f を実行する際の `this` に設定されるオブジェクト。
- * @return {!Array} f の戻り値からなる新しい配列。
+ * @param {S=} opt_obj `f` を実行する際の `this` に設定されるオブジェクト。
+ * @return {!Array} `f` の戻り値からなる新しい配列。
  * @template T,S
  */
 goog.array.map = goog.NATIVE_ARRAY_PROTOTYPES &&
@@ -306,7 +306,7 @@ goog.array.map = goog.NATIVE_ARRAY_PROTOTYPES &&
  *     この関数は前回の結果（または初期値）・今回の配列の要素・今回の要素のイン
  *     デックス・走査している配列の 4 つの引数をとる。つまり、引数は以下のように
  *     なる。 `function(previousValue, currentValue, index, array)`
- * @param {*} val f が最初に実行されるときの previousValue の値。
+ * @param {*} val `f` が最初に実行されるときの previousValue の値。
  * @param {S=} opt_obj  `f` を実行する際に `this` に設定されるオブジェクト。
  * @return {R} この配列を `f` によって繰り返し評価した値。
  * @template T,S,R
@@ -348,7 +348,7 @@ goog.array.reduce = goog.NATIVE_ARRAY_PROTOTYPES &&
  *     この関数は前回の結果（または初期値）・今回の配列の要素・今回の要素のイン
  *     デックス・走査している配列の 4 つの引数をとる。つまり、引数は以下のように
  *     なる。 `function(previousValue, currentValue, index, array)`
- * @param {*} val f が最初に実行されるときの previousValue の値。
+ * @param {*} val `f` が最初に実行されるときの previousValue の値。
  * @param {S=} opt_obj  `f` を実行する際に `this` に設定されるオブジェクト。
  * @return {R} この配列を `f` によって繰り返し評価した値。
  * @template T,S,R
@@ -383,7 +383,7 @@ goog.array.reduceRight = goog.NATIVE_ARRAY_PROTOTYPES &&
  * @param {?function(this:S, T, number, ?) : boolean} f 各要素毎に実行される関
  *     数。この関数は配列の要素・インデックス・走査対象の配列の 3 つの引数をと
  *     り、真偽値を返さなければならない。
- * @param {S=} opt_obj  f を実行する際に `this` に設定されるオブジェクト。
+ * @param {S=} opt_obj  `f` を実行する際に `this` に設定されるオブジェクト。
  * @return {boolean} 戻り値に true のものがあれば true 。
  * @template T,S
  */
@@ -418,7 +418,7 @@ goog.array.some = goog.NATIVE_ARRAY_PROTOTYPES &&
  * @param {?function(this:S, T, number, ?) : boolean} f 各要素毎に実行される関
  *     数。この関数は配列の要素・インデックス・走査対象の配列の 3 つの引数をと
  *     り、真偽値を返さなければならない。
- * @param {S=} opt_obj  f を実行する際に `this` に設定されるオブジェクト。
+ * @param {S=} opt_obj  `f` を実行する際に `this` に設定されるオブジェクト。
  * @return {boolean} 戻り値に `false` のものがあれば `false` 。
  * @template T,S
  */
@@ -450,7 +450,7 @@ goog.array.every = goog.NATIVE_ARRAY_PROTOTYPES &&
  * @param {?function(this: S, T, number, ?) : boolean} f 各要素毎に実行される関
  *     数。この関数は配列の要素・インデックス・走査対象の配列の 3 つの引数をと
  *     り、真偽値を返すべきである。
- * @param {S=} opt_obj f の実行時に `this` に設定されるオブジェクト。
+ * @param {S=} opt_obj `f` の実行時に `this` に設定されるオブジェクト。
  * @return {number} 条件を満足した要素の個数。
  * @template T,S
  */
@@ -472,7 +472,7 @@ goog.array.count = function(arr, f, opt_obj) {
  * @param {?function(this: S, T, number, ?) : boolean} f 各要素毎に実行される関
  *     数。この関数は配列の要素・インデックス・走査対象の配列の 3 つの引数をと
  *     り、真偽値を返すべきである。
- * @param {S=} opt_obj f の実行時に `this` に設定されるオブジェクト。
+ * @param {S=} opt_obj `f` の実行時に `this` に設定されるオブジェクト。
  * @return {T} 条件を満足した最初の要素。条件を満足する要素がなければ `null` 。
  * @template T,S
  */
@@ -489,7 +489,7 @@ goog.array.find = function(arr, f, opt_obj) {
  * @param {?function(this: S, T, number, ?) : boolean} f 各要素毎に実行される関
  *     数。この関数は配列の要素・インデックス・走査対象の配列の 3 つの引数をと
  *     り、真偽値を返すべきである。
- * @param {S=} opt_obj f の実行時に `this` に設定されるオブジェクト。
+ * @param {S=} opt_obj `f` の実行時に `this` に設定されるオブジェクト。
  * @return {number} 条件を満足した最初の要素のインデックス。条件を満足する要素が
  *     なければ `-1` 。
  * @template T,S
@@ -513,7 +513,7 @@ goog.array.findIndex = function(arr, f, opt_obj) {
  * @param {?function(this: S, T, number, ?) : boolean} f 各要素毎に実行される関
  *     数。この関数は配列の要素・インデックス・走査対象の配列の 3 つの引数をと
  *     り、真偽値を返すべきである。
- * @param {S=} opt_obj f の実行時に `this` に設定されるオブジェクト。
+ * @param {S=} opt_obj `f` の実行時に `this` に設定されるオブジェクト。
  * @return {T} 条件を満足した最初の要素。条件を満足する要素がなければ `null` 。
  * @template T,S
  */
@@ -531,7 +531,7 @@ goog.array.findRight = function(arr, f, opt_obj) {
  * @param {?function(this: S, T, number, ?) : boolean} f 各要素毎に実行される関
  *     数。この関数は配列の要素・インデックス・走査対象の配列の 3 つの引数をと
  *     り、真偽値を返すべきである。
- * @param {S=} opt_obj f の実行時に `this` に設定されるオブジェクト。
+ * @param {S=} opt_obj `f` の実行時に `this` に設定されるオブジェクト。
  * @return {number} 条件を満足した最初の要素のインデックス。条件を満足する要素が
  *     なければ `-1` 。
  * @template T,S
@@ -680,7 +680,7 @@ goog.array.removeAt = function(arr, i) {
  * @param {?function(this:S, T, number, ?) : boolean} f 各要素毎に実行される関
  *     数。この関数は配列の要素・インデックス・走査対象の配列の 3 つの引数をと
  *     り、真偽値を返すべきである。
- * @param {S=} opt_obj f の実行時に `this` に設定されるオブジェクト。
+ * @param {S=} opt_obj `f` の実行時に `this` に設定されるオブジェクト。
  * @return {boolean} 要素を削除した場合は `true` 。
  * @template T,S
  */
