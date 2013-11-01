@@ -13,20 +13,20 @@
 // limitations under the License.
 
 /**
- * @fileoverview Utilities for manipulating objects/maps/hashes.
+ * @fileoverview オブジェクト・マップ・ハッシュを操作するためのユーティリティ。.
  */
 
 goog.provide('goog.object');
 
 
 /**
- * Calls a function for each element in an object/map/hash.
+ * オブジェクト・マップ・ハッシュの各要素毎に関数を実行する。
  *
- * @param {Object.<K,V>} obj The object over which to iterate.
- * @param {function(this:T,V,?,Object.<K,V>):?} f The function to call
- *     for every element. This function takes 3 arguments (the element, the
- *     index and the object) and the return value is ignored.
- * @param {T=} opt_obj This is used as the 'this' object within f.
+ * @param {Object.<K,V>} obj 走査したいオブジェクト。
+ * @param {function(this:T,V,?,Object.<K,V>):?} f 各要素について実行される関数。
+ *     この関数は要素の値・インデックス・走査しているオブジェクトの 3 つの引数を
+ *     とる。戻り値は無視される。
+ * @param {T=} opt_obj `f` を実行する際の `this` に設定されるオブジェクト。
  * @template T,K,V
  */
 goog.object.forEach = function(obj, f, opt_obj) {
@@ -37,19 +37,17 @@ goog.object.forEach = function(obj, f, opt_obj) {
 
 
 /**
- * Calls a function for each element in an object/map/hash. If that call returns
- * true, adds the element to a new object.
+ * オブジェクト・マップ・ハッシュの各要素毎に関数を実行し、この関数が `true`
+ * を返した要素からなる新しいオブジェクトを返す。
  *
- * @param {Object.<K,V>} obj The object over which to iterate.
- * @param {function(this:T,V,?,Object.<K,V>):boolean} f The function to call
- *     for every element. This
- *     function takes 3 arguments (the element, the index and the object)
- *     and should return a boolean. If the return value is true the
- *     element is added to the result object. If it is false the
- *     element is not included.
- * @param {T=} opt_obj This is used as the 'this' object within f.
- * @return {!Object.<K,V>} a new object in which only elements that passed the
- *     test are present.
+ * @param {Object.<K,V>} obj 走査したいオブジェクト。
+ * @param {function(this:T,V,?,Object.<K,V>):boolean} f 各要素について実行される
+ *     関数。この関数は要素の値・インデックス・走査しているオブジェクトの 3 つの
+ *     引数をとり、戻り値は真偽値のほうがよい。この関数が `true` を返すとき、
+ *     要素は新しいオブジェクトに追加され、`false` を返すときは追加されない。
+ * @param {T=} opt_obj `f` を実行する際の `this` に設定されるオブジェクト。
+ * @return {!Object.<K,V>} `f` で `true` を返された要素からなる新しいオブジェク
+ *     ト。
  * @template T,K,V
  */
 goog.object.filter = function(obj, f, opt_obj) {
@@ -64,17 +62,16 @@ goog.object.filter = function(obj, f, opt_obj) {
 
 
 /**
- * For every element in an object/map/hash calls a function and inserts the
- * result into a new object.
+ * オブジェクト・マップ・ハッシュの各要素毎に関数を実行し、この関数の戻り値から
+ * なる新しいオブジェクトを返す。
  *
- * @param {Object.<K,V>} obj The object over which to iterate.
- * @param {function(this:T,V,?,Object.<K,V>):R} f The function to call
- *     for every element. This function
- *     takes 3 arguments (the element, the index and the object)
- *     and should return something. The result will be inserted
- *     into a new object.
- * @param {T=} opt_obj This is used as the 'this' object within f.
- * @return {!Object.<K,R>} a new object with the results from f.
+ * @param {Object.<K,V>} obj 走査したいオブジェクト。
+ * @param {function(this:T,V,?,Object.<K,V>):R} f 各要素について実行される関数。
+ *     この関数は要素の値・インデックス・走査しているオブジェクトの 3 つの引数を
+ *     とり、何らかの戻り値を返す必要がある。この戻り値は新しいオブジェクトに追
+ *     加される。
+ * @param {T=} opt_obj `f` を実行する際の `this` に設定されるオブジェクト。
+ * @return {!Object.<K,R>} `f` の戻り値から鳴る新しいオブジェクト。
  * @template T,K,V,R
  */
 goog.object.map = function(obj, f, opt_obj) {
@@ -87,17 +84,16 @@ goog.object.map = function(obj, f, opt_obj) {
 
 
 /**
- * Calls a function for each element in an object/map/hash. If any
- * call returns true, returns true (without checking the rest). If
- * all calls return false, returns false.
+ * オブジェクト・マップ・ハッシュの各要素毎に指定された関数を実行し、この関数が
+ * `true` を返すとき、`some` は `true` を返す（残りの要素は処理されない）。
+ * また、すべての呼び出しについて `false` を返すとき、`some` は `false` を返す。
  *
- * @param {Object.<K,V>} obj The object to check.
- * @param {function(this:T,V,?,Object.<K,V>):boolean} f The function to
- *     call for every element. This function
- *     takes 3 arguments (the element, the index and the object) and should
- *     return a boolean.
- * @param {T=} opt_obj This is used as the 'this' object within f.
- * @return {boolean} true if any element passes the test.
+ * @param {Object.<K,V>} obj 走査したいオブジェクト。
+ * @param {function(this:T,V,?,Object.<K,V>):boolean} f 各要素について実行される
+ *     関数。この関数は要素の値・インデックス・走査しているオブジェクトの 3 つの
+ *     引数をとり、戻り値は真偽値のほうがよい。
+ * @param {T=} opt_obj `f` を実行する際の `this` に設定されるオブジェクト。
+ * @return {boolean} すべての要素について `true` のとき、`true`。
  * @template T,K,V
  */
 goog.object.some = function(obj, f, opt_obj) {
@@ -111,17 +107,16 @@ goog.object.some = function(obj, f, opt_obj) {
 
 
 /**
- * Calls a function for each element in an object/map/hash. If
- * all calls return true, returns true. If any call returns false, returns
- * false at this point and does not continue to check the remaining elements.
+ * オブジェクト・マップ・ハッシュの各要素毎に指定された関数を実行し、この関数が
+ * `false` を返すとき、`some` は `false` を返す（残りの要素は処理されない）。
+ * また、すべての呼び出しについて `true` を返すとき、`some` は `true` を返す。
  *
- * @param {Object.<K,V>} obj The object to check.
- * @param {?function(this:T,V,?,Object.<K,V>):boolean} f The function to
- *     call for every element. This function
- *     takes 3 arguments (the element, the index and the object) and should
- *     return a boolean.
- * @param {T=} opt_obj This is used as the 'this' object within f.
- * @return {boolean} false if any element fails the test.
+ * @param {Object.<K,V>} obj 走査したいオブジェクト。
+ * @param {?function(this:T,V,?,Object.<K,V>):boolean} f 各要素について実行される
+ *     関数。この関数は要素の値・インデックス・走査しているオブジェクトの 3 つの
+ *     引数をとり、戻り値は真偽値のほうがよい。
+ * @param {T=} opt_obj `f` を実行する際の `this` に設定されるオブジェクト。
+ * @return {boolean} すべての要素について `false` のとき、`false`。
  * @template T,K,V
  */
 goog.object.every = function(obj, f, opt_obj) {
@@ -135,16 +130,15 @@ goog.object.every = function(obj, f, opt_obj) {
 
 
 /**
- * Returns the number of key-value pairs in the object map.
+ * オブジェクトの要素の数（キーと値のペア数）を返す。
  *
- * @param {Object} obj The object for which to get the number of key-value
- *     pairs.
- * @return {number} The number of key-value pairs in the object map.
+ * @param {Object} obj 要素数を数えたいオブジェクト。
+ * @return {number} このオブジェクトの要素数。
  */
 goog.object.getCount = function(obj) {
-  // JS1.5 has __count__ but it has been deprecated so it raises a warning...
-  // in other words do not use. Also __count__ only includes the fields on the
-  // actual object and not in the prototype chain.
+  // JS1.5 では `__count__` は廃止されているため、警告がでてしまう。つまり、使う
+  // べきではない。また、`__count__` は実際のオブジェクトに含まれる要素のみをカ
+  // ウントする（プロトタイプチェインに含まれるものは含まれない）。
   var rv = 0;
   for (var key in obj) {
     rv++;
@@ -154,12 +148,12 @@ goog.object.getCount = function(obj) {
 
 
 /**
- * Returns one key from the object map, if any exists.
- * For map literals the returned key will be the first one in most of the
- * browsers (a know exception is Konqueror).
+ * オブジェクトの適当なキーを返す（存在するならば）。
+ * 多くのブラウザでは、オブジェクトリテラルの最初のキーになる（ただし Konqueror
+ * は例外）。
  *
- * @param {Object} obj The object to pick a key from.
- * @return {string|undefined} The key or undefined if the object is empty.
+ * @param {Object} obj 適当なキーを得たいオブジェクト。
+ * @return {string|undefined} 適当なキー。オブジェクトが空なら `undefined `。
  */
 goog.object.getAnyKey = function(obj) {
   for (var key in obj) {
@@ -169,12 +163,12 @@ goog.object.getAnyKey = function(obj) {
 
 
 /**
- * Returns one value from the object map, if any exists.
- * For map literals the returned value will be the first one in most of the
- * browsers (a know exception is Konqueror).
+ * オブジェクトの適当な値を返す（存在するならば）。
+ * 多くのブラウザでは、オブジェクトリテラルの最初の値になる（ただし Konqueror
+ * は例外）。
  *
- * @param {Object.<K,V>} obj The object to pick a value from.
- * @return {V|undefined} The value or undefined if the object is empty.
+ * @param {Object.<K,V>} obj 適当なキーを得たいオブジェクト。
+ * @return {V|undefined} 適当な値。オブジェクトが空なら `undefined `。
  * @template K,V
  */
 goog.object.getAnyValue = function(obj) {
@@ -185,12 +179,12 @@ goog.object.getAnyValue = function(obj) {
 
 
 /**
- * Whether the object/hash/map contains the given object as a value.
- * An alias for goog.object.containsValue(obj, val).
+ * オブジェクト・マップ・ハッシュが与えられた要素を含むかどうかを判定する。
+ * `goog.object.containsValue` のエイリアスである。
  *
- * @param {Object.<K,V>} obj The object in which to look for val.
- * @param {V} val The object for which to check.
- * @return {boolean} true if val is present.
+ * @param {Object.<K,V>} obj 判定対象となるオブジェクト。
+ * @param {V} val 判定に使われる値。
+ * @return {boolean} `val` がオブジェクトに存在するならば `true`。
  * @template K,V
  */
 goog.object.contains = function(obj, val) {
@@ -199,10 +193,10 @@ goog.object.contains = function(obj, val) {
 
 
 /**
- * Returns the values of the object/map/hash.
+ * オブジェクト・マップ・ハッシュの値からなる配列を返す。
  *
- * @param {Object.<K,V>} obj The object from which to get the values.
- * @return {!Array.<V>} The values in the object/map/hash.
+ * @param {Object.<K,V>} obj オブジェクト。
+ * @return {!Array.<V>} オブジェクト・マップ・ハッシュの値からなる配列。
  * @template K,V
  */
 goog.object.getValues = function(obj) {
@@ -216,10 +210,10 @@ goog.object.getValues = function(obj) {
 
 
 /**
- * Returns the keys of the object/map/hash.
+ * オブジェクト・マップ・ハッシュのキーからなる配列を返す。
  *
- * @param {Object} obj The object from which to get the keys.
- * @return {!Array.<string>} Array of property keys.
+ * @param {Object} obj オブジェクト。
+ * @return {!Array.<string>} オブジェクトのキーからなる配列。
  */
 goog.object.getKeys = function(obj) {
   var res = [];
@@ -232,22 +226,25 @@ goog.object.getKeys = function(obj) {
 
 
 /**
- * Get a value from an object multiple levels deep.  This is useful for
- * pulling values from deeply nested objects, such as JSON responses.
- * Example usage: getValueByKeys(jsonObj, 'foo', 'entries', 3)
+ * ネストされたオブジェクトから値を返す。これは JSON レスポンスのような幾重にも
+ * ネストされたオブジェクトから値を取得するのに役立つ。
  *
- * @param {!Object} obj An object to get the value from.  Can be array-like.
- * @param {...(string|number|!Array.<number|string>)} var_args A number of keys
- *     (as strings, or numbers, for array-like objects).  Can also be
- *     specified as a single array of keys.
- * @return {*} The resulting value.  If, at any point, the value for a key
- *     is undefined, returns undefined.
+ * 使い方：
+ *
+ * ```
+ * getValueByKeys(jsonObj, 'foo', 'entries', 3)
+ * ```
+ *
+ * @param {!Object} obj オブジェクトまたは配列のようなオブジェクト。
+ * @param {...(string|number|!Array.<number|string>)} var_args キーまたはイン
+ *     デックス、またはそれらからなる配列・配列のようなオブジェクト。
+ * @return {*} 得られた値。もし、該当する値がなければ `undefined`。
  */
 goog.object.getValueByKeys = function(obj, var_args) {
   var isArrayLike = goog.isArrayLike(var_args);
   var keys = isArrayLike ? var_args : arguments;
 
-  // Start with the 2nd parameter for the variable parameters syntax.
+  // 可変長引数の場合は第二引数から始める。
   for (var i = isArrayLike ? 0 : 1; i < keys.length; i++) {
     obj = obj[keys[i]];
     if (!goog.isDef(obj)) {
@@ -260,11 +257,11 @@ goog.object.getValueByKeys = function(obj, var_args) {
 
 
 /**
- * Whether the object/map/hash contains the given key.
+ * オブジェクト・マップ・ハッシュが与えられたキーを含むかどうかを判定する。
  *
- * @param {Object} obj The object in which to look for key.
- * @param {*} key The key for which to check.
- * @return {boolean} true If the map contains the key.
+ * @param {Object} obj 判定対象のオブジェクト。
+ * @param {*} key 判定に使われるキー。
+ * @return {boolean} オブジェクトが `key` を含むのなら `true`。
  */
 goog.object.containsKey = function(obj, key) {
   return key in obj;
@@ -272,11 +269,12 @@ goog.object.containsKey = function(obj, key) {
 
 
 /**
- * Whether the object/map/hash contains the given value. This is O(n).
+ * オブジェクト・マップ・ハッシュが与えられた値を含むかどうかを判定する。
+ * この関数のオーダーは O(n) である。
  *
- * @param {Object.<K,V>} obj The object in which to look for val.
- * @param {V} val The value for which to check.
- * @return {boolean} true If the map contains the value.
+ * @param {Object.<K,V>} obj 判定対象のオブジェクト。
+ * @param {V} val 判定に使われる値。
+ * @return {boolean} オブジェクトが `val` を含むのならば `true`。
  * @template K,V
  */
 goog.object.containsValue = function(obj, val) {
@@ -290,15 +288,14 @@ goog.object.containsValue = function(obj, val) {
 
 
 /**
- * Searches an object for an element that satisfies the given condition and
- * returns its key.
- * @param {Object.<K,V>} obj The object to search in.
- * @param {function(this:T,V,string,Object.<K,V>):boolean} f The
- *      function to call for every element. Takes 3 arguments (the value,
- *     the key and the object) and should return a boolean.
- * @param {T=} opt_this An optional "this" context for the function.
- * @return {string|undefined} The key of an element for which the function
- *     returns true or undefined if no such element is found.
+ * オブジェクトから条件に合致するキーを検索し、これを返す。
+ * @param {Object.<K,V>} obj 検索対象のオブジェクト。
+ * @param {function(this:T,V,string,Object.<K,V>):boolean} f 各値について実行
+ *     される関数。この関数は値・キー・走査しているオブジェクトの 3 つの
+ *     引数をとり、戻り値は真偽値のほうがよい。
+ * @param {T=} opt_this `f` を実行する際の `this` に設定されるオブジェクト。
+ * @return {string|undefined} 条件に合致したキー。条件に合致したキーがなければ
+ *     `undefined`。
  * @template T,K,V
  */
 goog.object.findKey = function(obj, f, opt_this) {
@@ -312,15 +309,13 @@ goog.object.findKey = function(obj, f, opt_this) {
 
 
 /**
- * Searches an object for an element that satisfies the given condition and
- * returns its value.
- * @param {Object.<K,V>} obj The object to search in.
- * @param {function(this:T,V,string,Object.<K,V>):boolean} f The function
- *     to call for every element. Takes 3 arguments (the value, the key
- *     and the object) and should return a boolean.
- * @param {T=} opt_this An optional "this" context for the function.
- * @return {V} The value of an element for which the function returns true or
- *     undefined if no such element is found.
+ * オブジェクトから条件に合致する値を検索し、これを返す。
+ * @param {Object.<K,V>} obj 検索対象のオブジェクト。
+ * @param {function(this:T,V,string,Object.<K,V>):boolean} f 各値について実行
+ *     される関数。この関数は値・キー・走査しているオブジェクトの 3 つの
+ *     引数をとり、戻り値は真偽値のほうがよい。
+ * @param {T=} opt_this `f` を実行する際の `this` に設定されるオブジェクト。
+ * @return {V} 条件に合致した値。条件に合致した値がなければ `undefined`。
  * @template T,K,V
  */
 goog.object.findValue = function(obj, f, opt_this) {
@@ -330,10 +325,10 @@ goog.object.findValue = function(obj, f, opt_this) {
 
 
 /**
- * Whether the object/map/hash is empty.
+ * オブジェクト・マップ・ハッシュが空かどうかを判定する。
  *
- * @param {Object} obj The object to test.
- * @return {boolean} true if obj is empty.
+ * @param {Object} obj 判定対象のオブジェクト。
+ * @return {boolean} オブジェクトが空であれば `true`。
  */
 goog.object.isEmpty = function(obj) {
   for (var key in obj) {
@@ -344,9 +339,9 @@ goog.object.isEmpty = function(obj) {
 
 
 /**
- * Removes all key value pairs from the object/map/hash.
+ * オブジェクト・マップ・ハッシュのすべてのキーと対応する値を除去する。
  *
- * @param {Object} obj The object to clear.
+ * @param {Object} obj 除去対象のオブジェクト。
  */
 goog.object.clear = function(obj) {
   for (var i in obj) {
@@ -356,11 +351,11 @@ goog.object.clear = function(obj) {
 
 
 /**
- * Removes a key-value pair based on the key.
+ * 与えられたキーと対応する値を除去する。
  *
- * @param {Object} obj The object from which to remove the key.
- * @param {*} key The key to remove.
- * @return {boolean} Whether an element was removed.
+ * @param {Object} obj 除去対象のオブジェクト。
+ * @param {*} key 除去に使われるキー。
+ * @return {boolean} 除去できれば `true`。
  */
 goog.object.remove = function(obj, key) {
   var rv;
@@ -372,12 +367,12 @@ goog.object.remove = function(obj, key) {
 
 
 /**
- * Adds a key-value pair to the object. Throws an exception if the key is
- * already in use. Use set if you want to change an existing pair.
+ * キーと対応する値をオブジェクトに追加する。キーが既に存在すれば、例外を発生
+ * させる。既に存在しているキーの値を変更したければ、代わりに `set` を使うべき。
  *
- * @param {Object.<K,V>} obj The object to which to add the key-value pair.
- * @param {string} key The key to add.
- * @param {V} val The value to add.
+ * @param {Object.<K,V>} obj 追加対象のオブジェクト。
+ * @param {string} key 追加するキー。
+ * @param {V} val 追加する値。
  * @template K,V
  */
 goog.object.add = function(obj, key, val) {
@@ -389,13 +384,13 @@ goog.object.add = function(obj, key, val) {
 
 
 /**
- * Returns the value for the given key.
+ * 与えられたキーと対応する値を返す。
  *
- * @param {Object.<K,V>} obj The object from which to get the value.
- * @param {string} key The key for which to get the value.
- * @param {R=} opt_val The value to return if no item is found for the given
- *     key (default is undefined).
- * @return {V|R|undefined} The value for the given key.
+ * @param {Object.<K,V>} obj オブジェクト。
+ * @param {string} key 値と対応するキー。
+ * @param {R=} opt_val `key` と対応する値がなかったときに返される値。初期値は
+ *     `undefined`。
+ * @return {V|R|undefined} `key` と対応する値。なければ `undefined`。
  * @template K,V,R
  */
 goog.object.get = function(obj, key, opt_val) {
@@ -407,11 +402,11 @@ goog.object.get = function(obj, key, opt_val) {
 
 
 /**
- * Adds a key-value pair to the object/map/hash.
+ * キーと対応する値をオブジェクトに追加する。 *
  *
- * @param {Object.<K,V>} obj The object to which to add the key-value pair.
- * @param {string} key The key to add.
- * @param {V} value The value to add.
+ * @param {Object.<K,V>} obj 追加対象のオブジェクト。
+ * @param {string} key 追加するキー。
+ * @param {V} val 追加する値。
  * @template K,V
  */
 goog.object.set = function(obj, key, value) {
@@ -420,12 +415,13 @@ goog.object.set = function(obj, key, value) {
 
 
 /**
- * Adds a key-value pair to the object/map/hash if it doesn't exist yet.
+ * キーと対応する値をオブジェクトに追加する。キーが既に存在すれば、何もしない。
  *
- * @param {Object.<K,V>} obj The object to which to add the key-value pair.
- * @param {string} key The key to add.
- * @param {V} value The value to add if the key wasn't present.
- * @return {V} The value of the entry at the end of the function.
+ * @param {Object.<K,V>} obj 追加対象のオブジェクト。
+ * @param {string} key 追加するキー。
+ * @param {V} val 追加する値。
+ * @return {V} `key` と対応する値。キーが既に存在していた場合は、これに対応する
+ *     値。
  * @template K,V
  */
 goog.object.setIfUndefined = function(obj, key, value) {
@@ -434,38 +430,38 @@ goog.object.setIfUndefined = function(obj, key, value) {
 
 
 /**
- * Does a flat clone of the object.
+ * オブジェクトを浅く複製する。
  *
- * @param {Object.<K,V>} obj Object to clone.
- * @return {!Object.<K,V>} Clone of the input object.
+ * @param {Object.<K,V>} obj 複製するオブジェクト。
+ * @return {!Object.<K,V>} 複製されたオブジェクト。
  * @template K,V
  */
 goog.object.clone = function(obj) {
-  // We cannot use the prototype trick because a lot of methods depend on where
-  // the actual key is set.
+  // ここではプロトタイプによる手法が使えない。多くのメソッドが実際のキーに依存
+  // しているからである。
 
   var res = {};
   for (var key in obj) {
     res[key] = obj[key];
   }
   return res;
-  // We could also use goog.mixin but I wanted this to be independent from that.
+  // ここでは `goog.mixin` を使うこともできるが、それとは独立させる意図がある。
 };
 
 
 /**
- * Clones a value. The input may be an Object, Array, or basic type. Objects and
- * arrays will be cloned recursively.
+ * 値を複製する。オブジェクト・配列・基本型が入力できる。オブジェクトや配列は、
+ * 再帰的に複製される。
  *
- * WARNINGS:
- * <code>goog.object.unsafeClone</code> does not detect reference loops. Objects
- * that refer to themselves will cause infinite recursion.
+ * 警告：
+ * `goog.object.unsafeClone` は循環参照を検知できない。したがって、オブジェクト
+ * が循環参照を含む場合は、無限再帰が発生する。
  *
- * <code>goog.object.unsafeClone</code> is unaware of unique identifiers, and
- * copies UIDs created by <code>getUid</code> into cloned results.
+ * `goog.object.unsafeClone` は、`getUid` による固有の識別子を考慮しない。した
+ * がって、複製されたオブジェクトも同じ固有識別子をもつことになる。
  *
- * @param {*} obj The value to clone.
- * @return {*} A clone of the input value.
+ * @param {*} obj 複製するオブジェクト。
+ * @return {*} 複製されたオブジェクト。
  */
 goog.object.unsafeClone = function(obj) {
   var type = goog.typeOf(obj);
@@ -485,12 +481,11 @@ goog.object.unsafeClone = function(obj) {
 
 
 /**
- * Returns a new object in which all the keys and values are interchanged
- * (keys become values and values become keys). If multiple keys map to the
- * same value, the chosen transposed value is implementation-dependent.
+ * キーと値が転置した新しいオブジェクトを返す（キーは値に、値はキーになる）。
+ * もし、同一の値が存在する場合はどちらの値が使われるかは実装依存である。
  *
- * @param {Object} obj The object to transpose.
- * @return {!Object} The transposed object.
+ * @param {Object} obj 転置するオブジェクト。
+ * @return {!Object} 転置されたオブジェクト。
  */
 goog.object.transpose = function(obj) {
   var transposed = {};
@@ -502,7 +497,7 @@ goog.object.transpose = function(obj) {
 
 
 /**
- * The names of the fields that are defined on Object.prototype.
+ * `object.prototype` に定義されているキーの名前。
  * @type {Array.<string>}
  * @private
  */
@@ -518,18 +513,21 @@ goog.object.PROTOTYPE_FIELDS_ = [
 
 
 /**
- * Extends an object with another object.
- * This operates 'in-place'; it does not create a new Object.
+ * オブジェクトを他のオブジェクトにあわせて拡張する。
+ * この操作は破壊的である。新しいオブジェクトは作成されない。
  *
- * Example:
+ * 例：
+ *
+ * ```
  * var o = {};
  * goog.object.extend(o, {a: 0, b: 1});
  * o; // {a: 0, b: 1}
  * goog.object.extend(o, {c: 2});
  * o; // {a: 0, b: 1, c: 2}
+ * ```
  *
- * @param {Object} target  The object to modify.
- * @param {...Object} var_args The objects from which values will be copied.
+ * @param {Object} target  拡張されるオブジェクト。
+ * @param {...Object} var_args 複製される値を持つオブジェクト。
  */
 goog.object.extend = function(target, var_args) {
   var key, source;
@@ -539,11 +537,10 @@ goog.object.extend = function(target, var_args) {
       target[key] = source[key];
     }
 
-    // For IE the for-in-loop does not contain any properties that are not
-    // enumerable on the prototype object (for example isPrototypeOf from
-    // Object.prototype) and it will also not include 'replace' on objects that
-    // extend String and change 'replace' (not that it is common for anyone to
-    // extend anything except Object).
+    // IE の for-in ループでは、プロトタイプオブジェクトにある列挙可能ではないプ
+    // ロパティを処理できない（例：`Object.prototype` の `isPrototypeOf`）。
+    // また、`String` を拡張したオブジェクトの `replace` も同様である（`Object`
+    // を拡張したものについては異なる）。
 
     for (var j = 0; j < goog.object.PROTOTYPE_FIELDS_.length; j++) {
       key = goog.object.PROTOTYPE_FIELDS_[j];
@@ -556,13 +553,12 @@ goog.object.extend = function(target, var_args) {
 
 
 /**
- * Creates a new object built from the key-value pairs provided as arguments.
- * @param {...*} var_args If only one argument is provided and it is an array
- *     then this is used as the arguments,  otherwise even arguments are used as
- *     the property names and odd arguments are used as the property values.
- * @return {!Object} The new object.
- * @throws {Error} If there are uneven number of arguments or there is only one
- *     non array argument.
+ * キー・値と並んだ可変長引数あるいは配列から、新しいオブジェクトを作成する。
+ * @param {...*} var_args キー・値と並んだ偶数の長さを持つ可変長引数。もし、
+ *     与えられた引数がひとつで、かつ配列であればこの配列を可変長引数とみなす。
+ * @return {!Object} 作成されたオブジェクト。
+ * @throws {Error} 与えられた可変長引数・配列の長さが偶数でなければエラーが発生
+ *     する。
  */
 goog.object.create = function(var_args) {
   var argLength = arguments.length;
@@ -583,12 +579,12 @@ goog.object.create = function(var_args) {
 
 
 /**
- * Creates a new object where the property names come from the arguments but
- * the value is always set to true
- * @param {...*} var_args If only one argument is provided and it is an array
- *     then this is used as the arguments,  otherwise the arguments are used
- *     as the property names.
- * @return {!Object} The new object.
+ * 可変長引数または配列をキーとして、値をすべて `true` とした新しいオブジェクト
+ * を作成する。
+ * @param {...*} var_args 新しいオブジェクトのキーとして使われるオブジェクトから
+ *     なる可変長引数。与えられた引数が一つで、かつこれが配列であればこの配列を
+ *     可変長引数とみなす。
+ * @return {!Object} 作成されたオブジェクト。
  */
 goog.object.createSet = function(var_args) {
   var argLength = arguments.length;
@@ -605,15 +601,16 @@ goog.object.createSet = function(var_args) {
 
 
 /**
- * Creates an immutable view of the underlying object, if the browser
- * supports immutable objects.
+ * 与えられたオブジェクトからイミュータブルなオブジェクトを作成して返す（ブラウ
+ * ザがイミュータブルオブジェクトをサポートしていれば）。
  *
- * In default mode, writes to this view will fail silently. In strict mode,
- * they will throw an error.
+ * 通常では、作成されたイミュータブルオブジェクトへの書き込みは無視され、
+ * strict モードでは、エラーが発生する。
  *
- * @param {!Object.<K,V>} obj An object.
- * @return {!Object.<K,V>} An immutable view of that object, or the
- *     original object if this browser does not support immutables.
+ * @param {!Object.<K,V>} obj オブジェクト。
+ * @return {!Object.<K,V>} 作成されたイミュータブルなオブジェクト。ブラウザが
+ *     イミュータブルなオブジェクトをサポートしていなければ元のオブジェクトが返
+ *     される。
  * @template K,V
  */
 goog.object.createImmutableView = function(obj) {
@@ -627,8 +624,9 @@ goog.object.createImmutableView = function(obj) {
 
 
 /**
- * @param {!Object} obj An object.
- * @return {boolean} Whether this is an immutable view of the object.
+ * オブジェクトがイミュータブルかどうかを判定する。
+ * @param {!Object} obj オブジェクト。
+ * @return {boolean} オブジェクトがイミュータブルであれば `true`。
  */
 goog.object.isImmutableView = function(obj) {
   return !!Object.isFrozen && Object.isFrozen(obj);
