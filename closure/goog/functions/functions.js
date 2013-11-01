@@ -13,8 +13,7 @@
 // limitations under the License.
 
 /**
- * @fileoverview Utilities for creating functions. Loosely inspired by the
- * java classes: http://go/functions.java and http://go/predicate.java.
+ * @fileoverview 関数作成のためのユーティリティ。Java のクラスを参考にしている。
  *
  * @author nicksantos@google.com (Nick Santos)
  */
@@ -24,9 +23,9 @@ goog.provide('goog.functions');
 
 
 /**
- * Creates a function that always returns the same value.
- * @param {T} retValue The value to return.
- * @return {function():T} The new function.
+ * 定関数を作成して返す。
+ * @param {T} retValue 定関数が返す値。
+ * @return {function():T} 作成された関数。
  * @template T
  */
 goog.functions.constant = function(retValue) {
@@ -37,32 +36,31 @@ goog.functions.constant = function(retValue) {
 
 
 /**
- * Always returns false.
+ * 常に `false` を返す定関数。
  * @type {function(...): boolean}
  */
 goog.functions.FALSE = goog.functions.constant(false);
 
 
 /**
- * Always returns true.
+ * 常に `true` を返す定関数。
  * @type {function(...): boolean}
  */
 goog.functions.TRUE = goog.functions.constant(true);
 
 
 /**
- * Always returns NULL.
+ * 常に `null` を返す定関数。
  * @type {function(...): null}
  */
 goog.functions.NULL = goog.functions.constant(null);
 
 
 /**
- * A simple function that returns the first argument of whatever is passed
- * into it.
- * @param {T=} opt_returnValue The single value that will be returned.
- * @param {...*} var_args Optional trailing arguments. These are ignored.
- * @return {T} The first argument passed in, or undefined if nothing was passed.
+ * 常に第一引数を返す関数。
+ * @param {T=} opt_returnValue この関数が返す値。
+ * @param {...*} var_args 無視される可変長引数。
+ * @return {T} 与えられた第一引数。
  * @template T
  */
 goog.functions.identity = function(opt_returnValue, var_args) {
@@ -71,9 +69,9 @@ goog.functions.identity = function(opt_returnValue, var_args) {
 
 
 /**
- * Creates a function that always throws an error with the given message.
- * @param {string} message The error message.
- * @return {!Function} The error-throwing function.
+ * 指定したエラーメッセージでエラーを発生させる関数を作成して返す。
+ * @param {string} message エラーメッセージ。
+ * @return {!Function} エラーを発生させる関数。
  */
 goog.functions.error = function(message) {
   return function() {
@@ -83,9 +81,9 @@ goog.functions.error = function(message) {
 
 
 /**
- * Creates a function that throws the given object.
- * @param {*} err An object to be thrown.
- * @return {!Function} The error-throwing function.
+ * 与えられたオブジェクトを例外として発生させる関数を作成して返す。
+ * @param {*} err 投げられる例外。
+ * @return {!Function} 例外を発生させる関数。
  */
 goog.functions.fail = function(err) {
   return function() {
@@ -95,12 +93,11 @@ goog.functions.fail = function(err) {
 
 
 /**
- * Given a function, create a function that keeps opt_numArgs arguments and
- * silently discards all additional arguments.
- * @param {Function} f The original function.
- * @param {number=} opt_numArgs The number of arguments to keep. Defaults to 0.
- * @return {!Function} A version of f that only keeps the first opt_numArgs
- *     arguments.
+ * 与えられた関数を `opt_numArgs` で指定された個数の引数で実行する関数を返す。
+ *  `opt_numArgs` の数以降の引数は無視される。
+ * @param {Function} f 元の関数。
+ * @param {number=} opt_numArgs `f` に渡す引数の個数。初期値は `0`。
+ * @return {!Function} `opt_numArgs` で指定された数の引数
  */
 goog.functions.lock = function(f, opt_numArgs) {
   opt_numArgs = opt_numArgs || 0;
@@ -111,9 +108,9 @@ goog.functions.lock = function(f, opt_numArgs) {
 
 
 /**
- * Creates a function that returns its nth argument.
- * @param {number} n The position of the return argument.
- * @return {!Function} A new function.
+ * `n` 番目の引数を返す関数を作成して返す。
+ * @param {number} n 作成される関数が返す引数の位置。
+ * @return {!Function} 作成された関数。
  */
 goog.functions.nth = function(n) {
   return function() {
@@ -123,11 +120,10 @@ goog.functions.nth = function(n) {
 
 
 /**
- * Given a function, create a new function that swallows its return value
- * and replaces it with a new one.
- * @param {Function} f A function.
- * @param {T} retValue A new return value.
- * @return {function(...[?]):T} A new function.
+ * 与えられた関数の戻り値を指定した値に差し替えた関数を作成して返す。
+ * @param {Function} f 元の関数。
+ * @param {T} retValue 新しい戻り値。
+ * @return {function(...[?]):T} 作成された関数。
  * @template T
  */
 goog.functions.withReturnValue = function(f, retValue) {
@@ -136,11 +132,12 @@ goog.functions.withReturnValue = function(f, retValue) {
 
 
 /**
- * Creates the composition of the functions passed in.
- * For example, (goog.functions.compose(f, g))(a) is equivalent to f(g(a)).
- * @param {function(...[?]):T} fn The final function.
- * @param {...Function} var_args A list of functions.
- * @return {function(...[?]):T} The composition of all inputs.
+ * 与えられた関数からなる合成関数を作成して返す。
+ *
+ * 例：`(goog.functions.compose(f, g))(a)` は `f(g(a))` と等価である。
+ * @param {function(...[?]):T} fn 最後に合成される関数。
+ * @param {...Function} var_args 関数からなる配列。
+ * @return {function(...[?]):T} 作成された合成関数。
  * @template T
  */
 goog.functions.compose = function(fn, var_args) {
@@ -161,11 +158,12 @@ goog.functions.compose = function(fn, var_args) {
 
 
 /**
- * Creates a function that calls the functions passed in in sequence, and
- * returns the value of the last function. For example,
- * (goog.functions.sequence(f, g))(x) is equivalent to f(x),g(x).
- * @param {...Function} var_args A list of functions.
- * @return {!Function} A function that calls all inputs in sequence.
+ * 与えられた関数を順に実行する関数を作成して返す。この関数の戻り値は最後の関数
+ * の戻り値となる。
+ *
+ * 例：`(goog.functions.sequence(f, g))(x)` は 'f(x),g(x)' と等価である。
+ * @param {...Function} var_args 関数からなる配列。
+ * @return {!Function} 与えられた関数を順に実行する関数。
  */
 goog.functions.sequence = function(var_args) {
   var functions = arguments;
@@ -181,13 +179,13 @@ goog.functions.sequence = function(var_args) {
 
 
 /**
- * Creates a function that returns true if each of its components evaluates
- * to true. The components are evaluated in order, and the evaluation will be
- * short-circuited as soon as a function returns false.
- * For example, (goog.functions.and(f, g))(x) is equivalent to f(x) && g(x).
- * @param {...Function} var_args A list of functions.
- * @return {function(...[?]):boolean} A function that ANDs its component
- *      functions.
+ * 与えられた間数列の戻り値の論理積を返す関数を作成して返す。ある関数が `false`
+ * を返した時点で `false` を返すので、ショートサーキット評価である。
+ *
+ * 例：`(goog.functions.and(f, g))(x)` は `f(x) && g(x)` と等価である。
+ * @param {...Function} var_args 関数からなる配列。
+ * @return {function(...[?]):boolean} 与えられた関数列の戻り値の論理積を返す関
+ *     数。
  */
 goog.functions.and = function(var_args) {
   var functions = arguments;
@@ -204,13 +202,13 @@ goog.functions.and = function(var_args) {
 
 
 /**
- * Creates a function that returns true if any of its components evaluates
- * to true. The components are evaluated in order, and the evaluation will be
- * short-circuited as soon as a function returns true.
- * For example, (goog.functions.or(f, g))(x) is equivalent to f(x) || g(x).
- * @param {...Function} var_args A list of functions.
- * @return {function(...[?]):boolean} A function that ORs its component
- *    functions.
+ * 与えられた間数列の戻り値の論理和を返す関数を作成して返す。ある関数が `true`
+ * を返した時点で `true` を返すので、ショートサーキット評価である。
+ *
+ * 例：`(goog.functions.or(f, g))(x)` は `f(x) || g(x)` と等価である。
+ * @param {...Function} var_args 関数からなる配列。
+ * @return {function(...[?]):boolean} 与えられた関数列の戻り値の論理和を返す関
+ *     数。
  */
 goog.functions.or = function(var_args) {
   var functions = arguments;
@@ -227,11 +225,12 @@ goog.functions.or = function(var_args) {
 
 
 /**
- * Creates a function that returns the Boolean opposite of a provided function.
- * For example, (goog.functions.not(f))(x) is equivalent to !f(x).
- * @param {!Function} f The original function.
- * @return {function(...[?]):boolean} A function that delegates to f and returns
- * opposite.
+ * 与えられた関数の戻り値の否定論理を返す関数を作成して返す。
+ *
+ * 例：`(goog.functions.not(f))(x)` は `!f(x)` と等価である。
+ * @param {!Function} f 元の関数。
+ * @return {function(...[?]):boolean} 与えられた関数の戻り値の論理否定を返す関
+ *     数。
  */
 goog.functions.not = function(f) {
   return function() {
@@ -241,52 +240,51 @@ goog.functions.not = function(f) {
 
 
 /**
- * Generic factory function to construct an object given the constructor
- * and the arguments. Intended to be bound to create object factories.
+ * 指定したコンストラクタと引数からオブジェクトを作成して返す。
+ * オブジェクトファクトリとして使える。
  *
- * Callers should cast the result to the appropriate type for proper type
- * checking by the compiler.
- * @param {!Function} constructor The constructor for the Object.
- * @param {...*} var_args The arguments to be passed to the constructor.
- * @return {!Object} A new instance of the class given in {@code constructor}.
+ * この関数を呼び出すとき、コンパイラによる型チェックをくぐり抜けられるように
+ * キャストしてあげる必要があるだろう。
+ * @param {!Function} constructor オブジェクトのコンストラクタ。
+ * @param {...*} var_args コンストラクタに渡される可変長引数。
+ * @return {!Object} `constructor` によって作成されたオブジェクト。
  */
 goog.functions.create = function(constructor, var_args) {
   /** @constructor */
   var temp = function() {};
   temp.prototype = constructor.prototype;
 
-  // obj will have constructor's prototype in its chain and
-  // 'obj instanceof constructor' will be true.
+  // `obj` は与えられた `constructor` の `prototype` チェーンをもっているので
+  // `obj instanceof constructor` は `true` となる。
   var obj = new temp();
 
-  // obj is initialized by constructor.
-  // arguments is only array-like so lacks shift(), but can be used with
-  // the Array prototype function.
+  // `obj` を `constructor` で初期化する。`arguments` を `shift()` した結果を得
+  // るために `Array` の `prototype` 関数を用いている。
   constructor.apply(obj, Array.prototype.slice.call(arguments, 1));
   return obj;
 };
 
 
 /**
- * @define {boolean} Whether the return value cache should be used.
- *    This should only be used to disable caches when testing.
+ * @define {boolean} 戻り値にキャッシュを使うかどうか。この値はテストの際に無効
+ *     にされるべきである。
  */
 goog.define('goog.functions.CACHE_RETURN_VALUE', true);
 
 
 /**
- * Gives a wrapper function that caches the return value of a parameterless
- * function when first called.
+ * パラメータのない関数の呼び出しをキャッシュする関数を作成して返す。
  *
- * When called for the first time, the given function is called and its
- * return value is cached (thus this is only appropriate for idempotent
- * functions).  Subsequent calls will return the cached return value. This
- * allows the evaluation of expensive functions to be delayed until first used.
+ * この関数が最初に呼び出されたとき、この戻り値がキャッシュされる（この関数は冪
+ * 等性をもっていなければならない）。次回以降の呼び出しでは、キャッシュされてい
+ * た値が返される。また、処理の重い関数を最初の呼び出しまで遅延させるという使い
+ * 方も可能である。
  *
- * To cache the return values of functions with parameters, see goog.memoize.
  *
- * @param {!function():T} fn A function to lazily evaluate.
- * @return {!function():T} A wrapped version the function.
+ * 引数付きでキャッシュしたい場合には `goog.memoize` を参照。
+ *
+ * @param {!function():T} fn 遅延評価される関数。
+ * @return {!function():T} `fn` をラップした関数。
  * @template T
  */
 goog.functions.cacheReturnValue = function(fn) {
