@@ -13,13 +13,12 @@
 // limitations under the License.
 
 /**
- * @fileoverview Utilities for manipulating the browser's Document Object Model
- * Inspiration taken *heavily* from mochikit (http://mochikit.com/).
+ * @fileoverview ブラウザの Document Object Model を操作するためのユーティリ
+ * ティ。mochikit (`http://mochikit.com/`) をかなり参考にした。
  *
- * You can use {@link goog.dom.DomHelper} to create new dom helpers that refer
- * to a different document object.  This is useful if you are working with
- * frames or multiple windows.
- *
+ * 異なる `document` オブジェクト間では `goog.dom.DomHelper` を作成して使うこと
+ * ができる。これは、フレームや異なる `window` をまたいで動作させるときに便利で
+ * ある。
  */
 
 
@@ -47,21 +46,19 @@ goog.require('goog.userAgent');
 
 
 /**
- * @define {boolean} Whether we know at compile time that the browser is in
- * quirks mode.
+ * @define {boolean} Quirks（互換）モードで動作させるかどうか。
  */
 goog.define('goog.dom.ASSUME_QUIRKS_MODE', false);
 
 
 /**
- * @define {boolean} Whether we know at compile time that the browser is in
- * standards compliance mode.
+ * @define {boolean} Standard（標準）モードで動作させるかどうか。
  */
 goog.define('goog.dom.ASSUME_STANDARDS_MODE', false);
 
 
 /**
- * Whether we know the compatibility mode at compile time.
+ * Compatibility（互換）モードで動作しているかどうか。
  * @type {boolean}
  * @private
  */
@@ -70,10 +67,10 @@ goog.dom.COMPAT_MODE_KNOWN_ =
 
 
 /**
- * Gets the DomHelper object for the document where the element resides.
- * @param {(Node|Window)=} opt_element If present, gets the DomHelper for this
- *     element.
- * @return {!goog.dom.DomHelper} The DomHelper.
+ * 現在の `document` に対応する `DomHelper` を返す。
+ * @param {(Node|Window)=} opt_element もし指定されたならば、この要素についての
+ *     `Domhelper` を返す。
+ * @return {!goog.dom.DomHelper} `Domhelper`。
  */
 goog.dom.getDomHelper = function(opt_element) {
   return opt_element ?
@@ -84,7 +81,7 @@ goog.dom.getDomHelper = function(opt_element) {
 
 
 /**
- * Cached default DOM helper.
+ * 標準の `DomHelper` のキャッシュ。
  * @type {goog.dom.DomHelper}
  * @private
  */
@@ -92,7 +89,7 @@ goog.dom.defaultDomHelper_;
 
 
 /**
- * Gets the document object being used by the dom library.
+ * 現在の `document` オブジェクトを返す。DOM のためのライブラリで使われている。
  * @return {!Document} Document object.
  */
 goog.dom.getDocument = function() {
@@ -101,12 +98,12 @@ goog.dom.getDocument = function() {
 
 
 /**
- * Gets an element from the current document by element id.
+ * 指定した ID をもつ要素を現在の `document` から取得して返す。
  *
- * If an Element is passed in, it is returned.
+ * `Element` が与えられたときはそのまま返す。
  *
- * @param {string|Element} element Element ID or a DOM node.
- * @return {Element} The element with the given ID, or the node passed in.
+ * @param {string|Element} element 要素の ID か DOM ノード。
+ * @return {Element} 指定した ID をもつ要素、または与えられた DOM ノード。
  */
 goog.dom.getElement = function(element) {
   return goog.dom.getElementHelper_(document, element);
@@ -114,11 +111,11 @@ goog.dom.getElement = function(element) {
 
 
 /**
- * Gets an element by id from the given document (if present).
- * If an element is given, it is returned.
- * @param {!Document} doc
- * @param {string|Element} element Element ID or a DOM node.
- * @return {Element} The resulting element.
+ * 指定した ID をもつ要素を与えられた `document` から取得して返す。
+ * `Element` が与えられたときはそのまま返す。
+ * @param {!Document} doc `document`。
+ * @param {string|Element} element 要素の ID。
+ * @return {Element} 指定した ID をもつ要素、または与えられた DOM ノード。
  * @private
  */
 goog.dom.getElementHelper_ = function(doc, element) {
@@ -129,13 +126,13 @@ goog.dom.getElementHelper_ = function(doc, element) {
 
 
 /**
- * Gets an element by id, asserting that the element is found.
+ * 指定した ID で要素を取得する。要素が見つからなかったときは例外を発生させる。
  *
- * This is used when an element is expected to exist, and should fail with
- * an assertion error if it does not (if assertions are enabled).
+ * 要素が存在すると期待されるときで、かつ要素が見つからないときアサーションに
+ * よって例外を発生させたいときに使う（アサーションが有効であれば例外が発生）。
  *
- * @param {string} id Element ID.
- * @return {!Element} The element with the given ID, if it exists.
+ * @param {string} id 要素の ID。
+ * @return {Element} 指定した ID をもつ要素（存在するならば）。
  */
 goog.dom.getRequiredElement = function(id) {
   return goog.dom.getRequiredElementHelper_(document, id);
@@ -143,11 +140,11 @@ goog.dom.getRequiredElement = function(id) {
 
 
 /**
- * Helper function for getRequiredElementHelper functions, both static and
- * on DomHelper.  Asserts the element with the given id exists.
- * @param {!Document} doc
- * @param {string} id
- * @return {!Element} The element with the given ID, if it exists.
+ * `getRequiredElement` の実装。静的なものと `DomHelper` にあるものの二つある。
+ * 指定された ID をもつ要素があるかどうかアサートされる。
+ * @param {!Document} doc `document`。
+ * @param {string} id 要素の ID。
+ * @return {Element} 指定した ID をもつ要素、または与えられた DOM ノード。
  * @private
  */
 goog.dom.getRequiredElementHelper_ = function(doc, id) {
@@ -161,32 +158,30 @@ goog.dom.getRequiredElementHelper_ = function(doc, id) {
 
 
 /**
- * Alias for getElement.
- * @param {string|Element} element Element ID or a DOM node.
- * @return {Element} The element with the given ID, or the node passed in.
- * @deprecated Use {@link goog.dom.getElement} instead.
+ * `getElement` のエイリアス。
+ * @param {string|Element} element 要素の ID か DOM ノード。
+ * @return {Element} 指定した ID をもつ要素、または与えられた DOM ノード。
+ * @deprecated `goog.dom.getElement` を使うべき。
  */
 goog.dom.$ = goog.dom.getElement;
 
 
 /**
- * Looks up elements by both tag and class name, using browser native functions
- * ({@code querySelectorAll}, {@code getElementsByTagName} or
- * {@code getElementsByClassName}) where possible. This function
- * is a useful, if limited, way of collecting a list of DOM elements
- * with certain characteristics.  {@code goog.dom.query} offers a
- * more powerful and general solution which allows matching on CSS3
- * selector expressions, but at increased cost in code size. If all you
- * need is particular tags belonging to a single class, this function
- * is fast and sleek.
+ * タグ名、あるいはクラス名から要素を検索して返す。可能であれば、ブラウザによる
+ * ネイティブ実装（`querySelectorAll`、`getElementsByTagName`、
+ * `getElementsByClassName`）を使う。この関数は、取得したい要素の特徴が限定され
+ * るときに役にたつ。また、`goog.gom.query` では CSS3 のセレクタ式を使えために
+ * さらに強力で一般的な方法を利用できるが、実行コストが高くつく。もし、あるタグ
+ * が一つのクラスにしか属していないような場合にはこちらの方がより速く、エレガン
+ * である。
  *
- * @see {goog.dom.query}
+ * @see goog.dom.query
  *
- * @param {?string=} opt_tag Element tag name.
- * @param {?string=} opt_class Optional class name.
- * @param {(Document|Element)=} opt_el Optional element to look in.
- * @return { {length: number} } Array-like list of elements (only a length
- *     property and numerical indices are guaranteed to exist).
+ * @param {?string=} opt_tag 要素のタグ名。
+ * @param {?string=} opt_class クラス名（省略可能）。
+ * @param {(Document|Element)=} opt_el 検索対象となる要素（省略可能）。
+ * @return { {length: number} } 得られた要素からなる配列のようなオブジェクト。
+ *     `length` プロパティと数字によるインデックスが存在することは保証されてる。
  */
 goog.dom.getElementsByTagNameAndClass = function(opt_tag, opt_class, opt_el) {
   return goog.dom.getElementsByTagNameAndClass_(document, opt_tag, opt_class,
@@ -195,11 +190,11 @@ goog.dom.getElementsByTagNameAndClass = function(opt_tag, opt_class, opt_el) {
 
 
 /**
- * Returns an array of all the elements with the provided className.
+ * 与えられたクラス名を持つ要素を返す。
  * @see {goog.dom.query}
- * @param {string} className the name of the class to look for.
- * @param {(Document|Element)=} opt_el Optional element to look in.
- * @return { {length: number} } The items found with the class name provided.
+ * @param {string} className 検索に使うクラス名。
+ * @param {(Document|Element)=} opt_el 検索対象となる要素（省略可能）。
+ * @return { {length: number} } 見つかった要素からなる配列のようなオブジェクト。
  */
 goog.dom.getElementsByClass = function(className, opt_el) {
   var parent = opt_el || document;
@@ -214,11 +209,11 @@ goog.dom.getElementsByClass = function(className, opt_el) {
 
 
 /**
- * Returns the first element with the provided className.
+ * 与えられたクラス名を持つ最初の要素を返す。
  * @see {goog.dom.query}
- * @param {string} className the name of the class to look for.
- * @param {Element|Document=} opt_el Optional element to look in.
- * @return {Element} The first item with the class name provided.
+ * @param {string} className 検索に使うクラス名。
+ * @param {(Document|Element)=} opt_el 検索対象となる要素（省略可能）。
+ * @return { {length: number} } 見つかった要素。
  */
 goog.dom.getElementByClass = function(className, opt_el) {
   var parent = opt_el || document;
@@ -233,10 +228,10 @@ goog.dom.getElementByClass = function(className, opt_el) {
 
 
 /**
- * Prefer the standardized (http://www.w3.org/TR/selectors-api/), native and
- * fast W3C Selectors API.
- * @param {!(Element|Document)} parent The parent document object.
- * @return {boolean} whether or not we can use parent.querySelector* APIs.
+ * W3C Selectors API の標準化されていて、かつ高速であるネイティブ実装が利用でき
+ * るかどうかを判定する（http://www.w3.org/TR/selectors-api/）。
+ * @param {!(Element|Document)} parent 親要素。
+ * @return {boolean} `parent.querySelector` API が利用できるかどうか。
  * @private
  */
 goog.dom.canUseQuerySelector_ = function(parent) {
@@ -245,13 +240,13 @@ goog.dom.canUseQuerySelector_ = function(parent) {
 
 
 /**
- * Helper for {@code getElementsByTagNameAndClass}.
- * @param {!Document} doc The document to get the elements in.
- * @param {?string=} opt_tag Element tag name.
- * @param {?string=} opt_class Optional class name.
- * @param {(Document|Element)=} opt_el Optional element to look in.
- * @return { {length: number} } Array-like list of elements (only a length
- *     property and numerical indices are guaranteed to exist).
+ * `getElementsByTagNameAndClass` のネイティブな実装。
+ * @param {!Document} doc 検索対象となる `document`。
+ * @param {?string=} opt_tag 要素のタグ名。
+ * @param {?string=} opt_class クラス名（省略可能）。
+ * @param {(Document|Element)=} opt_el 検索対象となる要素（省略可能）。
+ * @return { {length: number} } 得られた要素からなる配列のようなオブジェクト。
+ *     `length` プロパティと数字によるインデックスが存在することは保証される。
  * @private
  */
 goog.dom.getElementsByTagNameAndClass_ = function(doc, opt_tag, opt_class,
@@ -265,9 +260,9 @@ goog.dom.getElementsByTagNameAndClass_ = function(doc, opt_tag, opt_class,
     return parent.querySelectorAll(query);
   }
 
-  // Use the native getElementsByClassName if available, under the assumption
-  // that even when the tag name is specified, there will be fewer elements to
-  // filter through when going by class than by tag name
+  // ネイティブな `getElementsByClassName` が利用できるときはこれを使う。タグ名
+  // でフィルタリングするよりも、クラス名によるフィルタリングの方が処理数を少な
+  // くなると想定している。
   if (opt_class && parent.getElementsByClassName) {
     var els = parent.getElementsByClassName(opt_class);
 
@@ -275,7 +270,7 @@ goog.dom.getElementsByTagNameAndClass_ = function(doc, opt_tag, opt_class,
       var arrayLike = {};
       var len = 0;
 
-      // Filter for specific tags if requested.
+      // タグ名が指定されていれば、フィルタリングする。
       for (var i = 0, el; el = els[i]; i++) {
         if (tagName == el.nodeName) {
           arrayLike[len++] = el;
@@ -296,7 +291,8 @@ goog.dom.getElementsByTagNameAndClass_ = function(doc, opt_tag, opt_class,
     var len = 0;
     for (var i = 0, el; el = els[i]; i++) {
       var className = el.className;
-      // Check if className has a split function since SVG className does not.
+      // `className` が `split` 関数をもっているかどうかを確認する（SVG は
+      // `className` をもたない）。
       if (typeof className.split == 'function' &&
           goog.array.contains(className.split(/\s+/), opt_class)) {
         arrayLike[len++] = el;
@@ -311,21 +307,21 @@ goog.dom.getElementsByTagNameAndClass_ = function(doc, opt_tag, opt_class,
 
 
 /**
- * Alias for {@code getElementsByTagNameAndClass}.
- * @param {?string=} opt_tag Element tag name.
- * @param {?string=} opt_class Optional class name.
- * @param {Element=} opt_el Optional element to look in.
- * @return { {length: number} } Array-like list of elements (only a length
- *     property and numerical indices are guaranteed to exist).
- * @deprecated Use {@link goog.dom.getElementsByTagNameAndClass} instead.
+ * `getElementsByTagNameAndClass` へのエイリアス。
+ * @param {?string=} opt_tag 要素のタグ名。
+ * @param {?string=} opt_class クラス名（省略可能）。
+ * @param {Element=} opt_el 検索対象の要素（省略可能）。
+ * @return { {length: number} } 得られた要素からなる配列のようなオブジェクト。
+ *     `length` プロパティと数字によるインデックスが存在することは保証される。
+ * @deprecated `goog.dom.getElementsByTagNameAndClass` を使うべき。
  */
 goog.dom.$$ = goog.dom.getElementsByTagNameAndClass;
 
 
 /**
- * Sets multiple properties on a node.
- * @param {Element} element DOM node to set properties on.
- * @param {Object} properties Hash of property:value pairs.
+ * 複数の属性をノードに設定する。
+ * @param {Element} element 属性を設定する DOM ノード。
+ * @param {Object} properties 属性名と値からなるハッシュ。
  */
 goog.dom.setProperties = function(element, properties) {
   goog.object.forEach(properties, function(val, key) {
@@ -348,9 +344,8 @@ goog.dom.setProperties = function(element, properties) {
 
 
 /**
- * Map of attributes that should be set using
- * element.setAttribute(key, val) instead of element[key] = val.  Used
- * by goog.dom.setProperties.
+ * `element[key] = val` ではなく `element.setAttribute(key, val)` によって設定さ
+ * れるべき属性名のマップ。`goog.dom.setProperties` で使われる。
  *
  * @type {Object}
  * @private
@@ -372,69 +367,69 @@ goog.dom.DIRECT_ATTRIBUTE_MAP_ = {
 
 
 /**
- * Gets the dimensions of the viewport.
+ * viewport の寸法を返す。
  *
- * Gecko Standards mode:
- * docEl.clientWidth  Width of viewport excluding scrollbar.
- * win.innerWidth     Width of viewport including scrollbar.
- * body.clientWidth   Width of body element.
+ * Gecko の標準モードでは：
+ * docEl.clientWidth  スクロールバーを含まない viewport の幅。
+ * win.innerWidth     スクロールバーを含む viewport の幅。
+ * body.clientWidth   `body` 要素の幅。
  *
- * docEl.clientHeight Height of viewport excluding scrollbar.
- * win.innerHeight    Height of viewport including scrollbar.
- * body.clientHeight  Height of document.
+ * docEl.clientHeight  スクロールバーを含まない viewport の高さ。
+ * win.innerHeight     スクロールバーを含む viewport の高さ。
+ * body.clientHeight   `body` 要素の高さ。
  *
- * Gecko Backwards compatible mode:
- * docEl.clientWidth  Width of viewport excluding scrollbar.
- * win.innerWidth     Width of viewport including scrollbar.
- * body.clientWidth   Width of viewport excluding scrollbar.
+ * Gecko の後方互換モードでは：
+ * docEl.clientWidth  スクロールバーを含まない viewport の幅。
+ * win.innerWidth     スクロールバーを含む viewport の幅。
+ * body.clientWidth   スクロールバーを含まない viewport の幅。
  *
- * docEl.clientHeight Height of document.
- * win.innerHeight    Height of viewport including scrollbar.
- * body.clientHeight  Height of viewport excluding scrollbar.
+ * docEl.clientHeight  `document` の高さ。
+ * win.innerHeight     スクロールバーを含む viewport の高さ。
+ * body.clientHeight   スクロールバーを含まない viewport の高さ。
  *
- * IE6/7 Standards mode:
- * docEl.clientWidth  Width of viewport excluding scrollbar.
- * win.innerWidth     Undefined.
- * body.clientWidth   Width of body element.
+ * IE6/7 の標準モードでは：
+ * docEl.clientWidth  スクロールバーを含まない viewport の幅。
+ * win.innerWidth     未定義。
+ * body.clientWidth   `body` 要素の幅。
  *
- * docEl.clientHeight Height of viewport excluding scrollbar.
- * win.innerHeight    Undefined.
- * body.clientHeight  Height of document element.
+ * docEl.clientHeight スクロールバーを含まない viewport の高さ。
+ * win.innerHeight    未定義。
+ * body.clientHeight  `document` 要素の高さ。
  *
- * IE5 + IE6/7 Backwards compatible mode:
- * docEl.clientWidth  0.
- * win.innerWidth     Undefined.
- * body.clientWidth   Width of viewport excluding scrollbar.
+ * IE5 + IE6/7 の後方互換モードでは：
+ * docEl.clientWidth  `0`。
+ * win.innerWidth     未定義。
+ * body.clientWidth   スクロールバーを含まない viewport の幅。
  *
- * docEl.clientHeight 0.
- * win.innerHeight    Undefined.
- * body.clientHeight  Height of viewport excluding scrollbar.
+ * docEl.clientHeight `0`。
+ * win.innerHeight    未定義。
+ * body.clientHeight  スクロールバーを含まない viewport の高さ。
  *
- * Opera 9 Standards and backwards compatible mode:
- * docEl.clientWidth  Width of viewport excluding scrollbar.
- * win.innerWidth     Width of viewport including scrollbar.
- * body.clientWidth   Width of viewport excluding scrollbar.
+ * Opera 9 の標準・後方互換モードでは：
+ * docEl.clientWidth  スクロールバーを含まない viewport の幅。
+ * win.innerWidth     スクロールバーを含む viewport の幅。
+ * body.clientWidth   スクロールバーを含まない viewport の幅。
  *
- * docEl.clientHeight Height of document.
- * win.innerHeight    Height of viewport including scrollbar.
- * body.clientHeight  Height of viewport excluding scrollbar.
+ * docEl.clientHeight  `document` の高さ。
+ * win.innerHeight     スクロールバーを含む viewport の高さ。
+ * body.clientHeight   スクロールバーを含まない viewport の高さ。
  *
- * WebKit:
+ * WebKit では：
  * Safari 2
- * docEl.clientHeight Same as scrollHeight.
- * docEl.clientWidth  Same as innerWidth.
- * win.innerWidth     Width of viewport excluding scrollbar.
- * win.innerHeight    Height of the viewport including scrollbar.
- * frame.innerHeight  Height of the viewport exluding scrollbar.
+ * docEl.clientHeight `scrollHeight` と同じ。
+ * docEl.clientWidth  `innerWidth` と同じ。
+ * win.innerWidth     スクロールバーを含まない viewport の幅。
+ * win.innerHeight    スクロールバーを含む viewport の高さ。
+ * frame.innerHeight  スクロールバーを含まない viewport の高さ。
  *
  * Safari 3 (tested in 522)
  *
- * docEl.clientWidth  Width of viewport excluding scrollbar.
- * docEl.clientHeight Height of viewport excluding scrollbar in strict mode.
- * body.clientHeight  Height of viewport excluding scrollbar in quirks mode.
+ * docEl.clientWidth  スクロールバーを含まない viewport の幅。
+ * docEl.clientHeight スクロールバーを含まない viewport の高（strictモード）。
+ * body.clientHeight  スクロールバーを含まない viewport の高（quirksモード）。
  *
- * @param {Window=} opt_window Optional window element to test.
- * @return {!goog.math.Size} Object with values 'width' and 'height'.
+ * @param {Window=} opt_window 判定する `window` 要素。
+ * @return {!goog.math.Size} `width` と `height` をもつオブジェクト。
  */
 goog.dom.getViewportSize = function(opt_window) {
   // TODO(arv): This should not take an argument
@@ -443,9 +438,9 @@ goog.dom.getViewportSize = function(opt_window) {
 
 
 /**
- * Helper for {@code getViewportSize}.
- * @param {Window} win The window to get the view port size for.
- * @return {!goog.math.Size} Object with values 'width' and 'height'.
+ * `getViewportSize` の実装。
+ * @param {Window} win viewport の寸法を取得したい `window`。
+ * @return {!goog.math.Size} `width` と `height` をもつオブジェクト。
  * @private
  */
 goog.dom.getViewportSize_ = function(win) {
@@ -456,9 +451,9 @@ goog.dom.getViewportSize_ = function(win) {
 
 
 /**
- * Calculates the height of the document.
+ * `document` の高さを返す。
  *
- * @return {number} The height of the current document.
+ * @return {number} 現在の `document` の高さ。
  */
 goog.dom.getDocumentHeight = function() {
   return goog.dom.getDocumentHeight_(window);
@@ -466,54 +461,53 @@ goog.dom.getDocumentHeight = function() {
 
 
 /**
- * Calculates the height of the document of the given window.
+ * 与えられた `window` の `document` の高さを返す。
  *
- * Function code copied from the opensocial gadget api:
- *   gadgets.window.adjustHeight(opt_height)
+ * この関数は opensocial gadget api からの転載である：
+ * `gadgets.window.adjustHeight(opt_height)`
  *
  * @private
- * @param {Window} win The window whose document height to retrieve.
- * @return {number} The height of the document of the given window.
+ * @param {Window} win 高さを取得する `window`。
+ * @return {number} 与えられた `window` の高さ。
  */
 goog.dom.getDocumentHeight_ = function(win) {
-  // NOTE(eae): This method will return the window size rather than the document
-  // size in webkit quirks mode.
+  // NOTE(eae): webkit の quirks モードでは `window` のサイズを返すというよりか
+  // は、`document` の高さを返しているのではないだろうか。
   var doc = win.document;
   var height = 0;
 
   if (doc) {
-    // Calculating inner content height is hard and different between
-    // browsers rendering in Strict vs. Quirks mode.  We use a combination of
-    // three properties within document.body and document.documentElement:
-    // - scrollHeight
-    // - offsetHeight
-    // - clientHeight
-    // These values differ significantly between browsers and rendering modes.
-    // But there are patterns.  It just takes a lot of time and persistence
-    // to figure out.
+    // Quirks モード、Strict モードでブラウザの挙動が異なるため、コンテントの
+    // 内側の高さを計算することは難しい。ここでは、`document.body` または
+    // `document.documentElement` の3つのプロパティを使うことにした：
+    // - `scrollHeight`
+    // - `offsetHeight`
+    // - `clientHeight`
+    // これらの値は、ブラウザによっても描画モードによってもかなり異なる。
+    // しかし、これらには法則性があり、長い時間と苦労をかけてやっと解決できた。
 
-    // Get the height of the viewport
+    // viewport の高さを取得する。
     var vh = goog.dom.getViewportSize_(win).height;
     var body = doc.body;
     var docEl = doc.documentElement;
     if (goog.dom.isCss1CompatMode_(doc) && docEl.scrollHeight) {
-      // In Strict mode:
-      // The inner content height is contained in either:
-      //    document.documentElement.scrollHeight
-      //    document.documentElement.offsetHeight
-      // Based on studying the values output by different browsers,
-      // use the value that's NOT equal to the viewport height found above.
+      // Strict mode では：
+      // コンテントの内側の高さはどちらかに含まれる：
+      //    `document.documentElement.scrollHeight`
+      //    `document.documentElement.offsetHeight`
+      // ブラウザ間の挙動の違いを研究したところ、viewport の高さと異なれば使って
+      // もよいことがわかった。
       height = docEl.scrollHeight != vh ?
           docEl.scrollHeight : docEl.offsetHeight;
     } else {
-      // In Quirks mode:
-      // documentElement.clientHeight is equal to documentElement.offsetHeight
-      // except in IE.  In most browsers, document.documentElement can be used
-      // to calculate the inner content height.
-      // However, in other browsers (e.g. IE), document.body must be used
-      // instead.  How do we know which one to use?
-      // If document.documentElement.clientHeight does NOT equal
-      // document.documentElement.offsetHeight, then use document.body.
+      // Quirks モードでは：
+      // `documentElement.clientHeight` が `documentElement.offsetHeight`が等し
+      // いのは IE である。多くのブラウザでは `document.documentElement` はコン
+      // テントの内側の高さである。しかし、IE 以外のブラウザでは `document.body`
+      // を使うべきである。どちらを使うべきかをどのようにして判定できるかどう
+      // か？ `document.documentElement.clientHeight` が
+      // `document.documentElement.offsetHeight` と等しければ、 `document.body`
+      // を使うべきである。
       var sh = docEl.scrollHeight;
       var oh = docEl.offsetHeight;
       if (docEl.clientHeight != oh) {
@@ -521,14 +515,14 @@ goog.dom.getDocumentHeight_ = function(win) {
         oh = body.offsetHeight;
       }
 
-      // Detect whether the inner content height is bigger or smaller
-      // than the bounding box (viewport).  If bigger, take the larger
-      // value.  If smaller, take the smaller value.
+      // viewportの寸法よりもコンテントの高さが大きい、あるいは小さいかどうかを
+      // 確認する。コンテントの高さの方が大きければ、大きい値を使う。小さけれ
+      // ば、小さい値を使う。
       if (sh > vh) {
-        // Content is larger
+        // コンテントが大きいとき
         height = sh > oh ? sh : oh;
       } else {
-        // Content is smaller
+        // コンテントが小さいとき
         height = sh < oh ? sh : oh;
       }
     }
@@ -539,11 +533,11 @@ goog.dom.getDocumentHeight_ = function(win) {
 
 
 /**
- * Gets the page scroll distance as a coordinate object.
+ * ページのスクロール距離を座標オブジェクトにして返す。
  *
- * @param {Window=} opt_window Optional window element to test.
- * @return {!goog.math.Coordinate} Object with values 'x' and 'y'.
- * @deprecated Use {@link goog.dom.getDocumentScroll} instead.
+ * @param {Window=} opt_window 取得対象の `window` （省略可能）。
+ * @return {!goog.math.Coordinate} `x` と `y` をもつオブジェクト。
+ * @deprecated `goog.dom.getDocumentScroll` を使うべき。
  */
 goog.dom.getPageScroll = function(opt_window) {
   var win = opt_window || goog.global || window;
@@ -552,9 +546,9 @@ goog.dom.getPageScroll = function(opt_window) {
 
 
 /**
- * Gets the document scroll distance as a coordinate object.
+ * ドキュメントのスクロール距離を座標オブジェクトにして返す。
  *
- * @return {!goog.math.Coordinate} Object with values 'x' and 'y'.
+ * @return {!goog.math.Coordinate} `x` と `y` をもつオブジェクト。
  */
 goog.dom.getDocumentScroll = function() {
   return goog.dom.getDocumentScroll_(document);
@@ -562,10 +556,10 @@ goog.dom.getDocumentScroll = function() {
 
 
 /**
- * Helper for {@code getDocumentScroll}.
+ * `getDocumentScroll` の実装。
  *
- * @param {!Document} doc The document to get the scroll for.
- * @return {!goog.math.Coordinate} Object with values 'x' and 'y'.
+ * @param {!Document} doc スクロール距離を取得したい `document`。
+ * @return {!goog.math.Coordinate} `x` と `y` をもつオブジェクト。
  * @private
  */
 goog.dom.getDocumentScroll_ = function(doc) {
@@ -573,9 +567,9 @@ goog.dom.getDocumentScroll_ = function(doc) {
   var win = goog.dom.getWindow_(doc);
   if (goog.userAgent.IE && goog.userAgent.isVersionOrHigher('10') &&
       win.pageYOffset != el.scrollTop) {
-    // The keyboard on IE10 touch devices shifts the page using the pageYOffset
-    // without modifying scrollTop. For this case, we want the body scroll
-    // offsets.
+    // IE10 のタッチデバイスのキーボードでは、`scrollTop` を修正せずに
+    // `pageYOffset` を利用してページの表示位置をずらしている。この場合、`body`
+    // のスクロールオフセットを利用したい。
     return new goog.math.Coordinate(el.scrollLeft, el.scrollTop);
   }
   return new goog.math.Coordinate(win.pageXOffset || el.scrollLeft,
@@ -584,8 +578,8 @@ goog.dom.getDocumentScroll_ = function(doc) {
 
 
 /**
- * Gets the document scroll element.
- * @return {Element} Scrolling element.
+ * `document` のスクロール要素を返す。
+ * @return {Element} スクロール要素。
  */
 goog.dom.getDocumentScrollElement = function() {
   return goog.dom.getDocumentScrollElement_(document);
@@ -593,15 +587,15 @@ goog.dom.getDocumentScrollElement = function() {
 
 
 /**
- * Helper for {@code getDocumentScrollElement}.
- * @param {!Document} doc The document to get the scroll element for.
- * @return {Element} Scrolling element.
+ * `getDocumentScrollElement` の実装。
+ * @param {!Document} doc すく露ル要素を取得したい `document`。
+ * @return {Element} スクロール要素。
  * @private
  */
 goog.dom.getDocumentScrollElement_ = function(doc) {
-  // WebKit needs body.scrollLeft in both quirks mode and strict mode. We also
-  // default to the documentElement if the document does not have a body (e.g.
-  // a SVG document).
+  // Webkit では、quirks モードでも、strict モードでも `body.scrollLeft` が必要
+  // である。もし、`document` が `body` をもっていなければ、`documentElement` を
+  // 使う（これは SVG ドキュメントを想定している）。
   if (!goog.userAgent.WEBKIT && goog.dom.isCss1CompatMode_(doc)) {
     return doc.documentElement;
   }
@@ -610,10 +604,10 @@ goog.dom.getDocumentScrollElement_ = function(doc) {
 
 
 /**
- * Gets the window object associated with the given document.
+ * 与えられた `document` が属している `window` を返す。
  *
- * @param {Document=} opt_doc  Document object to get window for.
- * @return {!Window} The window associated with the given document.
+ * @param {Document=} opt_doc `window` を取得する `document`。
+ * @return {!Window} `document` から属している `window`。
  */
 goog.dom.getWindow = function(opt_doc) {
   // TODO(arv): This should not take an argument.
@@ -622,10 +616,10 @@ goog.dom.getWindow = function(opt_doc) {
 
 
 /**
- * Helper for {@code getWindow}.
+ * `getWindow` の実装。
  *
- * @param {!Document} doc  Document object to get window for.
- * @return {!Window} The window associated with the given document.
+ * @param {!Document=} doc `window` に属している `document`。
+ * @return {!Window} `document` から属している `window`。
  * @private
  */
 goog.dom.getWindow_ = function(doc) {
@@ -634,23 +628,21 @@ goog.dom.getWindow_ = function(doc) {
 
 
 /**
- * Returns a dom node with a set of attributes.  This function accepts varargs
- * for subsequent nodes to be added.  Subsequent nodes will be added to the
- * first node as childNodes.
+ * DOM ノードを指定した属性で作成して返す。また、可変長引数で子要素を追加でき
+ * る。子要素は `childNodes` の先頭に追加される。
  *
- * So:
- * <code>createDom('div', null, createDom('p'), createDom('p'));</code>
- * would return a div with two child paragraphs
+ * 例： ```createDom('div', null, createDom('p'), createDom('p'));``` は 2 つの
+ * パラグラフ要素を持つ div 要素を返す。
  *
- * @param {string} tagName Tag to create.
- * @param {(Object|Array.<string>|string)=} opt_attributes If object, then a map
- *     of name-value pairs for attributes. If a string, then this is the
- *     className of the new element. If an array, the elements will be joined
- *     together as the className of the new element.
- * @param {...(Object|string|Array|NodeList)} var_args Further DOM nodes or
- *     strings for text nodes. If one of the var_args is an array or NodeList,i
- *     its elements will be added as childNodes instead.
- * @return {!Element} Reference to a DOM node.
+ * @param {string} tagName 作成する要素のタグ名。
+ * @param {(Object|Array.<string>|string)=} opt_attributes オブジェクトであれば
+ *     含まれる属性名・値が設定される。文字列であれば、クラス名として設定され
+ *     る。配列であれば結合されてクラス名として設定される。
+ * @param {...(Object|string|Array|NodeList)} var_args DOM ノードもしくはテキス
+ *     トノードとなる文字列。もし、可変長引数に配列が含まれれば、これらも子要素
+ *     として追加される。
+ *
+ * @return {!Element} DOM ノードへの参照。
  */
 goog.dom.createDom = function(tagName, opt_attributes, var_args) {
   return goog.dom.createDom_(document, arguments);
@@ -658,20 +650,20 @@ goog.dom.createDom = function(tagName, opt_attributes, var_args) {
 
 
 /**
- * Helper for {@code createDom}.
- * @param {!Document} doc The document to create the DOM in.
- * @param {!Arguments} args Argument object passed from the callers. See
- *     {@code goog.dom.createDom} for details.
- * @return {!Element} Reference to a DOM node.
+ * `createDom` の実装。
+ * @param {!Document} doc DOM を作成する `document`。
+ * @param {!Arguments} args 呼び出されたときの引数。`goog.dom.createDom` を参
+ *     照。
+ * @return {!Element} DOM ノードへの参照。
  * @private
  */
 goog.dom.createDom_ = function(doc, args) {
   var tagName = args[0];
   var attributes = args[1];
 
-  // Internet Explorer is dumb: http://msdn.microsoft.com/workshop/author/
-  //                            dhtml/reference/properties/name_2.asp
-  // Also does not allow setting of 'type' attribute on 'input' or 'button'.
+  // Internet Explorer がやらかした：http://msdn.microsoft.com/workshop/author/
+  //                                 dhtml/reference/properties/name_2.asp
+  // なので `type` 属性を `input` または `button` に設定できなくなった。
   if (!goog.dom.BrowserFeature.CAN_ADD_NAME_OR_TYPE_ATTRIBUTES && attributes &&
       (attributes.name || attributes.type)) {
     var tagNameArr = ['<', tagName];
@@ -683,13 +675,13 @@ goog.dom.createDom_ = function(doc, args) {
       tagNameArr.push(' type="', goog.string.htmlEscape(attributes.type),
                       '"');
 
-      // Clone attributes map to remove 'type' without mutating the input.
+      // 入力されたオブジェクトを変えることなく、`type` を除去する。
       var clone = {};
       goog.object.extend(clone, attributes);
 
-      // JSCompiler can't see how goog.object.extend added this property,
-      // because it was essentially added by reflection.
-      // So it needs to be quoted.
+      // コンパイラは `goog.object.extend` がどのようにプロパティを追加してい
+      // るかがわからないので、リフレクションが使われるだろう。
+      // なので、クオートで囲む必要がある。
       delete clone['type'];
 
       attributes = clone;
@@ -719,11 +711,12 @@ goog.dom.createDom_ = function(doc, args) {
 
 
 /**
- * Appends a node with text or other nodes.
- * @param {!Document} doc The document to create new nodes in.
- * @param {!Node} parent The node to append nodes to.
- * @param {!Arguments} args The values to add. See {@code goog.dom.append}.
- * @param {number} startIndex The index of the array to start from.
+ * ノードに文字列、あるいは他のノードを追加する。
+ * @param {!Document} doc ノードを作成した `document`。
+ * @param {!Node} parent ノードの追加先。
+ * @param {!Arguments} args 追加されるノードが含まれる配列。`goog.dom.append`
+ *     を参照。
+ * @param {number} startIndex 追加されるノードの先頭のインデックス。
  * @private
  */
 goog.dom.append_ = function(doc, parent, args, startIndex) {
@@ -739,8 +732,8 @@ goog.dom.append_ = function(doc, parent, args, startIndex) {
     var arg = args[i];
     // TODO(attila): Fix isArrayLike to return false for a text node.
     if (goog.isArrayLike(arg) && !goog.dom.isNodeLike(arg)) {
-      // If the argument is a node list, not a real array, use a clone,
-      // because forEach can't be used to mutate a NodeList.
+      // もし、引数が本物の配列ではなくノードリストであれば複製して使う。
+      // `forEach` は変更可能な `NodeList` を処理できないからである。
       goog.array.forEach(goog.dom.isNodeList(arg) ?
           goog.array.toArray(arg) : arg,
           childHandler);
@@ -752,24 +745,25 @@ goog.dom.append_ = function(doc, parent, args, startIndex) {
 
 
 /**
- * Alias for {@code createDom}.
- * @param {string} tagName Tag to create.
- * @param {(string|Object)=} opt_attributes If object, then a map of name-value
- *     pairs for attributes. If a string, then this is the className of the new
- *     element.
- * @param {...(Object|string|Array|NodeList)} var_args Further DOM nodes or
- *     strings for text nodes. If one of the var_args is an array, its
- *     children will be added as childNodes instead.
- * @return {!Element} Reference to a DOM node.
- * @deprecated Use {@link goog.dom.createDom} instead.
+ * `createDom` のエイリアス。
+ * @param {string} tagName 作成する要素のタグ名。
+ * @param {(Object|Array.<string>|string)=} opt_attributes オブジェクトであれば
+ *     含まれる属性名・値が設定される。文字列であれば、クラス名として設定され
+ *     る。配列であれば結合されてクラス名として設定される。
+ * @param {...(Object|string|Array|NodeList)} var_args DOM ノードもしくはテキス
+ *     トノードとなる文字列。もし、可変長引数に配列が含まれれば、これらも子要素
+ *     として追加される。
+ *
+ * @return {!Element} DOM ノードへの参照。
+ * @deprecated `goog.dom.createDom` を使うべき。
  */
 goog.dom.$dom = goog.dom.createDom;
 
 
 /**
- * Creates a new element.
- * @param {string} name Tag name.
- * @return {!Element} The new element.
+ * 新しい要素を作成して返す。
+ * @param {string} name タグ名。
+ * @return {!Element} 作成された要素。
  */
 goog.dom.createElement = function(name) {
   return document.createElement(name);
@@ -777,9 +771,9 @@ goog.dom.createElement = function(name) {
 
 
 /**
- * Creates a new text node.
- * @param {number|string} content Content.
- * @return {!Text} The new text node.
+ * テキストノードを作成して返す。
+ * @param {number|string} content コンテント。
+ * @return {!Text} 作成されたテキストノード。
  */
 goog.dom.createTextNode = function(content) {
   return document.createTextNode(String(content));
@@ -787,11 +781,12 @@ goog.dom.createTextNode = function(content) {
 
 
 /**
- * Create a table.
- * @param {number} rows The number of rows in the table.  Must be >= 1.
- * @param {number} columns The number of columns in the table.  Must be >= 1.
- * @param {boolean=} opt_fillWithNbsp If true, fills table entries with nsbps.
- * @return {!Element} The created table.
+ * テーブルを作成する。
+ * @param {number} rows テーブルの行数（`1` より大きくなければならない）。
+ * @param {number} columns テーブルの列数（`1` より大きくなければならない）。
+ * @param {boolean=} opt_fillWithNbsp `true` であればテーブルを `nsbp` で埋め
+ *     る。
+ * @return {!Element} 作成されたテーブル。
  */
 goog.dom.createTable = function(rows, columns, opt_fillWithNbsp) {
   return goog.dom.createTable_(document, rows, columns, !!opt_fillWithNbsp);
@@ -799,12 +794,13 @@ goog.dom.createTable = function(rows, columns, opt_fillWithNbsp) {
 
 
 /**
- * Create a table.
- * @param {!Document} doc Document object to use to create the table.
- * @param {number} rows The number of rows in the table.  Must be >= 1.
- * @param {number} columns The number of columns in the table.  Must be >= 1.
- * @param {boolean} fillWithNbsp If true, fills table entries with nsbps.
- * @return {!Element} The created table.
+ * `goog.dom.createTable` の実装。
+ * @param {!Document} doc テーブルを作成するのに使う `document`。
+ * @param {number} rows テーブルの行数（`1` より大きくなければならない）。
+ * @param {number} columns テーブルの列数（`1` より大きくなければならない）。
+ * @param {boolean=} opt_fillWithNbsp `true` であればテーブルを `nsbp` で埋め
+ *     る。
+ * @return {!Element} 作成されたテーブル。
  * @private
  */
 goog.dom.createTable_ = function(doc, rows, columns, fillWithNbsp) {
@@ -827,14 +823,13 @@ goog.dom.createTable_ = function(doc, rows, columns, fillWithNbsp) {
 
 
 /**
- * Converts an HTML string into a document fragment. The string must be
- * sanitized in order to avoid cross-site scripting. For example
- * {@code goog.dom.htmlToDocumentFragment('&lt;img src=x onerror=alert(0)&gt;')}
- * triggers an alert in all browsers, even if the returned document fragment
- * is thrown away immediately.
+ * HTML 文字列を `DocumentFragment` に変換する。クロスサイトスクリプティングを防
+ * 止するため、この文字列はサニタイズされていなければならない。たとえば、
+ * `goog.dom.htmlToDocumentFragment('&lt;img src=x onerror=alert(0)&gt;')` は、
+ * どこかに対あされた瞬間に全てのブラウザでアラートを表示させる。
  *
- * @param {string} htmlString The HTML string to convert.
- * @return {!Node} The resulting document fragment.
+ * @param {string} htmlString 変換したい HTML 文字列。
+ * @return {!Node} 作成された `DocumentFragment`。
  */
 goog.dom.htmlToDocumentFragment = function(htmlString) {
   return goog.dom.htmlToDocumentFragment_(document, htmlString);
@@ -842,11 +837,11 @@ goog.dom.htmlToDocumentFragment = function(htmlString) {
 
 
 /**
- * Helper for {@code htmlToDocumentFragment}.
+ * `htmlToDocumentFragment` の実装。
  *
- * @param {!Document} doc The document.
- * @param {string} htmlString The HTML string to convert.
- * @return {!Node} The resulting document fragment.
+ * @param {!Document} doc `document`。
+ * @param {string} htmlString 変換したい HTML 文字列。
+ * @return {!Node} 作成された `DocumentFragment`。
  * @private
  */
 goog.dom.htmlToDocumentFragment_ = function(doc, htmlString) {
@@ -870,9 +865,8 @@ goog.dom.htmlToDocumentFragment_ = function(doc, htmlString) {
 
 
 /**
- * Returns true if the browser is in "CSS1-compatible" (standards-compliant)
- * mode, false otherwise.
- * @return {boolean} True if in CSS1-compatible mode.
+ * ブラウザが CSS1 互換モードならば `true` を返し、それ以外は `false` を返す。
+ * @return {boolean} Css1 互換モードであれば `true` を返す。
  */
 goog.dom.isCss1CompatMode = function() {
   return goog.dom.isCss1CompatMode_(document);
@@ -880,10 +874,9 @@ goog.dom.isCss1CompatMode = function() {
 
 
 /**
- * Returns true if the browser is in "CSS1-compatible" (standards-compliant)
- * mode, false otherwise.
- * @param {Document} doc The document to check.
- * @return {boolean} True if in CSS1-compatible mode.
+ * ブラウザが CSS1 互換モードならば `true` を返し、それ以外は `false` を返す。
+ * @param {Document} doc 判定対象の `document`。
+ * @return {boolean} Css1 互換モードであれば `true` を返す。
  * @private
  */
 goog.dom.isCss1CompatMode_ = function(doc) {
@@ -896,31 +889,31 @@ goog.dom.isCss1CompatMode_ = function(doc) {
 
 
 /**
- * Determines if the given node can contain children, intended to be used for
- * HTML generation.
+ * 与えられたノードが子要素をもてるかどうかを判定する。HTML の生成に使う。
  *
- * IE natively supports node.canHaveChildren but has inconsistent behavior.
- * Prior to IE8 the base tag allows children and in IE9 all nodes return true
- * for canHaveChildren.
+ * IE は `node.canHaveChildren` をネイティブで実装しているが、これは信頼できな
+ * い振る舞いをする。IE8 よりも前では、`base` タグは子要素を持ってもよいことに
+ * なっており、IE9 ではすべての要素について `canHaveChildren` は `true` を返して
+ * いた。
  *
- * In practice all non-IE browsers allow you to add children to any node, but
- * the behavior is inconsistent:
+ * 経験的に、IE 以外のブラウザでは全てのノードに子要素を追加することが出来るが、
+ * この振る舞いも信頼できない。
  *
- * <pre>
+ * ```
  *   var a = document.createElement('br');
  *   a.appendChild(document.createTextNode('foo'));
  *   a.appendChild(document.createTextNode('bar'));
  *   console.log(a.childNodes.length);  // 2
  *   console.log(a.innerHTML);  // Chrome: "", IE9: "foobar", FF3.5: "foobar"
- * </pre>
+ * ```
  *
- * For more information, see:
- * http://dev.w3.org/html5/markup/syntax.html#syntax-elements
+ * より詳細な情報：
+ * `http://dev.w3.org/html5/markup/syntax.html#syntax-elements`
  *
- * TODO(user): Rename shouldAllowChildren() ?
+ * TODO(user): `shouldAllowChildren()` にリネームした方がいいのかな？
  *
- * @param {Node} node The node to check.
- * @return {boolean} Whether the node can contain children.
+ * @param {Node} node 判定対象となるノード。
+ * @return {boolean} ノードが子要素をもてるかどうか。
  */
 goog.dom.canHaveChildren = function(node) {
   if (node.nodeType != goog.dom.NodeType.ELEMENT) {
@@ -959,7 +952,7 @@ goog.dom.canHaveChildren = function(node) {
 
 
 /**
- * Appends a child to a node.
+ * 与えられたノードに子要素を追加する。
  * @param {Node} parent Parent.
  * @param {Node} child Child.
  */
@@ -969,12 +962,11 @@ goog.dom.appendChild = function(parent, child) {
 
 
 /**
- * Appends a node with text or other nodes.
- * @param {!Node} parent The node to append nodes to.
- * @param {...goog.dom.Appendable} var_args The things to append to the node.
- *     If this is a Node it is appended as is.
- *     If this is a string then a text node is appended.
- *     If this is an array like object then fields 0 to length - 1 are appended.
+ * 与えられたノードにテキストノードか子要素を追加する。
+ * @param {!Node} parent 追加対象となるノード。
+ * @param {...goog.dom.Appendable} var_args もし、ノードであればそのまま追加す
+ *     る。文字列であれば、テキストノードにして追加する。配列のようなオブジェク
+ *     トであれば、`0` から `length - 1` 番目の要素までを追加する。
  */
 goog.dom.append = function(parent, var_args) {
   goog.dom.append_(goog.dom.getOwnerDocument(parent), parent, arguments, 1);
@@ -982,13 +974,13 @@ goog.dom.append = function(parent, var_args) {
 
 
 /**
- * Removes all the child nodes on a DOM node.
- * @param {Node} node Node to remove children from.
+ * DOM ノードからすべての子要素を除去する。
+ * @param {Node} node 除去対象となるノード。
  */
 goog.dom.removeChildren = function(node) {
-  // Note: Iterations over live collections can be slow, this is the fastest
-  // we could find. The double parenthesis are used to prevent JsCompiler and
-  // strict warnings.
+  // 生のコレクションの走査は遅くなりがち。これはいまのところ最速のやり方であ
+  // る。二重括弧はコンパイラが strict で警告を出すことを防止するための手段であ
+  // る。
   var child;
   while ((child = node.firstChild)) {
     node.removeChild(child);
@@ -997,10 +989,10 @@ goog.dom.removeChildren = function(node) {
 
 
 /**
- * Inserts a new node before an existing reference node (i.e. as the previous
- * sibling). If the reference node has no parent, then does nothing.
- * @param {Node} newNode Node to insert.
- * @param {Node} refNode Reference node to insert before.
+ * 新しいノードを既に存在しているノード参照の前に追加する（つまり、兄要素とな
+ * る）。もしノード参照に親がいなければ、何もしない。
+ * @param {Node} newNode 挿入される新しいノード。
+ * @param {Node} refNode 挿入対象となるノードの参照。
  */
 goog.dom.insertSiblingBefore = function(newNode, refNode) {
   if (refNode.parentNode) {
@@ -1010,10 +1002,10 @@ goog.dom.insertSiblingBefore = function(newNode, refNode) {
 
 
 /**
- * Inserts a new node after an existing reference node (i.e. as the next
- * sibling). If the reference node has no parent, then does nothing.
- * @param {Node} newNode Node to insert.
- * @param {Node} refNode Reference node to insert after.
+ * 新しいノードを既に存在しているノード参照の前に追加する（つまり、弟要素とな
+ * る）。もしノード参照に親がいなければ、何もしない。
+ * @param {Node} newNode 挿入される新しいノード。
+ * @param {Node} refNode 挿入対象となるノードの参照。
  */
 goog.dom.insertSiblingAfter = function(newNode, refNode) {
   if (refNode.parentNode) {
@@ -1023,25 +1015,24 @@ goog.dom.insertSiblingAfter = function(newNode, refNode) {
 
 
 /**
- * Insert a child at a given index. If index is larger than the number of child
- * nodes that the parent currently has, the node is inserted as the last child
- * node.
- * @param {Element} parent The element into which to insert the child.
- * @param {Node} child The element to insert.
- * @param {number} index The index at which to insert the new child node. Must
- *     not be negative.
+ * 要素を指定したインデックスに挿入する。インデックスが挿入対象の親オブジェクト
+ * の子要素数以上であれば、末尾に追加される。
+ * @param {Element} parent 子要素が挿入される親要素。
+ * @param {Node} child 挿入される子要素。
+ * @param {number} index 子要素を挿入する位置のインデックス。非負である必要があ
+ *     る。
  */
 goog.dom.insertChildAt = function(parent, child, index) {
-  // Note that if the second argument is null, insertBefore
-  // will append the child at the end of the list of children.
+  // 第二引数が `null` であれば、末尾の子要素として追加される。
   parent.insertBefore(child, parent.childNodes[index] || null);
 };
 
 
 /**
  * Removes a node from its parent.
- * @param {Node} node The node to remove.
- * @return {Node} The node removed if removed; else, null.
+ * 子要素を親要素から除去する。
+ * @param {Node} node 除去される子要素。
+ * @return {Node} 除去されたノード。除去に失敗したときは `null`。
  */
 goog.dom.removeNode = function(node) {
   return node && node.parentNode ? node.parentNode.removeChild(node) : null;
@@ -1049,10 +1040,9 @@ goog.dom.removeNode = function(node) {
 
 
 /**
- * Replaces a node in the DOM tree. Will do nothing if {@code oldNode} has no
- * parent.
- * @param {Node} newNode Node to insert.
- * @param {Node} oldNode Node to replace.
+ * DOMツリーの中のノードを置換する。`oldNode` が親要素をもたなければ何もしない。
+ * @param {Node} newNode 挿入されるノード。
+ * @param {Node} oldNode 置換されるノード。
  */
 goog.dom.replaceNode = function(newNode, oldNode) {
   var parent = oldNode.parentNode;
@@ -1063,12 +1053,11 @@ goog.dom.replaceNode = function(newNode, oldNode) {
 
 
 /**
- * Flattens an element. That is, removes it and replace it with its children.
- * Does nothing if the element is not in the document.
- * @param {Element} element The element to flatten.
- * @return {Element|undefined} The original element, detached from the document
- *     tree, sans children; or undefined, if the element was not in the document
- *     to begin with.
+ * 要素を平坦化する（この要素が除去されたあと、子要素で置き換えられる）。
+ * 与えられた要素が `document` に存在しなければ何もしない。
+ * @param {Element} element 平坦化される要素。
+ * @return {Element|undefined} 子要素が除去された `element`。ドキュメントツリー
+ *     のなかに存在しなければ、`undefined`。
  */
 goog.dom.flattenElement = function(element) {
   var child, parent = element.parentNode;
@@ -1090,19 +1079,19 @@ goog.dom.flattenElement = function(element) {
 
 
 /**
- * Returns an array containing just the element children of the given element.
- * @param {Element} element The element whose element children we want.
- * @return {!(Array|NodeList)} An array or array-like list of just the element
- *     children of the given element.
+ * 与えられた要素の子要素を返す。
+ * @param {Element} element 子要素を取得したい要素。
+ * @return {!(Array|NodeList)} 子要素からなる配列または配列のようなオブジェク
+ *     ト。
  */
 goog.dom.getChildren = function(element) {
-  // We check if the children attribute is supported for child elements
-  // since IE8 misuses the attribute by also including comments.
+  // `children` 属性が使えるかどうかを判定する。IE8 ではコメントが含まれるときに
+  // この属性が利用できない。
   if (goog.dom.BrowserFeature.CAN_USE_CHILDREN_ATTRIBUTE &&
       element.children != undefined) {
     return element.children;
   }
-  // Fall back to manually filtering the element's child nodes.
+  // 利用できないときは子要素をフィルタリングする。
   return goog.array.filter(element.childNodes, function(node) {
     return node.nodeType == goog.dom.NodeType.ELEMENT;
   });
@@ -1110,9 +1099,9 @@ goog.dom.getChildren = function(element) {
 
 
 /**
- * Returns the first child node that is an element.
- * @param {Node} node The node to get the first child element of.
- * @return {Element} The first child node of {@code node} that is an element.
+ * 与えられた要素の最初の子要素を返す。
+ * @param {Node} node 子要素を取得したい要素。
+ * @return {Element} `node` の最初の子要素。
  */
 goog.dom.getFirstElementChild = function(node) {
   if (node.firstElementChild != undefined) {
@@ -1123,9 +1112,9 @@ goog.dom.getFirstElementChild = function(node) {
 
 
 /**
- * Returns the last child node that is an element.
- * @param {Node} node The node to get the last child element of.
- * @return {Element} The last child node of {@code node} that is an element.
+ * 与えられた要素の最後の子要素を返す。
+ * @param {Node} node 子要素を取得したい要素。
+ * @return {Element} `node` の最後の子要素。
  */
 goog.dom.getLastElementChild = function(node) {
   if (node.lastElementChild != undefined) {
@@ -1136,9 +1125,9 @@ goog.dom.getLastElementChild = function(node) {
 
 
 /**
- * Returns the first next sibling that is an element.
- * @param {Node} node The node to get the next sibling element of.
- * @return {Element} The next sibling of {@code node} that is an element.
+ * 与えられた要素の直後の兄弟要素を返す。
+ * @param {Node} node 直後の兄弟要素を取得したい要素。
+ * @return {Element} `node` の直後の兄弟要素。
  */
 goog.dom.getNextElementSibling = function(node) {
   if (node.nextElementSibling != undefined) {
@@ -1149,10 +1138,9 @@ goog.dom.getNextElementSibling = function(node) {
 
 
 /**
- * Returns the first previous sibling that is an element.
- * @param {Node} node The node to get the previous sibling element of.
- * @return {Element} The first previous sibling of {@code node} that is
- *     an element.
+ * 与えられた要素の直前の兄弟要素を返す。
+ * @param {Node} node 直前の兄弟要素を取得したい要素。
+ * @return {Element} `node` の直前の兄弟要素。
  */
 goog.dom.getPreviousElementSibling = function(node) {
   if (node.previousElementSibling != undefined) {
@@ -1163,11 +1151,10 @@ goog.dom.getPreviousElementSibling = function(node) {
 
 
 /**
- * Returns the first node that is an element in the specified direction,
- * starting with {@code node}.
- * @param {Node} node The node to get the next element from.
- * @param {boolean} forward Whether to look forwards or backwards.
- * @return {Element} The first element.
+ * 与えられた要素に対して指定された方向で隣り合っている要素を返す。
+ * @param {Node} node 隣り合っている要素を取得したい要素。
+ * @param {boolean} forward 隣り合っている方向。
+ * @return {Element} `node` の隣の兄弟要素。
  * @private
  */
 goog.dom.getNextElementNode_ = function(node, forward) {
