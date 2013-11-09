@@ -1505,9 +1505,9 @@ goog.dom.getFrameContentWindow = function(frame) {
 
 
 /**
- * Sets the text content of a node, with cross-browser support.
- * @param {Node} node The node to change the text content of.
- * @param {string|number} text The value that should replace the node's content.
+ * ノードにテキストコンテントを追加する（クロスブラウザ対応）。
+ * @param {Node} node テキストコンテントを追加するためのノード。
+ * @param {string|number} text ノードのテキストコンテントを置き換える文字列。
  */
 goog.dom.setTextContent = function(node, text) {
   goog.asserts.assert(node != null,
@@ -1519,8 +1519,8 @@ goog.dom.setTextContent = function(node, text) {
     node.data = text;
   } else if (node.firstChild &&
              node.firstChild.nodeType == goog.dom.NodeType.TEXT) {
-    // If the first child is a text node we just change its data and remove the
-    // rest of the children.
+    // もし最初の子がテキストノードであれば、このデータを変更し、残りの子を除去
+    // する。
     while (node.lastChild != node.firstChild) {
       node.removeChild(node.lastChild);
     }
