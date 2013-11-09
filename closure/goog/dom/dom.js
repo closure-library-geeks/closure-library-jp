@@ -1063,16 +1063,16 @@ goog.dom.replaceNode = function(newNode, oldNode) {
 goog.dom.flattenElement = function(element) {
   var child, parent = element.parentNode;
   if (parent && parent.nodeType != goog.dom.NodeType.DOCUMENT_FRAGMENT) {
-    // Use IE DOM method (supported by Opera too) if available
+    // IE （と Opera ）の DOM メソッドが利用可能であれば使う。
     if (element.removeNode) {
       return /** @type {Element} */ (element.removeNode(false));
     } else {
-      // Move all children of the original node up one level.
+      // 全ての子要素を元の要素の一つ上の階層に移動する。
       while ((child = element.firstChild)) {
         parent.insertBefore(child, element);
       }
 
-      // Detach the original element.
+      // 元の要素を除去する。
       return /** @type {Element} */ (goog.dom.removeNode(element));
     }
   }
