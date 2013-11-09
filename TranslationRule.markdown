@@ -1,32 +1,42 @@
 翻訳にあたってのルール
 ======================
 
- * `@code`、`@link`、`<pre>`、`<code>` のかわりバッククォート（[Markdown記法](http://blog.2310.net/archives/6#code_blocks)）を使う
+1. HTML+JsDoc によるマークアップを [Markdown](http://blog.2310.net/archives/6#code_blocks) 記法に修正
+2. 内容を削らない+付け足さない
+3. 英語と日本語の間にはスペースを挟む
+4. 80文字で折り返し
 
-    従来のマークアップは非常に読みづらいため、リンク/コードのどちらも **Markdown記法にのっとった記法に統一してください**。
-    また、元コードではリンクやコードをマークアップするための記法が統一されていません。
-    コード・式・値を示す場合には、適宜 Markdown 記法に変換してください。
+HTML+JsDoc によるマークアップはMarkdownに
+----------------------------------
+従来のマークアップはソースコードの状態では読みづらいため、ソースコードでも読みやすい Markdown 記法を採用しています。
+`@code`、`@link`、`<pre>`、`<code>`、`<a>` のかわりにバッククォート（```）で囲んでください。
+また、マークアップされていないコード・式・値・リンクを示す場合にも、適宜 Markdown 記法に変換してください。
 
-    例1：
+例1：JsDoc マークアップ
 
-        Lorem {@code Ipsum}.
+    Lorem {@code Ipsum}.
 
-        Lorem `Ipsum` 。
+    Lorem `Ipsum` 。
 
-    例2：
+例2：マークアップされていない値
 
-        Lorem Ipsum returns true.
+    Lorem Ipsum returns true.
 
-        Lorem Ipsum は `true` を返す。
+    Lorem Ipsum は `true` を返す。
+
+例3：HTML マークアップ
+
+    <pre>
+    foo.bar();
+    </pre>
 
 
-    例3：
+    ```
+    foo.bar()
+    ```
 
-        <pre>
-        foo.bar();
-        </pre>
+例4：リンク
 
+    See {@link http://example.com}.
 
-        ```
-        foo.bar()
-        ```
+    `http://example.com` を見てください。
