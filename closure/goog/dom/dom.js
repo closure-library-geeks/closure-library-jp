@@ -229,7 +229,7 @@ goog.dom.getElementByClass = function(className, opt_el) {
 
 /**
  * W3C Selectors API の標準化されていて、かつ高速であるネイティブ実装が利用でき
- * るかどうかを判定する（http://www.w3.org/TR/selectors-api/）。
+ * るかどうかを判定する（`http://www.w3.org/TR/selectors-api/`）。
  * @param {!(Element|Document)} parent 親要素。
  * @return {boolean} `parent.querySelector` API が利用できるかどうか。
  * @private
@@ -439,7 +439,7 @@ goog.dom.getViewportSize = function(opt_window) {
 
 /**
  * `getViewportSize` の実装。
- * @param {Window} win viewport の寸法を取得したい `window`。
+ * @param {Window} win viewport の寸法を取得するための `window`。
  * @return {!goog.math.Size} `width` と `height` をもつオブジェクト。
  * @private
  */
@@ -515,7 +515,7 @@ goog.dom.getDocumentHeight_ = function(win) {
         oh = body.offsetHeight;
       }
 
-      // viewportの寸法よりもコンテントの高さが大きい、あるいは小さいかどうかを
+      // viewport の寸法よりもコンテントの高さが大きい、あるいは小さいかどうかを
       // 確認する。コンテントの高さの方が大きければ、大きい値を使う。小さけれ
       // ば、小さい値を使う。
       if (sh > vh) {
@@ -558,7 +558,7 @@ goog.dom.getDocumentScroll = function() {
 /**
  * `getDocumentScroll` の実装。
  *
- * @param {!Document} doc スクロール距離を取得したい `document`。
+ * @param {!Document} doc スクロール距離を取得するための `document`。
  * @return {!goog.math.Coordinate} `x` と `y` をもつオブジェクト。
  * @private
  */
@@ -588,7 +588,7 @@ goog.dom.getDocumentScrollElement = function() {
 
 /**
  * `getDocumentScrollElement` の実装。
- * @param {!Document} doc すく露ル要素を取得したい `document`。
+ * @param {!Document} doc スクロール要素を取得するための `document`。
  * @return {Element} スクロール要素。
  * @private
  */
@@ -825,8 +825,9 @@ goog.dom.createTable_ = function(doc, rows, columns, fillWithNbsp) {
 /**
  * HTML 文字列を `DocumentFragment` に変換する。クロスサイトスクリプティングを防
  * 止するため、この文字列はサニタイズされていなければならない。たとえば、
- * `goog.dom.htmlToDocumentFragment('&lt;img src=x onerror=alert(0)&gt;')` は、
- * どこかに対あされた瞬間に全てのブラウザでアラートを表示させる。
+ * `goog.dom.htmlToDocumentFragment('&lt;img src=x onerror=alert(0)&gt;')` に
+ * よって、これが追加された瞬間に、ほとんどのブラウザでアラートが表示させられ
+ * てしまう。
  *
  * @param {string} htmlString 変換したい HTML 文字列。
  * @return {!Node} 作成された `DocumentFragment`。
@@ -1080,7 +1081,7 @@ goog.dom.flattenElement = function(element) {
 
 /**
  * 与えられた要素の子要素を返す。
- * @param {Element} element 子要素を取得したい要素。
+ * @param {Element} element 子要素を取得するための要素。
  * @return {!(Array|NodeList)} 子要素からなる配列または配列のようなオブジェク
  *     ト。
  */
@@ -1100,7 +1101,7 @@ goog.dom.getChildren = function(element) {
 
 /**
  * 与えられた要素の最初の子要素を返す。
- * @param {Node} node 子要素を取得したい要素。
+ * @param {Node} node 子要素を取得するための要素。
  * @return {Element} `node` の最初の子要素。
  */
 goog.dom.getFirstElementChild = function(node) {
@@ -1113,7 +1114,7 @@ goog.dom.getFirstElementChild = function(node) {
 
 /**
  * 与えられた要素の最後の子要素を返す。
- * @param {Node} node 子要素を取得したい要素。
+ * @param {Node} node 子要素を取得するための要素。
  * @return {Element} `node` の最後の子要素。
  */
 goog.dom.getLastElementChild = function(node) {
@@ -1126,7 +1127,7 @@ goog.dom.getLastElementChild = function(node) {
 
 /**
  * 与えられた要素の直後の兄弟要素を返す。
- * @param {Node} node 直後の兄弟要素を取得したい要素。
+ * @param {Node} node 直後の兄弟要素を取得するための要素。
  * @return {Element} `node` の直後の兄弟要素。
  */
 goog.dom.getNextElementSibling = function(node) {
@@ -1139,7 +1140,7 @@ goog.dom.getNextElementSibling = function(node) {
 
 /**
  * 与えられた要素の直前の兄弟要素を返す。
- * @param {Node} node 直前の兄弟要素を取得したい要素。
+ * @param {Node} node 直前の兄弟要素を取得するための要素。
  * @return {Element} `node` の直前の兄弟要素。
  */
 goog.dom.getPreviousElementSibling = function(node) {
@@ -1152,7 +1153,7 @@ goog.dom.getPreviousElementSibling = function(node) {
 
 /**
  * 与えられた要素に対して指定された方向で隣り合っている要素を返す。
- * @param {Node} node 隣り合っている要素を取得したい要素。
+ * @param {Node} node 隣り合っている要素を取得するための要素。
  * @param {boolean} forward 隣り合っている方向。
  * @return {Element} `node` の隣の兄弟要素。
  * @private
@@ -1167,10 +1168,11 @@ goog.dom.getNextElementNode_ = function(node, forward) {
 
 
 /**
- * Returns the next node in source order from the given node.
- * @param {Node} node The node.
- * @return {Node} The next node in the DOM tree, or null if this was the last
- *     node.
+ * 与得られたノードとソースコード上で隣り合うノードのうち、後の方のノードを返
+ * す。
+ * @param {Node} node ノード。
+ * @return {Node} DOM ツリーの次にあたるノード。`node` が最後の要素であれば、
+ *     `null` が返る。
  */
 goog.dom.getNextNode = function(node) {
   if (!node) {
@@ -1190,10 +1192,11 @@ goog.dom.getNextNode = function(node) {
 
 
 /**
- * Returns the previous node in source order from the given node.
- * @param {Node} node The node.
- * @return {Node} The previous node in the DOM tree, or null if this was the
- *     first node.
+ * 与得られたノードとソースコード上で隣り合うノードのうち、前の方のノードを返
+ * す。
+ * @param {Node} node ノード。
+ * @return {Node} DOM ツリーの前にあたるノード。`node` が最後の要素であれば、
+ *     `null` が返る。
  */
 goog.dom.getPreviousNode = function(node) {
   if (!node) {
@@ -1214,9 +1217,9 @@ goog.dom.getPreviousNode = function(node) {
 
 
 /**
- * Whether the object looks like a DOM node.
- * @param {*} obj The object being tested for node likeness.
- * @return {boolean} Whether the object looks like a DOM node.
+ * オブジェクトが DOM ノードかどうかを判定する。
+ * @param {*} obj DOM ノードかどうかを判定するためのオブジェクト。
+ * @return {boolean} このオブジェクトか DOM ノードかどうか。
  */
 goog.dom.isNodeLike = function(obj) {
   return goog.isObject(obj) && obj.nodeType > 0;
@@ -1224,9 +1227,9 @@ goog.dom.isNodeLike = function(obj) {
 
 
 /**
- * Whether the object looks like an Element.
- * @param {*} obj The object being tested for Element likeness.
- * @return {boolean} Whether the object looks like an Element.
+ * オブジェクトが `Element` かどうか判定する。
+ * @param {*} obj `Element` かどうか判定するためのオブジェクト。
+ * @return {boolean} このオブジェクトが `Element` かどうか。
  */
 goog.dom.isElement = function(obj) {
   return goog.isObject(obj) && obj.nodeType == goog.dom.NodeType.ELEMENT;
@@ -1234,10 +1237,10 @@ goog.dom.isElement = function(obj) {
 
 
 /**
- * Returns true if the specified value is a Window object. This includes the
- * global window for HTML pages, and iframe windows.
- * @param {*} obj Variable to test.
- * @return {boolean} Whether the variable is a window.
+ * 与えられたオブジェクトが `window` オブジェクトかどうか判定する。これは、
+ * HTML ページでグローバルな `window` と iframe の `window` の両方を含む。
+ * @param {*} obj 判定するためのオブジェクト。
+ * @return {boolean} オブジェクトが `window` かどうか。
  */
 goog.dom.isWindow = function(obj) {
   return goog.isObject(obj) && obj['window'] == obj;
@@ -1246,16 +1249,17 @@ goog.dom.isWindow = function(obj) {
 
 /**
  * Returns an element's parent, if it's an Element.
- * @param {Element} element The DOM element.
- * @return {Element} The parent, or null if not an Element.
+ * 与えられた要素の親要素を返す（`Element` であれば）。
+ * @param {Element} element DOM 要素。
+ * @return {Element} 親要素。`Element` でなければ `null`。
  */
 goog.dom.getParentElement = function(element) {
   if (goog.dom.BrowserFeature.CAN_USE_PARENT_ELEMENT_PROPERTY) {
     var isIe9 = goog.userAgent.IE &&
         goog.userAgent.isVersionOrHigher('9') &&
         !goog.userAgent.isVersionOrHigher('10');
-    // SVG elements in IE9 can't use the parentElement property.
-    // goog.global['SVGElement'] is not defined in IE9 quirks mode.
+    // IE9 の SVG 要素は `parentElement` プロパティが使えない。
+    // `goog.global['SVGElement']` は IE9 の Quikrs モードで未定義になる。
     if (!(isIe9 && goog.global['SVGElement'] &&
         element instanceof goog.global['SVGElement'])) {
       return element.parentElement;
@@ -1267,14 +1271,14 @@ goog.dom.getParentElement = function(element) {
 
 
 /**
- * Whether a node contains another node.
- * @param {Node} parent The node that should contain the other node.
- * @param {Node} descendant The node to test presence of.
- * @return {boolean} Whether the parent node contains the descendent node.
+ * 与えられたノードが、もうひとつ与えられたノードを含んでいるかどうかを判定す
+ * る。
+ * @param {Node} parent `descendant` を含んでいるかどうか判定するためのノード。
+ * @param {Node} descendant 判定するためのノード。
+ * @return {boolean} `parent` が `descendent` を含んでいるかどうか。
  */
 goog.dom.contains = function(parent, descendant) {
-  // We use browser specific methods for this if available since it is faster
-  // that way.
+  // ブラウザ固有のメソッドを利用可能であれば使う。この方が速い。
 
   // IE DOM
   if (parent.contains && descendant.nodeType == goog.dom.NodeType.ELEMENT) {
@@ -1296,30 +1300,29 @@ goog.dom.contains = function(parent, descendant) {
 
 
 /**
- * Compares the document order of two nodes, returning 0 if they are the same
- * node, a negative number if node1 is before node2, and a positive number if
- * node2 is before node1.  Note that we compare the order the tags appear in the
- * document so in the tree <b><i>text</i></b> the B node is considered to be
- * before the I node.
+ * 2つのノードのドキュメントの並び順を比較する。`0` なら同じノード、負の値なら
+ * `node1` は `node2` よりも前にあり、正の値なら `node1` は `node2` よりも後に
+ * ある。このメソッドはタグが現れる順を判定しているので、`<b><i>text</i></b>` の
+ * 場合、b ノードは i ノードよりも前にあると判断されることに注意。
  *
- * @param {Node} node1 The first node to compare.
- * @param {Node} node2 The second node to compare.
- * @return {number} 0 if the nodes are the same node, a negative number if node1
- *     is before node2, and a positive number if node2 is before node1.
+ * @param {Node} node1 比較するためのひとつめのノード。
+ * @param {Node} node2 比較するためのふたつめのノード。
+ * @return {number} 同じノードならば `0` 、`node1` が `node2` よりも前にあれば
+ *     負の値、`node2` が `node1` よりも前にあれば正の値。
  */
 goog.dom.compareNodeOrder = function(node1, node2) {
-  // Fall out quickly for equality.
+  // ノードが等しければすぐに終了する。
   if (node1 == node2) {
     return 0;
   }
 
-  // Use compareDocumentPosition where available
+  // `compareDocumentPosition` が利用であれば使う。
   if (node1.compareDocumentPosition) {
-    // 4 is the bitmask for FOLLOWS.
+    // 4 は FOLLOWS に対するビットマスク。
     return node1.compareDocumentPosition(node2) & 2 ? 1 : -1;
   }
 
-  // Special case for document nodes on IE 7 and 8.
+  // IE7、IE8 の `document` ノードのための特例処理。
   if (goog.userAgent.IE && !goog.userAgent.isDocumentModeOrHigher(9)) {
     if (node1.nodeType == goog.dom.NodeType.DOCUMENT) {
       return -1;
@@ -1329,8 +1332,8 @@ goog.dom.compareNodeOrder = function(node1, node2) {
     }
   }
 
-  // Process in IE using sourceIndex - we check to see if the first node has
-  // a source index or if its parent has one.
+  // `sourceIndex` を使った IE での処理。ひとつめのノードがソース番号をもってい
+  // るか、あるいはこのノードの親で判定する。
   if ('sourceIndex' in node1 ||
       (node1.parentNode && 'sourceIndex' in node1.parentNode)) {
     var isElement1 = node1.nodeType == goog.dom.NodeType.ELEMENT;
@@ -1360,7 +1363,7 @@ goog.dom.compareNodeOrder = function(node1, node2) {
     }
   }
 
-  // For Safari, we compare ranges.
+  // Safari では `range` で比較する。
   var doc = goog.dom.getOwnerDocument(node1);
 
   var range1, range2;
@@ -1378,18 +1381,18 @@ goog.dom.compareNodeOrder = function(node1, node2) {
 
 
 /**
- * Utility function to compare the position of two nodes, when
- * {@code textNode}'s parent is an ancestor of {@code node}.  If this entry
- * condition is not met, this function will attempt to reference a null object.
- * @param {Node} textNode The textNode to compare.
- * @param {Node} node The node to compare.
- * @return {number} -1 if node is before textNode, +1 otherwise.
+ * `textNode` の親が `node` の祖先だった場合における 2 つのノードの位置を比較す
+ * るユーティリティ関数。もし想定している状況下にない場合は、null オブジェクトに
+ * アクセスしてしまうかもしれない。
+ * @param {Node} textNode 比較するための `textNode`。
+ * @param {Node} node 比較するためのノード。
+ * @return {number} `node` が `textNode` より前にあれば `-1`、それ以外は `+1`。
  * @private
  */
 goog.dom.compareParentsDescendantNodeIe_ = function(textNode, node) {
   var parent = textNode.parentNode;
   if (parent == node) {
-    // If textNode is a child of node, then node comes first.
+    // もし `textNode` が `node` の子であれば、`node` の方が先に現れる。
     return -1;
   }
   var sibling = node;
@@ -1401,10 +1404,9 @@ goog.dom.compareParentsDescendantNodeIe_ = function(textNode, node) {
 
 
 /**
- * Utility function to compare the position of two nodes known to be non-equal
- * siblings.
- * @param {Node} node1 The first node to compare.
- * @param {Node} node2 The second node to compare.
+ * 等しくない兄弟ノードの組におけるノードの位置を比較するユーティリティ関数。
+ * @param {Node} node1 比較するためのひとつめのノード。
+ * @param {Node} node2 比較するためのふたつめのノード。
  * @return {number} -1 if node1 is before node2, +1 otherwise.
  * @private
  */
@@ -1412,22 +1414,21 @@ goog.dom.compareSiblingOrder_ = function(node1, node2) {
   var s = node2;
   while ((s = s.previousSibling)) {
     if (s == node1) {
-      // We just found node1 before node2.
+      // `node1` の前に `node2` を見つけたということ。
       return -1;
     }
   }
 
-  // Since we didn't find it, node1 must be after node2.
+  // 見つけられなかったので、`node1` は `node2` の前になければならない。
   return 1;
 };
 
 
 /**
- * Find the deepest common ancestor of the given nodes.
- * @param {...Node} var_args The nodes to find a common ancestor of.
- * @return {Node} The common ancestor of the nodes, or null if there is none.
- *     null will only be returned if two or more of the nodes are from different
- *     documents.
+ * 与えられたノードの最深共通祖先を探す。
+ * @param {...Node} var_args 共通祖先を探するためのノード。
+ * @return {Node} 与えられたノードの共通祖先。なければ `null`。`null` の場合は、
+ *     少なくとも1つのノードが違う `document` に属している。
  */
 goog.dom.findCommonAncestor = function(var_args) {
   var i, count = arguments.length;
@@ -1440,7 +1441,7 @@ goog.dom.findCommonAncestor = function(var_args) {
   var paths = [];
   var minLength = Infinity;
   for (i = 0; i < count; i++) {
-    // Compute the list of ancestors.
+    // リストの祖先を計算する。
     var ancestors = [];
     var node = arguments[i];
     while (node) {
@@ -1448,7 +1449,7 @@ goog.dom.findCommonAncestor = function(var_args) {
       node = node.parentNode;
     }
 
-    // Save the list for comparison.
+    // 比較のためのリストを保存しておく。
     paths.push(ancestors);
     minLength = Math.min(minLength, ancestors.length);
   }
@@ -1467,13 +1468,13 @@ goog.dom.findCommonAncestor = function(var_args) {
 
 
 /**
- * Returns the owner document for a node.
- * @param {Node|Window} node The node to get the document for.
- * @return {!Document} The document owning the node.
+ * ノードを所有している `document` を返す。
+ * @param {Node|Window} node `document` を取得するためのノード。
+ * @return {!Document} `node` を所有している `document`。
  */
 goog.dom.getOwnerDocument = function(node) {
-  // TODO(arv): Remove IE5 code.
-  // IE5 uses document instead of ownerDocument
+  // TODO(arv): IE5 のコードは消そうか。
+  // IE5 では `ownerDocument` ではなく `document` を使う。
   return /** @type {!Document} */ (
       node.nodeType == goog.dom.NodeType.DOCUMENT ? node :
       node.ownerDocument || node.document);
@@ -1481,9 +1482,9 @@ goog.dom.getOwnerDocument = function(node) {
 
 
 /**
- * Cross-browser function for getting the document element of a frame or iframe.
- * @param {Element} frame Frame element.
- * @return {!Document} The frame content document.
+ * frame または iframe の `document` 要素を取得するためのクロスブラウザな関数。
+ * @param {Element} frame frame オブジェクト。
+ * @return {!Document} `frame` の `document` 要素。
  */
 goog.dom.getFrameContentDocument = function(frame) {
   var doc = frame.contentDocument || frame.contentWindow.document;
@@ -1492,9 +1493,10 @@ goog.dom.getFrameContentDocument = function(frame) {
 
 
 /**
- * Cross-browser function for getting the window of a frame or iframe.
- * @param {Element} frame Frame element.
- * @return {Window} The window associated with the given frame.
+ * frame または iframe の `window` を取得するためのクロスブラウザな関数。
+ * @param {Element} frame frame 要素。
+ * @return {!Document} `frame` の `document` 要素。
+ * @return {Window} `frame` の `window` 要素。
  */
 goog.dom.getFrameContentWindow = function(frame) {
   return frame.contentWindow ||
