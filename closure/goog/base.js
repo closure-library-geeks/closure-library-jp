@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * @fileoverview Bootstrap for the Google JS Library (Closure).
+ * @fileoverview Google の JS ライブラリ（Closure）のブートストラップ処理。
  *
  * もし、 `goog.CLOSURE_NO_DEPS` が `true` のとき、コンパイルされていない
  * base.js は依存関係ファイルを書き出す。これによって異なる環境下でそれぞれが依
