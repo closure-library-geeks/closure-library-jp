@@ -13,8 +13,8 @@
 // limitations under the License.
 
 /**
- * @fileoverview Defines a 2-element vector class that can be used for
- * coordinate math, useful for animation systems and point manipulation.
+ * @fileoverview 座標の計算に利用できる、2要素のベクトルクラスを定義する。
+ * アニメーション機構や点の操作に便利である。
  *
  * `Vec2` オブジェクトは `goog.math.Coordinate` を継承していて、`Coordinate` が
  * 求められる場面で使われる。 `Vec2` の関数は、必要に応じて `Vec2` 、
