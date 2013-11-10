@@ -13,7 +13,8 @@
 // limitations under the License.
 
 /**
- * @fileoverview 関数作成のためのユーティリティ。Java のクラスを参考にしている。
+ * @fileoverview 関数作成のためのユーティリティ。Java のクラスを参考にしている
+ * （`http://goo.gl/GM0Hmu`、 `http://goo.gl/6k7nI8`）。
  *
  * @author nicksantos@google.com (Nick Santos)
  */
@@ -250,7 +251,10 @@ goog.functions.not = function(f) {
  * @return {!Object} `constructor` によって作成されたオブジェクト。
  */
 goog.functions.create = function(constructor, var_args) {
-  /** @constructor */
+  /**
+ * @constructor
+ * @final
+ */
   var temp = function() {};
   temp.prototype = constructor.prototype;
 

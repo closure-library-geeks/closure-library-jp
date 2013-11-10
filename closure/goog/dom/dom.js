@@ -228,6 +228,22 @@ goog.dom.getElementByClass = function(className, opt_el) {
 
 
 /**
+ * 与えられた `className` をもつ要素が存在するか確認し、最初の要素を返す。
+ *
+ * @see {goog.dom.query}
+ * @param {string} className 探すためのクラス名。
+ * @param {!Element|!Document=} opt_root 探索範囲となる要素（省略可能）。
+ * @return {!Element} 与えられたクラス名を持つ最初の要素。
+ * @throws {goog.asserts.AssertionError} 要素が見つからなければ発生。
+ */
+goog.dom.getRequiredElementByClass = function(className, opt_root) {
+  var retValue = goog.dom.getElementByClass(className, opt_root);
+  return goog.asserts.assert(retValue,
+      'No element found with className: ' + className);
+};
+
+
+/**
  * W3C Selectors API の標準化されていて、かつ高速であるネイティブ実装が利用でき
  * るかどうかを判定する（`http://www.w3.org/TR/selectors-api/`）。
  * @param {!(Element|Document)} parent 親要素。
@@ -2231,6 +2247,23 @@ goog.dom.DomHelper.prototype.getElementsByClass = function(className, opt_el) {
 goog.dom.DomHelper.prototype.getElementByClass = function(className, opt_el) {
   var doc = opt_el || this.document_;
   return goog.dom.getElementByClass(className, doc);
+};
+
+
+/**
+ * Ensures an element with the given className exists, and then returns the
+ * first element with the provided className.
+ * @see {goog.dom.query}
+ * @param {string} className the name of the class to look for.
+ * @param {(!Element|!Document)=} opt_root Optional element or document to look
+ *     in.
+ * @return {!Element} The first item found with the class name provided.
+ * @throws {goog.asserts.AssertionError} Thrown if no element is found.
+ */
+goog.dom.DomHelper.prototype.getRequiredElementByClass = function(className,
+                                                                  opt_root) {
+  var root = opt_root || this.document_;
+  return goog.dom.getRequiredElementByClass(className, root);
 };
 
 

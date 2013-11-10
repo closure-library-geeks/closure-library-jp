@@ -122,6 +122,14 @@ goog.ui.KeyboardShortcutHandler = function(keyTarget) {
    */
   this.modifierShortcutsAreGlobal_ = true;
 
+  /**
+   * Whether to treat space key as a shortcut when the focused element is a
+   * checkbox, radiobutton or button.
+   * @type {boolean}
+   * @private
+   */
+  this.allowSpaceKeyOnButtons_ = false;
+
   this.initializeKeyListener(keyTarget);
 };
 goog.inherits(goog.ui.KeyboardShortcutHandler, goog.events.EventTarget);
@@ -368,6 +376,18 @@ goog.ui.KeyboardShortcutHandler.prototype.setModifierShortcutsAreGlobal =
 goog.ui.KeyboardShortcutHandler.prototype.getModifierShortcutsAreGlobal =
     function() {
   return this.modifierShortcutsAreGlobal_;
+};
+
+
+/**
+ * Sets whether to treat space key as a shortcut when the focused element is a
+ * checkbox, radiobutton or button.
+ * @param {boolean} allowSpaceKeyOnButtons Whether to treat space key as a
+ *     shortcut when the focused element is a checkbox, radiobutton or button.
+ */
+goog.ui.KeyboardShortcutHandler.prototype.setAllowSpaceKeyOnButtons = function(
+    allowSpaceKeyOnButtons) {
+  this.allowSpaceKeyOnButtons_ = allowSpaceKeyOnButtons;
 };
 
 
@@ -988,7 +1008,13 @@ goog.ui.KeyboardShortcutHandler.prototype.isValidShortcut_ = function(event) {
   }
   // Checkboxes, radiobuttons and buttons. Allow all but SPACE as shortcut.
   if (el.tagName == 'INPUT' || el.tagName == 'BUTTON') {
-    return keyCode != goog.events.KeyCodes.SPACE;
+    // TODO(gboyer): If more flexibility is needed, create protected helper
+    // methods for each case (e.g. button, input, etc).
+    if (this.allowSpaceKeyOnButtons_) {
+      return true;
+    } else {
+      return keyCode != goog.events.KeyCodes.SPACE;
+    }
   }
   // Don't allow any additional shortcut keys for textareas or selects.
   return false;
@@ -1004,6 +1030,7 @@ goog.ui.KeyboardShortcutHandler.prototype.isValidShortcut_ = function(event) {
  *     event originated from.
  * @extends {goog.events.Event}
  * @constructor
+ * @final
  */
 goog.ui.KeyboardShortcutEvent = function(type, identifier, target) {
   goog.events.Event.call(this, type, target);

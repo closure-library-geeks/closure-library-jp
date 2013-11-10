@@ -261,6 +261,7 @@ goog.ui.DatePicker.BASE_CSS_CLASS_ = goog.getCssName('goog-date-picker');
  */
 goog.ui.DatePicker.Events = {
   CHANGE: 'change',
+  CHANGE_ACTIVE_MONTH: 'changeActiveMonth',
   SELECT: 'select'
 };
 
@@ -569,6 +570,7 @@ goog.ui.DatePicker.prototype.setLongDateFormat = function(b) {
 goog.ui.DatePicker.prototype.previousMonth = function() {
   this.activeMonth_.add(new goog.date.Interval(goog.date.Interval.MONTHS, -1));
   this.updateCalendarGrid_();
+  this.fireChangeActiveMonthEvent_();
 };
 
 
@@ -578,6 +580,7 @@ goog.ui.DatePicker.prototype.previousMonth = function() {
 goog.ui.DatePicker.prototype.nextMonth = function() {
   this.activeMonth_.add(new goog.date.Interval(goog.date.Interval.MONTHS, 1));
   this.updateCalendarGrid_();
+  this.fireChangeActiveMonthEvent_();
 };
 
 
@@ -587,6 +590,7 @@ goog.ui.DatePicker.prototype.nextMonth = function() {
 goog.ui.DatePicker.prototype.previousYear = function() {
   this.activeMonth_.add(new goog.date.Interval(goog.date.Interval.YEARS, -1));
   this.updateCalendarGrid_();
+  this.fireChangeActiveMonthEvent_();
 };
 
 
@@ -596,6 +600,7 @@ goog.ui.DatePicker.prototype.previousYear = function() {
 goog.ui.DatePicker.prototype.nextYear = function() {
   this.activeMonth_.add(new goog.date.Interval(goog.date.Interval.YEARS, 1));
   this.updateCalendarGrid_();
+  this.fireChangeActiveMonthEvent_();
 };
 
 
@@ -639,12 +644,14 @@ goog.ui.DatePicker.prototype.getDate = function() {
  * @param {goog.date.Date|Date} date Date to select or null to select nothing.
  */
 goog.ui.DatePicker.prototype.setDate = function(date) {
-  // Check if date has been changed
-  var changed = date != this.date_ &&
-      !(date && this.date_ &&
-        date.getFullYear() == this.date_.getFullYear() &&
-        date.getMonth() == this.date_.getMonth() &&
-        date.getDate() == this.date_.getDate());
+  // Check if the month has been changed.
+  var sameMonth = date == this.date_ || date && this.date_ &&
+      date.getFullYear() == this.date_.getFullYear() &&
+      date.getMonth() == this.date_.getMonth();
+
+  // Check if the date has been changed.
+  var sameDate = date == this.date_ || sameMonth &&
+      date.getDate() == this.date_.getDate();
 
   // Set current date to clone of supplied goog.date.Date or Date.
   this.date_ = date && new goog.date.Date(date);
@@ -666,10 +673,15 @@ goog.ui.DatePicker.prototype.setDate = function(date) {
   this.dispatchEvent(selectEvent);
 
   // Fire change event.
-  if (changed) {
+  if (!sameDate) {
     var changeEvent = new goog.ui.DatePickerEvent(
         goog.ui.DatePicker.Events.CHANGE, this, this.date_);
     this.dispatchEvent(changeEvent);
+  }
+
+  // Fire change active month event.
+  if (!sameMonth) {
+    this.fireChangeActiveMonthEvent_();
   }
 };
 
@@ -753,9 +765,7 @@ goog.ui.DatePicker.prototype.addPreventDefaultClickHandler_ =
       function(e) {
         e.preventDefault();
         handlerFunction.call(this, e);
-      },
-      false,
-      this);
+      });
 };
 
 
@@ -1352,6 +1362,19 @@ goog.ui.DatePicker.prototype.redrawCalendarGrid_ = function() {
 
 
 /**
+ * Fires the CHANGE_ACTIVE_MONTH event.
+ * @private
+ */
+goog.ui.DatePicker.prototype.fireChangeActiveMonthEvent_ = function() {
+  var changeMonthEvent = new goog.ui.DatePickerEvent(
+      goog.ui.DatePicker.Events.CHANGE_ACTIVE_MONTH,
+      this,
+      this.getActiveMonth());
+  this.dispatchEvent(changeMonthEvent);
+};
+
+
+/**
  * Draw weekday names, if enabled. Start with whatever day has been set as the
  * first day of week.
  * @private
@@ -1397,6 +1420,7 @@ goog.ui.DatePicker.prototype.getKeyHandlerForElement_ = function(el) {
  * @param {goog.date.Date} date Selected date.
  * @constructor
  * @extends {goog.events.Event}
+ * @final
  */
 goog.ui.DatePickerEvent = function(type, target, date) {
   goog.events.Event.call(this, type, target);
