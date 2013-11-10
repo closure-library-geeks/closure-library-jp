@@ -16,9 +16,9 @@
  * @fileoverview Defines a 2-element vector class that can be used for
  * coordinate math, useful for animation systems and point manipulation.
  *
- * Vec2 objects inherit from goog.math.Coordinate and may be used wherever a
- * Coordinate is required. Where appropriate, Vec2 functions accept both Vec2
- * and Coordinate objects as input.
+ * `Vec2` オブジェクトは `goog.math.Coordinate` を継承していて、`Coordinate` が
+ * 求められる場面で使われる。 `Vec2` の関数は、必要に応じて `Vec2` 、
+ * `Coordinate` オブジェクトのいずれも入力として受け入れる。
  *
  * @author brenneman@google.com (Shawn Brenneman)
  */
@@ -31,23 +31,22 @@ goog.require('goog.math.Coordinate');
 
 
 /**
- * Class for a two-dimensional vector object and assorted functions useful for
- * manipulating points.
+ * 点を操作するのに便利な関数を揃えた、2次元ベクトルのためのクラス。
  *
- * @param {number} x The x coordinate for the vector.
- * @param {number} y The y coordinate for the vector.
+ * @param {number} x このベクトルのX座標。
+ * @param {number} y このベクトルのY座標。
  * @constructor
  * @extends {goog.math.Coordinate}
  */
 goog.math.Vec2 = function(x, y) {
   /**
-   * X-value
+   * Xの値
    * @type {number}
    */
   this.x = x;
 
   /**
-   * Y-value
+   * Yの値
    * @type {number}
    */
   this.y = y;
@@ -56,7 +55,7 @@ goog.inherits(goog.math.Vec2, goog.math.Coordinate);
 
 
 /**
- * @return {!goog.math.Vec2} A random unit-length vector.
+ * @return {!goog.math.Vec2} ランダムな単位長ベクトル。
  */
 goog.math.Vec2.randomUnit = function() {
   var angle = Math.random() * Math.PI * 2;
@@ -65,7 +64,7 @@ goog.math.Vec2.randomUnit = function() {
 
 
 /**
- * @return {!goog.math.Vec2} A random vector inside the unit-disc.
+ * @return {!goog.math.Vec2} 単位円内のランダムなベクトル。
  */
 goog.math.Vec2.random = function() {
   var mag = Math.sqrt(Math.random());
@@ -76,9 +75,9 @@ goog.math.Vec2.random = function() {
 
 
 /**
- * Returns a new Vec2 object from a given coordinate.
- * @param {!goog.math.Coordinate} a The coordinate.
- * @return {!goog.math.Vec2} A new vector object.
+ * 指定された座標から新しい `Vec2` オブジェクトを返す。
+ * @param {!goog.math.Coordinate} 座標。
+ * @return {!goog.math.Vec2} 新しいベクトルオブジェクト。
  */
 goog.math.Vec2.fromCoordinate = function(a) {
   return new goog.math.Vec2(a.x, a.y);
@@ -86,7 +85,7 @@ goog.math.Vec2.fromCoordinate = function(a) {
 
 
 /**
- * @return {!goog.math.Vec2} A new vector with the same coordinates as this one.
+ * @return {!goog.math.Vec2} このベクトルと同じ座標を持つ新しいベクトル。
  * @override
  */
 goog.math.Vec2.prototype.clone = function() {
@@ -95,8 +94,8 @@ goog.math.Vec2.prototype.clone = function() {
 
 
 /**
- * Returns the magnitude of the vector measured from the origin.
- * @return {number} The length of the vector.
+ * このベクトルの原点からの距離を返す。
+ * @return {number} ベクトルの長さ。
  */
 goog.math.Vec2.prototype.magnitude = function() {
   return Math.sqrt(this.x * this.x + this.y * this.y);
@@ -104,10 +103,10 @@ goog.math.Vec2.prototype.magnitude = function() {
 
 
 /**
- * Returns the squared magnitude of the vector measured from the origin.
- * NOTE(brenneman): Leaving out the square root is not a significant
- * optimization in JavaScript.
- * @return {number} The length of the vector, squared.
+ * このベクトルの、原点からの距離の2乗を返す。
+ * NOTE(brenneman): 平方根を避けることは、JavaScriptにおいては大きな最適化には
+ * ならない。
+ * @return {number} このベクトルの長さの2乗。
  */
 goog.math.Vec2.prototype.squaredMagnitude = function() {
   return this.x * this.x + this.y * this.y;
@@ -115,7 +114,7 @@ goog.math.Vec2.prototype.squaredMagnitude = function() {
 
 
 /**
- * @return {!goog.math.Vec2} This coordinate after scaling.
+ * @return {!goog.math.Vec2} スケール後の座標。
  * @override
  */
 goog.math.Vec2.prototype.scale =
@@ -124,8 +123,8 @@ goog.math.Vec2.prototype.scale =
 
 
 /**
- * Reverses the sign of the vector. Equivalent to scaling the vector by -1.
- * @return {!goog.math.Vec2} The inverted vector.
+ * ベクトルの符号を反転する。ベクトルを-1でスケールするのと等価である。
+ * @return {!goog.math.Vec2} 反転されたベクトル。
  */
 goog.math.Vec2.prototype.invert = function() {
   this.x = -this.x;
@@ -135,8 +134,8 @@ goog.math.Vec2.prototype.invert = function() {
 
 
 /**
- * Normalizes the current vector to have a magnitude of 1.
- * @return {!goog.math.Vec2} The normalized vector.
+ * 現在のベクトルを、大きさが1になるように正規化する。
+ * @return {!goog.math.Vec2} 正規化されたベクトル。
  */
 goog.math.Vec2.prototype.normalize = function() {
   return this.scale(1 / this.magnitude());
@@ -144,9 +143,9 @@ goog.math.Vec2.prototype.normalize = function() {
 
 
 /**
- * Adds another vector to this vector in-place.
- * @param {!goog.math.Coordinate} b The vector to add.
- * @return {!goog.math.Vec2}  This vector with {@code b} added.
+ * 他のベクトルを、このベクトルに直接加算する。
+ * @param {!goog.math.Coordinate} b 加算するベクトル。
+ * @return {!goog.math.Vec2} `b` が加算されたあとの、このベクトル。
  */
 goog.math.Vec2.prototype.add = function(b) {
   this.x += b.x;
@@ -156,9 +155,9 @@ goog.math.Vec2.prototype.add = function(b) {
 
 
 /**
- * Subtracts another vector from this vector in-place.
- * @param {!goog.math.Coordinate} b The vector to subtract.
- * @return {!goog.math.Vec2} This vector with {@code b} subtracted.
+ * 他のベクトルを、このベクトルから直接減算する。
+ * @param {!goog.math.Coordinate} b 減算するベクトル。
+ * @return {!goog.math.Vec2} `b` で減算されたあとの、このベクトル。
  */
 goog.math.Vec2.prototype.subtract = function(b) {
   this.x -= b.x;
@@ -168,9 +167,9 @@ goog.math.Vec2.prototype.subtract = function(b) {
 
 
 /**
- * Rotates this vector in-place by a given angle, specified in radians.
- * @param {number} angle The angle, in radians.
- * @return {!goog.math.Vec2} This vector rotated {@code angle} radians.
+ * このベクトルを、ラジアンで指定された角度回転する。
+ * @param {number} angle 角度、単位はラジアン。
+ * @return {!goog.math.Vec2} `angle` ラジアン回転されたあとの、このベクトル。
  */
 goog.math.Vec2.prototype.rotate = function(angle) {
   var cos = Math.cos(angle);
@@ -184,13 +183,14 @@ goog.math.Vec2.prototype.rotate = function(angle) {
 
 
 /**
- * Rotates a vector by a given angle, specified in radians, relative to a given
- * axis rotation point. The returned vector is a newly created instance - no
- * in-place changes are done.
- * @param {!goog.math.Vec2} v A vector.
- * @param {!goog.math.Vec2} axisPoint The rotation axis point.
- * @param {number} angle The angle, in radians.
- * @return {!goog.math.Vec2} The rotated vector in a newly created instance.
+ * このベクトルを、指定された回転の基準点に対して、ラジアンで指定された角度回転
+ * する。戻り値のベクトルは新しいインスタンスとして作成され、直接変更は加えられ
+ * ない。
+ * @param {!goog.math.Vec2} v ベクトル。
+ * @param {!goog.math.Vec2} axisPoint 回転の基準点。
+ * @param {number} angle 角度、単位はラジアン。
+ * @return {!goog.math.Vec2} 新たなインスタンスとして作成された、回転された
+ *     ベクトル。
  */
 goog.math.Vec2.rotateAroundPoint = function(v, axisPoint, angle) {
   var res = v.clone();
@@ -199,10 +199,10 @@ goog.math.Vec2.rotateAroundPoint = function(v, axisPoint, angle) {
 
 
 /**
- * Compares this vector with another for equality.
- * @param {!goog.math.Vec2} b The other vector.
- * @return {boolean} Whether this vector has the same x and y as the given
- *     vector.
+ * このベクトルと他のベクトルの等価性を比較する。
+ * @param {!goog.math.Vec2} b 他のベクトル。
+ * @return {boolean} このベクトルが、指定されたベクトルと同じXとYを持つか
+ *     どうか。
  */
 goog.math.Vec2.prototype.equals = function(b) {
   return this == b || !!b && this.x == b.x && this.y == b.y;
@@ -210,37 +210,37 @@ goog.math.Vec2.prototype.equals = function(b) {
 
 
 /**
- * Returns the distance between two vectors.
- * @param {!goog.math.Coordinate} a The first vector.
- * @param {!goog.math.Coordinate} b The second vector.
- * @return {number} The distance.
+ * 2つのベクトル間の距離を返す。
+ * @param {!goog.math.Coordinate} a 1つ目のベクトル。
+ * @param {!goog.math.Coordinate} b 2つ目のベクトル。
+ * @return {number} 距離。
  */
 goog.math.Vec2.distance = goog.math.Coordinate.distance;
 
 
 /**
- * Returns the squared distance between two vectors.
- * @param {!goog.math.Coordinate} a The first vector.
- * @param {!goog.math.Coordinate} b The second vector.
- * @return {number} The squared distance.
+ * 2つのベクトル間の距離の2乗を返す。
+ * @param {!goog.math.Coordinate} a 1つ目のベクトル。
+ * @param {!goog.math.Coordinate} b 2つ目のベクトル。
+ * @return {number} 距離の2乗。
  */
 goog.math.Vec2.squaredDistance = goog.math.Coordinate.squaredDistance;
 
 
 /**
- * Compares vectors for equality.
- * @param {!goog.math.Coordinate} a The first vector.
- * @param {!goog.math.Coordinate} b The second vector.
- * @return {boolean} Whether the vectors have the same x and y coordinates.
+ * ベクトルの等価性を比較する。
+ * @param {!goog.math.Coordinate} a 1つ目のベクトル。
+ * @param {!goog.math.Coordinate} b 2つ目のベクトル。
+ * @return {boolean} 指定したベクトルが、同じXとY座標を持つかどうか。
  */
 goog.math.Vec2.equals = goog.math.Coordinate.equals;
 
 
 /**
- * Returns the sum of two vectors as a new Vec2.
- * @param {!goog.math.Coordinate} a The first vector.
- * @param {!goog.math.Coordinate} b The second vector.
- * @return {!goog.math.Vec2} The sum vector.
+ * 2つのベクトルの和を新しい `Vec2` として返す。
+ * @param {!goog.math.Coordinate} a 1つ目のベクトル。The first vector.
+ * @param {!goog.math.Coordinate} b 2つ目のベクトル。The second vector.
+ * @return {!goog.math.Vec2} 和のベクトル。The sum vector.
  */
 goog.math.Vec2.sum = function(a, b) {
   return new goog.math.Vec2(a.x + b.x, a.y + b.y);
@@ -248,10 +248,10 @@ goog.math.Vec2.sum = function(a, b) {
 
 
 /**
- * Returns the difference between two vectors as a new Vec2.
- * @param {!goog.math.Coordinate} a The first vector.
- * @param {!goog.math.Coordinate} b The second vector.
- * @return {!goog.math.Vec2} The difference vector.
+ * 2つのベクトルの差を新しい `Vec2` として返す。
+ * @param {!goog.math.Coordinate} a 1つ目のベクトル。
+ * @param {!goog.math.Coordinate} b 2つ目のベクトル。
+ * @return {!goog.math.Vec2} 差のベクトル。
  */
 goog.math.Vec2.difference = function(a, b) {
   return new goog.math.Vec2(a.x - b.x, a.y - b.y);
@@ -259,10 +259,10 @@ goog.math.Vec2.difference = function(a, b) {
 
 
 /**
- * Returns the dot-product of two vectors.
- * @param {!goog.math.Coordinate} a The first vector.
- * @param {!goog.math.Coordinate} b The second vector.
- * @return {number} The dot-product of the two vectors.
+ * 2つのベクトルの内積を返す。
+ * @param {!goog.math.Coordinate} a 1つ目のベクトル。
+ * @param {!goog.math.Coordinate} b 2つ目のベクトル。
+ * @return {number} 2つのベクトルの内積。
  */
 goog.math.Vec2.dot = function(a, b) {
   return a.x * b.x + a.y * b.y;
@@ -270,12 +270,12 @@ goog.math.Vec2.dot = function(a, b) {
 
 
 /**
- * Returns a new Vec2 that is the linear interpolant between vectors a and b at
- * scale-value x.
- * @param {!goog.math.Coordinate} a Vector a.
- * @param {!goog.math.Coordinate} b Vector b.
- * @param {number} x The proportion between a and b.
- * @return {!goog.math.Vec2} The interpolated vector.
+ * 2つのベクトル `a` `b` 間を、スケール値 `x` で線形補間した新しい `Vec2` を
+ * 返す。
+ * @param {!goog.math.Coordinate} a ベクトル `a`
+ * @param {!goog.math.Coordinate} b ベクトル `b`
+ * @param {number} x `a` `b` 間の割合。
+ * @return {!goog.math.Vec2} 補間されたベクトル。
  */
 goog.math.Vec2.lerp = function(a, b, x) {
   return new goog.math.Vec2(goog.math.lerp(a.x, b.x, x),
