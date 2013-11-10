@@ -67,7 +67,7 @@ goog.global.CLOSURE_DEFINES;
 /**
  * 名前空間パスからオブジェクト階層を構築する。名前が既に定義されていた場合は上
  * 書きしない。
- * 例："a.b.c" -> a = {};a.b={};a.b.c={};
+ * 例：`"a.b.c"` -> `a = {}; a.b = {}; a.b.c = {};`
  * `goog.provide`、`goog.exportSymbol` で使う。
  * @param {string} name 対象となっているオブジェクトの属する名前空間の名前パス。
  * @param {*=} opt_object 名前パスの末尾で定義されているオブジェクト。省略可能。
@@ -783,9 +783,9 @@ goog.typeOf = function(value) {
       //      3. `Result(2)` を返す。
       // この振る舞いは先の実行コンテキストによる破壊に耐えることができる。
       if ((className == '[object Array]' ||
-           // In IE all non value types are wrapped as objects across window
-           // boundaries (not iframe though) so we have to do object detection
-           // for this edge case.
+           // IE では非値型は window をまたぐときにオブジェクトとしてラップさ
+           // れる（iframe のことではない）ので、この場合はオブジェクトの検知を
+           // をおこなう。
            typeof value.length == 'number' &&
            typeof value.splice != 'undefined' &&
            typeof value.propertyIsEnumerable != 'undefined' &&
@@ -965,11 +965,11 @@ goog.isObject = function(val) {
  * @return {number} このオブジェクトのユニークな値。
  */
 goog.getUid = function(obj) {
-  // TODO(arv): Make the type stricter, do not accept null.
+  // TODO(arv): `null` を通さないよう型を厳密にするべき。
 
-  // In Opera window.hasOwnProperty exists but always returns false so we avoid
-  // using it. As a consequence the unique ID generated for BaseClass.prototype
-  // and SubClass.prototype will be the same.
+  // Opera に `window.hasOwnProperty` は存在するが、これは常に `false` を返す
+  // ため、使うことが出来ない。つまり、`BaseClass.prototype` に対してつけられた
+  // 固有の識別子は `SubClass.prototype` のものと同一になってしまうことになる。
   return obj[goog.UID_PROPERTY_] ||
       (obj[goog.UID_PROPERTY_] = ++goog.uidCounter_);
 };
@@ -994,10 +994,10 @@ goog.hasUid = function(obj) {
  * @param {Object} obj ユニークな識別子を取り除きたいオブジェクト。
  */
 goog.removeUid = function(obj) {
-  // TODO(arv): Make the type stricter, do not accept null.
+  // TODO(arv): `null` を通さないよう型を厳密にするべき。
 
-  // In IE, DOM nodes are not instances of Object and throw an exception if we
-  // try to delete.  Instead we try to use removeAttribute.
+  // IE では、DOM ノードは `Object` のインスタンスではないので、`delete` しよう
+  // とすると例外が発生する。そこで、`removeAttribute` を使うようにしている。
   if ('removeAttribute' in obj) {
     obj.removeAttribute(goog.UID_PROPERTY_);
   }
@@ -1149,10 +1149,10 @@ goog.bind = function(fn, selfObj, var_args) {
   // TODO(nicksantos): narrow the type signature.
   if (Function.prototype.bind &&
       // NOTE(nicksantos): Chrome extension 環境で base.js を利用している人がい
-      // て、その人は Function.prototype.bind に goog.bind を実装してしまってい
-      // る。そうすると、この関数はネイティブな Function.prototype.bind があると
-      // 勘違いして循環参照を起こしてしまう。この場合でも巧く動くようにハックし
-      // ないとね。
+      // て、その人は `Function.prototype.bind` に `goog.bind` を実装してしまっ
+      // ている。そうすると、この関数はネイティブな `Function.prototype.bind` が
+      // あると勘違いして循環参照を起こしてしまう。この場合でも巧く動くように
+      // ハックしないとね。
       Function.prototype.bind.toString().indexOf('native code') != -1) {
     goog.bind = goog.bindNative_;
   } else {
@@ -1189,8 +1189,8 @@ goog.partial = function(fn, var_args) {
 
 /**
  * 片方のオブジェクトのすべてのメンバをもう一方のオブジェクトに加える。
- * この関数は toString や hasOwnProperty のような名前のキーがある場合は動作しな
- * い。この目的では `goog.object.extend` を使うべき。
+ * この関数は `toString` や `hasOwnProperty` のような名前のキーがある場合は動作
+ * しない。この目的では `goog.object.extend` を使うべき。
  * @param {Object} target メンバが追加されるオブジェクト。
  * @param {Object} source 追加したいメンバをもつオブジェクト。
  */
@@ -1246,7 +1246,7 @@ goog.globalEval = function(script) {
       var scriptElt = doc.createElement('script');
       scriptElt.type = 'text/javascript';
       scriptElt.defer = false;
-      // ユーザーへの注意：`Safari 2で失敗するので、`t('<test>')` を
+      // ユーザーへの注意：Safari 2で失敗するので、`t('<test>')` を
       // `.innerHTML` や `.text` で使ってはいけない。なので、テキストノードで追
       // 加している。
       scriptElt.appendChild(doc.createTextNode(script));
@@ -1281,7 +1281,7 @@ goog.cssNameMapping_;
 /**
  * `goog.getCssName` の引数が CSS クラス名そのものなのか、 CSS クラス名の集まり
  * なのかを判断するための値。 CSS クラス名そのものであれば `'BY_WHOLE'` 、CSS
- * クラス名の断片であれば `'BY_PART'` 。 undefined は `'BY_PART'` だとみなされ
+ * クラス名の断片であれば `'BY_PART'` 。 `undefined` は `'BY_PART'` だとみなされ
  * る。
  * @type {string|undefined}
  * @private
@@ -1298,7 +1298,7 @@ goog.cssNameMappingStyle_;
  * CSS クラス名が見つからない場合は与えられた文字列がそのまま返される。
  * `opt_modifier` が指定されている場合は `-` 繋がりの文字列が返される。
  *
- * CSS クラス名マップが与えられた場合は、 `BY_PART` と`BY_WHOLE` の 2 つの引数の
+ * CSS クラス名マップが与えられた場合は、 `BY_PART` と`BY_WHOLE` の2つの引数の
  * 形式が利用できる。 `BY_PART` の場合、引数は `-` 繋がりの複数の文字列として扱
  * われ、ぞれぞれマップが該当する CSS クラス名に変換されて返される。`BY_WHOLE`
  * の場合は、与えられた文字列そのものに該当する CSS クラス名が返される。
@@ -1322,8 +1322,8 @@ goog.cssNameMappingStyle_;
  * のように書き換えられる。
  *
  * この関数は引数の数によって処理が異なる。
- * 引数が 1 つだけ指定された場合は、この引数が変換される。引数が 2 つ指定された
- * 場合は 2 つめの引数のみが変換される。したがって、この場合は 1 つめの引数をあ
+ * 引数が1つだけ指定された場合は、この引数が変換される。引数が2つ指定された
+ * 場合は2つめの引数のみが変換される。したがって、この場合は1つめの引数をあ
  * らかじめ `goog.getCssName` によって変換しておくことが望ましい。
  *
  * @param {string} className CSS クラス名。
@@ -1429,10 +1429,10 @@ if (!COMPILED && goog.global.CLOSURE_CSS_NAME_MAPPING) {
  * var MSG_NAME = goog.getMsg('Hello {$placeholder}', {'placeholder': 'world'});
  * ```
  *
- * @param {string} str ローカライズしたい部分を '{$foo}' という形式で記述した文
- *     字列。
+ * @param {string} str ローカライズしたい部分を `'{$foo}'` という形式で記述した
+ *     文字列。
  * @param {Object=} opt_values ローカライズ文字列のマップ。
- * @return {string} message ローカライズされた文字列。
+ * @return {string} ローカライズされた文字列。
  */
 goog.getMsg = function(str, opt_values) {
   var values = opt_values || {};
@@ -1491,10 +1491,11 @@ goog.getMsgWithFallback = function(a, b) {
  * new public.path.Foo().myMethod();
  * ```
  *
- * @param {string} publicPath Unobfuscated name to export.
- * @param {*} object Object the name should point to.
- * @param {Object=} opt_objectToExportTo The object to add the path to; default
- *     is goog.global.
+ * @param {string} publicPath エクスポートしたいオブジェクトの名前。この名前は
+ *     難読化されない。
+ * @param {*} object この名前がつけられるオブジェクト。
+ * @param {Object=} opt_objectToExportTo このオブジェクトの追加先となるオブジェ
+ *     クト（初期値は `goog.global`）。
  */
 goog.exportSymbol = function(publicPath, object, opt_objectToExportTo) {
   goog.exportPath_(publicPath, object, opt_objectToExportTo);
@@ -1513,9 +1514,10 @@ goog.exportSymbol = function(publicPath, object, opt_objectToExportTo) {
  * ```
  * goog.exportProperty(Foo.prototype, 'myMethod', Foo.prototype.myMethod);
  * ```
- * @param {Object} object Object whose static property is being exported.
- * @param {string} publicName Unobfuscated name to export.
- * @param {*} symbol Object the name should point to.
+ * @param {Object} object エクスポートしたいプロパティをもつオブジェクト。この
+ *     オブジェクトのプロパティ名は難読化されない。
+ * @param {string} publicName エクスポートしたいプロパティの名前。
+ * @param {*} symbol この名前がつけられるプロパティ。
  */
 goog.exportProperty = function(object, publicName, symbol) {
   object[publicName] = symbol;
