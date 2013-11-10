@@ -1138,15 +1138,12 @@ goog.bindJs_ = function(fn, selfObj, var_args) {
  * barMethBound('arg3', 'arg4');
  * ```
  *
- * @param {?function(this:T, ...)} fn A function to partially apply.
- * @param {T} selfObj Specifies the object which this should point to when the
- *     function is run.
- * @param {...*} var_args Additional arguments that are partially applied to the
- *     function.
- * @return {!Function} A partially-applied form of the function bind() was
- *     invoked as a method of.
+ * @param {?function(this:T, ...)} fn 部分適用したい関数。
+ * @param {T} selfObj 関数実行時のコンテキストとなるオブジェクト。
+ * @param {...*} var_args 部分適用する際の引数。
+ * @return {!Function} 関数を部分適用して実行する関数。
  * @template T
- * @suppress {deprecated} See above.
+ * @suppress {deprecated} 下記参照。
  */
 goog.bind = function(fn, selfObj, var_args) {
   // TODO(nicksantos): narrow the type signature.
