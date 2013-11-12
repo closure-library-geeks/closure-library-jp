@@ -1550,13 +1550,13 @@ goog.dom.setTextContent = function(node, text) {
 
 
 /**
- * Gets the outerHTML of a node, which islike innerHTML, except that it
- * actually contains the HTML of the node itself.
- * @param {Element} element The element to get the HTML of.
- * @return {string} The outerHTML of the given element.
+ * ノードの `outerHtml` を返す（`innerHtml` と似ているが、ノード自身のタグを含
+ * む）。
+ * @param {Element} element HTML を取得するための要素。
+ * @return {string} 与えられた要素の `outerHtml`。
  */
 goog.dom.getOuterHtml = function(element) {
-  // IE, Opera and WebKit all have outerHTML.
+  // IE、Opera、 WebKit は `outerHTML` をサポートしている。
   if ('outerHTML' in element) {
     return element.outerHTML;
   } else {
@@ -1569,17 +1569,15 @@ goog.dom.getOuterHtml = function(element) {
 
 
 /**
- * Finds the first descendant node that matches the filter function, using
- * a depth first search. This function offers the most general purpose way
- * of finding a matching element. You may also wish to consider
- * {@code goog.dom.query} which can express many matching criteria using
- * CSS selector expressions. These expressions often result in a more
- * compact representation of the desired result.
+ * フィルタ関数でマッチした最初の子孫要素を返す（深さ優先探索）。この関数は、
+ * 要素を探す手段のうち、最も汎用的なものである。ただ、CSS セレクタ式によって
+ * 複数のマッチ条件を素早く指定できる `goog.dom.query` という手段もある。
+ * この手段では、必要となるコードがさらにコンパクトになることが多い。
  * @see goog.dom.query
  *
- * @param {Node} root The root of the tree to search.
- * @param {function(Node) : boolean} p The filter function.
- * @return {Node|undefined} The found node or undefined if none is found.
+ * @param {Node} root 検索範囲となるルート要素。
+ * @param {function(Node) : boolean} p フィルタ関数。
+ * @return {Node|undefined} 検索結果のノード。何も見つからなければ `undefined`。
  */
 goog.dom.findNode = function(root, p) {
   var rv = [];
@@ -1589,16 +1587,14 @@ goog.dom.findNode = function(root, p) {
 
 
 /**
- * Finds all the descendant nodes that match the filter function, using a
- * a depth first search. This function offers the most general-purpose way
- * of finding a set of matching elements. You may also wish to consider
- * {@code goog.dom.query} which can express many matching criteria using
- * CSS selector expressions. These expressions often result in a more
- * compact representation of the desired result.
-
- * @param {Node} root The root of the tree to search.
- * @param {function(Node) : boolean} p The filter function.
- * @return {!Array.<!Node>} The found nodes or an empty array if none are found.
+ * フィルタ関数でマッチしたすべてのの子孫要素を返す（深さ優先探索）。この関数は、
+ * 要素を探す手段のうち、最も汎用的なものである。ただ、CSS セレクタ式によって
+ * 複数のマッチ条件を素早く指定できる `goog.dom.query` という手段もある。
+ * この手段では、必要となるコードがさらにコンパクトになることが多い。
+ *
+ * @param {Node} root 検索範囲となるルート要素。
+ * @param {function(Node) : boolean} p フィルタ関数。
+ * @return {Node|undefined} 検索結果のノード。何も見つからなければ空の配列。
  */
 goog.dom.findNodes = function(root, p) {
   var rv = [];
@@ -1608,14 +1604,14 @@ goog.dom.findNodes = function(root, p) {
 
 
 /**
- * Finds the first or all the descendant nodes that match the filter function,
- * using a depth first search.
- * @param {Node} root The root of the tree to search.
- * @param {function(Node) : boolean} p The filter function.
- * @param {!Array.<!Node>} rv The found nodes are added to this array.
- * @param {boolean} findOne If true we exit after the first found node.
- * @return {boolean} Whether the search is complete or not. True in case findOne
- *     is true and the node is found. False otherwise.
+ * フィルタ関数にマッチする最初の要素、または全ての要素を深さ優先で検索する。
+ * @param {Node} root 検索範囲となるルート要素。
+ * @param {function(Node) : boolean} p フィルタ関数。
+ * @param {!Array.<!Node>} rv 見つかったノードが追加される配列。
+ * @param {boolean} findOne `true` であれば、要素がひとつでも見つかれば終了す
+ *     る。
+ * @return {boolean} 検索が完了したかどうか。ひとつでも見つかれば `true` 、それ
+ *     以外は `false`。
  * @private
  */
 goog.dom.findNodes_ = function(root, p, rv, findOne) {
@@ -1639,7 +1635,7 @@ goog.dom.findNodes_ = function(root, p, rv, findOne) {
 
 
 /**
- * Map of tags whose content to ignore when calculating text length.
+ * 内容の文字列長が計算されないタグのマップ。
  * @type {Object}
  * @private
  */
@@ -1653,7 +1649,7 @@ goog.dom.TAGS_TO_IGNORE_ = {
 
 
 /**
- * Map of tags which have predefined values with regard to whitespace.
+ * 空白文字などの決まった値をもつタグのマップ。
  * @type {Object}
  * @private
  */
@@ -1661,12 +1657,11 @@ goog.dom.PREDEFINED_TAG_VALUES_ = {'IMG': ' ', 'BR': '\n'};
 
 
 /**
- * Returns true if the element has a tab index that allows it to receive
- * keyboard focus (tabIndex >= 0), false otherwise.  Note that some elements
- * natively support keyboard focus, even if they have no tab index.
- * @param {Element} element Element to check.
- * @return {boolean} Whether the element has a tab index that allows keyboard
- *     focus.
+ * 要素がキーボードフォーカスするための有効なタブインデックス（`tabIndex` >= 0）
+ * をもつかどうかを判定する。ただ、いくつかの要素はタブインデックスがなくても
+ * ネイティブでキーボードフォーカスが有効になっている。
+ * @param {Element} element 検索するための要素。
+ * @return {boolean} 要素をキーボードフォーカスできるかどうか。
  * @see http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
  */
 goog.dom.isFocusableTabIndex = function(element) {
@@ -1676,86 +1671,88 @@ goog.dom.isFocusableTabIndex = function(element) {
 
 
 /**
- * Enables or disables keyboard focus support on the element via its tab index.
- * Only elements for which {@link goog.dom.isFocusableTabIndex} returns true
- * (or elements that natively support keyboard focus, like form elements) can
- * receive keyboard focus.  See http://go/tabindex for more info.
- * @param {Element} element Element whose tab index is to be changed.
- * @param {boolean} enable Whether to set or remove a tab index on the element
- *     that supports keyboard focus.
+ * 与えられた要素のタブインデックスによるキーボードフォーカスを有効・無効にす
+ * る。この処理は `goog.dom.isFocusableTabIndex` が `true` となる要素、または
+ * ネイティブでキーボードフォーカスがサポートされている要素のみに有効である。
+ * `http://go/tabindex` を参照。
+ * @param {Element} element タブインデックスを変更される要素。
+ * @param {boolean} enable キーボードフォーカスのためのタブインデックスを設定・
+ *     除去するかどうか。
  */
 goog.dom.setFocusableTabIndex = function(element, enable) {
   if (enable) {
     element.tabIndex = 0;
   } else {
-    // Set tabIndex to -1 first, then remove it. This is a workaround for
-    // Safari (confirmed in version 4 on Windows). When removing the attribute
-    // without setting it to -1 first, the element remains keyboard focusable
-    // despite not having a tabIndex attribute anymore.
+    // まず `tabIndex` を除去するために `-1` に設定する。これは Safari で動作
+    // する（Windows 版の Safari4 で確認済）。`-1` を設定せずに属性を除去した
+    // 場合、`tabIndex` をもっていないのにも関わらずキーボードフォーカスできて
+    // しまう。
     element.tabIndex = -1;
-    element.removeAttribute('tabIndex'); // Must be camelCase!
+    element.removeAttribute('tabIndex'); // キャメルケースじゃないとね！
   }
 };
 
 
 /**
- * Returns true if the element can be focused, i.e. it has a tab index that
- * allows it to receive keyboard focus (tabIndex >= 0), or it is an element
- * that natively supports keyboard focus.
- * @param {Element} element Element to check.
- * @return {boolean} Whether the element allows keyboard focus.
+ * 要素がフォーカス可能かどうかを判定する。
+ * キーボードフォーカスのためのタブインデックス（`tabIndex` > 0）をもつか、
+ * ネイティブでキーボードフォーカスがサポートされている要素であれば `true` を
+ * 返す。
+ * @param {Element} element 判定するための要素。
+ * @return {boolean} この要素がキーボードフォーカスできるかどうか。
  */
 goog.dom.isFocusable = function(element) {
   var focusable;
-  // Some elements can have unspecified tab index and still receive focus.
+  // いくつかの要素はタブインデックスをしていされていなくてもフォーカスできる。
   if (goog.dom.nativelySupportsFocus_(element)) {
-    // Make sure the element is not disabled ...
+    // 要素が無効化されていないことを確認し、
     focusable = !element.disabled &&
-        // ... and if a tab index is specified, it allows focus.
+        // さらにタブインデックスが指定されていれば、フォーカス可能である。
         (!goog.dom.hasSpecifiedTabIndex_(element) ||
          goog.dom.isTabIndexFocusable_(element));
   } else {
     focusable = goog.dom.isFocusableTabIndex(element);
   }
 
-  // IE requires elements to be visible in order to focus them.
+  // IE では要素が可視状態でないとフォーカスできない。
   return focusable && goog.userAgent.IE ?
              goog.dom.hasNonZeroBoundingRect_(element) : focusable;
 };
 
 
 /**
- * Returns true if the element has a specified tab index.
- * @param {Element} element Element to check.
- * @return {boolean} Whether the element has a specified tab index.
+ * タブインデックスが指定されていれば `true` を返す。
+ * @param {Element} element 判定するための要素。
+ * @return {boolean} この要素にタブインデックスが指定されているかどうか。
  * @private
  */
 goog.dom.hasSpecifiedTabIndex_ = function(element) {
-  // IE returns 0 for an unset tabIndex, so we must use getAttributeNode(),
-  // which returns an object with a 'specified' property if tabIndex is
-  // specified.  This works on other browsers, too.
-  var attrNode = element.getAttributeNode('tabindex'); // Must be lowercase!
+  // IE は設定されていない `tabIndex` で 0 を返すため、`getAttributeNode` を
+  // 使わなければならなかった。これは、指定されたプロパティをきちんと返す。
+  // これで他のブラウザでも動作する。
+  var attrNode = element.getAttributeNode('tabindex'); // 小文字じゃないとね！
   return goog.isDefAndNotNull(attrNode) && attrNode.specified;
 };
 
 
 /**
- * Returns true if the element's tab index allows the element to be focused.
- * @param {Element} element Element to check.
- * @return {boolean} Whether the element's tab index allows focus.
+ * 要素のタブインデックスがフォーカス可能な値であれば `true` を返す。
+ * @param {Element} element 判定するための要素。
+ * @return {boolean} 要素のタブインデックスはフォーカスできるかどうか。
  * @private
  */
 goog.dom.isTabIndexFocusable_ = function(element) {
   var index = element.tabIndex;
-  // NOTE: IE9 puts tabIndex in 16-bit int, e.g. -2 is 65534.
+  // IE9 の `tabIndex` は 16-bit int なので、 `-2` は `65534` となることに注意。
   return goog.isNumber(index) && index >= 0 && index < 32768;
 };
 
 
 /**
- * Returns true if the element is focusable even when tabIndex is not set.
- * @param {Element} element Element to check.
- * @return {boolean} Whether the element natively supports focus.
+ * 要素が `tabIndex` をもたなくてもフォーカス可能であれば、`true` を返す。
+ * @param {Element} element 判定するための要素。
+ * @return {boolean} この要素はネイティブでフォーカスがサポートされているかどう
+ *     か。
  * @private
  */
 goog.dom.nativelySupportsFocus_ = function(element) {
@@ -1768,10 +1765,9 @@ goog.dom.nativelySupportsFocus_ = function(element) {
 
 
 /**
- * Returns true if the element has a bounding rectangle that would be visible
- * (i.e. its width and height are greater than zero).
- * @param {Element} element Element to check.
- * @return {boolean} Whether the element has a non-zero bounding rectangle.
+ * 要素が可視領域をもつならば `true` を返す（高さと幅が `0` よりも大きい要素）。
+ * @param {Element} element 判定するための要素。
+ * @return {boolean} この要素が0でない可視領域をもつかどうか。
  * @private
  */
 goog.dom.hasNonZeroBoundingRect_ = function(element) {
@@ -1783,32 +1779,34 @@ goog.dom.hasNonZeroBoundingRect_ = function(element) {
 
 
 /**
- * Returns the text content of the current node, without markup and invisible
- * symbols. New lines are stripped and whitespace is collapsed,
- * such that each character would be visible.
+ * 指定されたノードの内容の文字列を返す。マークアップや不可視の記号は含まれな
+ * い。改行は除去され、連続する空白文字は1文字の空白へと畳まれる。
  *
- * In browsers that support it, innerText is used.  Other browsers attempt to
- * simulate it via node traversal.  Line breaks are canonicalized in IE.
+ * ブラウザが `innerText` をサポートしていれば使う。それ以外の場合はノードを巡回
+ * することによって、死ミューレートする。IE でも改行は正規化される。
  *
  * @param {Node} node The node from which we are getting content.
  * @return {string} The text content.
  */
 goog.dom.getTextContent = function(node) {
   var textContent;
-  // Note(arv): IE9, Opera, and Safari 3 support innerText but they include
-  // text nodes in script tags. So we revert to use a user agent test here.
+  // Note(arv): IE9、Opera、Safari 3 では `innerText` がサポートされているが、
+  // スクリプトタグのなかのテキストノードが含まれてしまう。なので、ユーザーエー
+  // ジェントによる分岐に戻した。
   if (goog.dom.BrowserFeature.CAN_USE_INNER_TEXT && ('innerText' in node)) {
     textContent = goog.string.canonicalizeNewlines(node.innerText);
-    // Unfortunately .innerText() returns text with &shy; symbols
-    // We need to filter it out and then remove duplicate whitespaces
+    // 残念なことに、`.innerText()` は `&shy;` 記号も返してしまう。
+    // なのでこれを取り除き、重複した空白記号も取り除く。
   } else {
     var buf = [];
     goog.dom.getTextContent_(node, buf, true);
     textContent = buf.join('');
   }
 
-  // Strip &shy; entities. goog.format.insertWordBreaks inserts them in Opera.
+  // `&shy;` の実体参照を除去する。Opera における `goog.format.insertWordBreaks`
+  // はこれを挿入するからだ。
   textContent = textContent.replace(/ \xAD /g, ' ').replace(/\xAD/g, '');
+  // `&#8203` 参照を
   // Strip &#8203; entities. goog.format.insertWordBreaks inserts them in IE8.
   textContent = textContent.replace(/\u200B/g, '');
 
