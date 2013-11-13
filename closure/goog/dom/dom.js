@@ -1785,8 +1785,8 @@ goog.dom.hasNonZeroBoundingRect_ = function(element) {
  * ブラウザが `innerText` をサポートしていれば使う。それ以外の場合はノードを巡回
  * することによって、死ミューレートする。IE でも改行は正規化される。
  *
- * @param {Node} node The node from which we are getting content.
- * @return {string} The text content.
+ * @param {Node} node 内容を取得するためのノード。
+ * @return {string} 内容の文字列。
  */
 goog.dom.getTextContent = function(node) {
   var textContent;
@@ -1806,13 +1806,12 @@ goog.dom.getTextContent = function(node) {
   // `&shy;` の実体参照を除去する。Opera における `goog.format.insertWordBreaks`
   // はこれを挿入するからだ。
   textContent = textContent.replace(/ \xAD /g, ' ').replace(/\xAD/g, '');
-  // `&#8203` 参照を
-  // Strip &#8203; entities. goog.format.insertWordBreaks inserts them in IE8.
+  // `&#8203` 参照を除去する。IE8 における `goog.format.insertWordBreaks` は
+  // これを挿入するからだ。
   textContent = textContent.replace(/\u200B/g, '');
 
-  // Skip this replacement on old browsers with working innerText, which
-  // automatically turns &nbsp; into ' ' and / +/ into ' ' when reading
-  // innerText.
+  // `innerText` が動作し、`&nbsp;` が `' '` へ、`/ +/` が `' '` へと変換される
+  // 古いブラウザでは置換しない。
   if (!goog.dom.BrowserFeature.CAN_USE_INNER_TEXT) {
     textContent = textContent.replace(/ +/g, ' ');
   }
@@ -1825,13 +1824,13 @@ goog.dom.getTextContent = function(node) {
 
 
 /**
- * Returns the text content of the current node, without markup.
+ * 指定されたノードの内容の文字列を返す。マークアップやは含まれない。
  *
- * Unlike {@code getTextContent} this method does not collapse whitespaces
- * or normalize lines breaks.
+ * このメソッドは連続する空白文字を畳まないことが `getTextContent` メソッドと
+ * は異なる。
  *
- * @param {Node} node The node from which we are getting content.
- * @return {string} The raw text content.
+ * @param {Node} node 内容を取得するためのノード。
+ * @return {string} 内容の文字列。
  */
 goog.dom.getRawTextContent = function(node) {
   var buf = [];
@@ -1842,16 +1841,16 @@ goog.dom.getRawTextContent = function(node) {
 
 
 /**
- * Recursive support function for text content retrieval.
+ * 再帰的にテキストコンテントを取得する。
  *
- * @param {Node} node The node from which we are getting content.
- * @param {Array} buf string buffer.
- * @param {boolean} normalizeWhitespace Whether to normalize whitespace.
+ * @param {Node} node 内容を取得するためのノード。
+ * @param {Array} buf 文字列のバッファ。
+ * @param {boolean} normalizeWhitespace 空白文字列を正規化するかどうか。
  * @private
  */
 goog.dom.getTextContent_ = function(node, buf, normalizeWhitespace) {
   if (node.nodeName in goog.dom.TAGS_TO_IGNORE_) {
-    // ignore certain tags
+    // くつかのタグは無視する
   } else if (node.nodeType == goog.dom.NodeType.TEXT) {
     if (normalizeWhitespace) {
       buf.push(String(node.nodeValue).replace(/(\r\n|\r|\n)/g, ''));
@@ -1871,13 +1870,14 @@ goog.dom.getTextContent_ = function(node, buf, normalizeWhitespace) {
 
 
 /**
- * Returns the text length of the text contained in a node, without markup. This
- * is equivalent to the selection length if the node was selected, or the number
- * of cursor movements to traverse the node. Images & BRs take one space.  New
- * lines are ignored.
+ * 与えられたノードに含まれる文字列長（マークアップは含まれない）を返す。
+ * この値は、ノードに含まれる文字列を全て選択したときの選択された文字列の長さと
+ * 等しい。または、ノードの内容をカーソルでひとつずつ数えたものと等しいとも
+ * 言い換えられる。画像、改行タグは1つの空白文字と置き換えられる。改行は無視
+ * される。
  *
- * @param {Node} node The node whose text content length is being calculated.
- * @return {number} The length of {@code node}'s text content.
+ * @param {Node} node 内容の文字列長を取得したいノード。
+ * @return {number} `node` の内容の文字列長。
  */
 goog.dom.getNodeTextLength = function(node) {
   return goog.dom.getTextContent(node).length;
@@ -1885,13 +1885,14 @@ goog.dom.getNodeTextLength = function(node) {
 
 
 /**
- * Returns the text offset of a node relative to one of its ancestors. The text
- * length is the same as the length calculated by goog.dom.getNodeTextLength.
+ * 与えられたノードの任意の祖先のノードからの文字列のオフセットを取得する。
+ * この文字列長は `goog.dom.getNodeTextLength` の計算ルールと同じようにで計算
+ * される。
  *
- * @param {Node} node The node whose offset is being calculated.
- * @param {Node=} opt_offsetParent The node relative to which the offset will
- *     be calculated. Defaults to the node's owner document's body.
- * @return {number} The text offset.
+ * @param {Node} node オフセットを取得するためのノード。
+ * @param {Node=} opt_offsetParent オフセットの起点となるノード。省略時はノード
+ *     が属する `document` の `body`。
+ * @return {number} 文字列のオフセット。
  */
 goog.dom.getNodeTextOffset = function(node, opt_offsetParent) {
   var root = opt_offsetParent || goog.dom.getOwnerDocument(node).body;
@@ -1903,29 +1904,29 @@ goog.dom.getNodeTextOffset = function(node, opt_offsetParent) {
     }
     node = node.parentNode;
   }
-  // Trim left to deal with FF cases when there might be line breaks and empty
-  // nodes at the front of the text
+  // Firefox でテキストの先頭に改行か空ノードがある場合に対処するために左トリム
+  // をおこなう。
   return goog.string.trimLeft(buf.join('')).replace(/ +/g, ' ').length;
 };
 
 
 /**
- * Returns the node at a given offset in a parent node.  If an object is
- * provided for the optional third parameter, the node and the remainder of the
- * offset will stored as properties of this object.
- * @param {Node} parent The parent node.
- * @param {number} offset The offset into the parent node.
- * @param {Object=} opt_result Object to be used to store the return value. The
- *     return value will be stored in the form {node: Node, remainder: number}
- *     if this object is provided.
- * @return {Node} The node at the given offset.
+ * 与えられたノードの親ノードからの文字列のオフセットを取得する。
+ * 第三引数にオブジェクトが指定された場合は、得られたノードとオフセットの余りが
+ * それぞれプロパティとして保持される。
+ * @param {Node} parent 親ノード。
+ * @param {number} offset 親ノードからのオフセット。
+ * @param {Object=} opt_result 戻り値を保持するオブジェクト。オブジェクトが指定
+ *     されていれば戻り値は `{node: Node, remainder: number}` の形式で保持
+ *     される。
+ * @return {Node} オフセットの上に見つかったノード。
  */
 goog.dom.getNodeAtOffset = function(parent, offset, opt_result) {
   var stack = [parent], pos = 0, cur = null;
   while (stack.length > 0 && pos < offset) {
     cur = stack.pop();
     if (cur.nodeName in goog.dom.TAGS_TO_IGNORE_) {
-      // ignore certain tags
+      // いくつかのタグは無視する
     } else if (cur.nodeType == goog.dom.NodeType.TEXT) {
       var text = cur.nodeValue.replace(/(\r\n|\r|\n)/g, '').replace(/ +/g, ' ');
       pos += text.length;
@@ -1947,25 +1948,25 @@ goog.dom.getNodeAtOffset = function(parent, offset, opt_result) {
 
 
 /**
- * Returns true if the object is a {@code NodeList}.  To qualify as a NodeList,
- * the object must have a numeric length property and an item function (which
- * has type 'string' on IE for some reason).
- * @param {Object} val Object to test.
- * @return {boolean} Whether the object is a NodeList.
+ * オブジェクトが `NodeList` かどうかを判定する。オブジェクトが `length` という
+ * 数値のプロパティをもち、`item` 関数（IE では文字列型）をもてば `NodeList` と
+ * 判断する。
+ * @param {Object} val 判定するためのオブジェクト。
+ * @return {boolean} オブジェクトが `NodeList` かどうか。
  */
 goog.dom.isNodeList = function(val) {
-  // TODO(attila): Now the isNodeList is part of goog.dom we can use
-  // goog.userAgent to make this simpler.
-  // A NodeList must have a length property of type 'number' on all platforms.
+  // TODO(attila): `goog.dom` の一部では `goog.userAgent` を使えばもっとシンプル
+  // に `isNodeList` が書けるはず。
+  // `NodeList` は全てのプラットフォームで `length` という数値のプロパティをも
+  // つ。
   if (val && typeof val.length == 'number') {
-    // A NodeList is an object everywhere except Safari, where it's a function.
+    // `NodeList` は Safari を除いてオブジェクトである（Safari では関数型）。
     if (goog.isObject(val)) {
-      // A NodeList must have an item function (on non-IE platforms) or an item
-      // property of type 'string' (on IE).
+      // 非 IE プラットフォーム では `NodeList` は `item` 関数をもたなければ
+      // ならない。IE では文字列型である。
       return typeof val.item == 'function' || typeof val.item == 'string';
     } else if (goog.isFunction(val)) {
-      // On Safari, a NodeList is a function with an item property that is also
-      // a function.
+      // Safari では、 `NodeList` 関数は `item` プロパティは関数である。
       return typeof val.item == 'function';
     }
   }
@@ -1976,16 +1977,15 @@ goog.dom.isNodeList = function(val) {
 
 
 /**
- * Walks up the DOM hierarchy returning the first ancestor that has the passed
- * tag name and/or class name. If the passed element matches the specified
- * criteria, the element itself is returned.
- * @param {Node} element The DOM node to start with.
- * @param {?(goog.dom.TagName|string)=} opt_tag The tag name to match (or
- *     null/undefined to match only based on class name).
- * @param {?string=} opt_class The class name to match (or null/undefined to
- *     match only based on tag name).
- * @return {Element} The first ancestor that matches the passed criteria, or
- *     null if no match is found.
+ * DOM 階層を遡っていき、与えられたタグ名かつクラス名をもつ直近の祖先要素を
+ * 返す。与えられた要素がこの条件にマッチするのであれば、この要素がそのまま
+ * 返る。
+ * @param {Node} element 開始点となるノード。
+ * @param {?(goog.dom.TagName|string)=} opt_tag マッチさせたいタグ名（ `null`、
+ *     または `undefined` が与えられるとクラス名のみのマッチになる）。
+ * @param {?string=} opt_class マッチさせたいクラス名（`null` または `undefined`
+ *     が与えられるとタグ名のみのマッチとなる）。
+ * @return {Element} 条件を満足する最初の祖先要素。
  */
 goog.dom.getAncestorByTagNameAndClass = function(element, opt_tag, opt_class) {
   if (!opt_tag && !opt_class) {
