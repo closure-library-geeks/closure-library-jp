@@ -1985,7 +1985,7 @@ goog.dom.isNodeList = function(val) {
  *     または `undefined` が与えられるとクラス名のみのマッチになる）。
  * @param {?string=} opt_class マッチさせたいクラス名（`null` または `undefined`
  *     が与えられるとタグ名のみのマッチとなる）。
- * @return {Element} 条件を満足する最初の祖先要素。
+ * @return {Element} 条件を満足する最初の祖先要素。なければ `null`。
  */
 goog.dom.getAncestorByTagNameAndClass = function(element, opt_tag, opt_class) {
   if (!opt_tag && !opt_class) {
@@ -2004,10 +2004,11 @@ goog.dom.getAncestorByTagNameAndClass = function(element, opt_tag, opt_class) {
  * Walks up the DOM hierarchy returning the first ancestor that has the passed
  * class name. If the passed element matches the specified criteria, the
  * element itself is returned.
- * @param {Node} element The DOM node to start with.
- * @param {string} className The class name to match.
- * @return {Element} The first ancestor that matches the passed criteria, or
- *     null if none match.
+ * DOM 階層を遡っていき、与えられたクラス名をもつ直近の祖先要素を返す。
+ * 与えられた要素がこの条件にマッチするのであれば、この要素がそのまま返る。
+ * @param {Node} element 開始点となるノード。
+ * @param {string} className マッチさせたいクラス名。
+ * @return {Element} 条件を満足する最初の祖先要素。なければ `null`。
  */
 goog.dom.getAncestorByClass = function(element, className) {
   return goog.dom.getAncestorByTagNameAndClass(element, null, className);
@@ -2015,18 +2016,14 @@ goog.dom.getAncestorByClass = function(element, className) {
 
 
 /**
- * Walks up the DOM hierarchy returning the first ancestor that passes the
- * matcher function.
- * @param {Node} element The DOM node to start with.
- * @param {function(Node) : boolean} matcher A function that returns true if the
- *     passed node matches the desired criteria.
- * @param {boolean=} opt_includeNode If true, the node itself is included in
- *     the search (the first call to the matcher will pass startElement as
- *     the node to test).
- * @param {number=} opt_maxSearchSteps Maximum number of levels to search up the
- *     dom.
- * @return {Node} DOM node that matched the matcher, or null if there was
- *     no match.
+ * DOM 階層を遡っていき、指定された関数でマッチした最初の疎遠要素を返す。
+ * @param {Node} element 開始点となる DOM ノード。
+ * @param {function(Node) : boolean} matcher 条件を満足したノードが渡されたとき
+ *     `true` を返す関数。
+ * @param {boolean=} opt_includeNode `true` であれば検索対象に自身を含める（
+ *     この場合、最初に `startElement` が最初に `matcher` 関数に渡される）。
+ * @param {number=} opt_maxSearchSteps 遡る階層の数の上限。
+ * @return {Node} `matcher` でマッチした DOM ノード。なければ `null`。
  */
 goog.dom.getAncestor = function(
     element, matcher, opt_includeNode, opt_maxSearchSteps) {
@@ -2042,27 +2039,25 @@ goog.dom.getAncestor = function(
     element = element.parentNode;
     steps++;
   }
-  // Reached the root of the DOM without a match
+  // ルートに到達したので、DOM はマッチしなかったということ
   return null;
 };
 
 
 /**
- * Determines the active element in the given document.
- * @param {Document} doc The document to look in.
- * @return {Element} The active element.
+ * 与えられた `document` からアクティブな要素を取得する。
+ * @param {Document} doc 検索対象となる `document`。
+ * @return {Element} アクティブな要素。
  */
 goog.dom.getActiveElement = function(doc) {
   try {
     return doc && doc.activeElement;
   } catch (e) {
-    // NOTE(nicksantos): Sometimes, evaluating document.activeElement in IE
-    // throws an exception. I'm not 100% sure why, but I suspect it chokes
-    // on document.activeElement if the activeElement has been recently
-    // removed from the DOM by a JS operation.
+    // Note(nicksantos): IE で `document.activeElement` を評価しようとすると例外
+    // が発生するときがある。確信があるわけではないが、`document.activeElement`
+    // `activeElement` が DOM から除去されているときに起こるようだ。
     //
-    // We assume that an exception here simply means
-    // "there is no active element."
+    //ようするに「アクティブな要素はない」という意味の例外なのではないだろうか。
   }
 
   return null;
@@ -2070,29 +2065,32 @@ goog.dom.getActiveElement = function(doc) {
 
 
 /**
- * @private {number} Cached version of the devicePixelRatio.
+ * `devicePixelRatio` のキャッシュ版。
+ * @type {number}
+ * @private
  */
 goog.dom.devicePixelRatio_;
 
 
 /**
- * Gives the devicePixelRatio, or attempts to determine if not present.
+ * `devicePixelRatio` を返す。もしこれが与えられていないときは推定値を返す。
  *
- * By default, this is the same value given by window.devicePixelRatio. If
- * devicePixelRatio is not defined, the ratio is calculated with
- * window.matchMedia, if present. Otherwise, gives 1.0.
+ * この値は `window.devicePixelRatio` と同じとなる。ただし、`devicePixelRatio`
+ * が未定義だが `window.matchMedia` が与えられている場合は、これから比率の計算を
+ * 試みる。それ以外の場合は `1.0` が返る。
  *
- * This function is cached so that the pixel ratio is calculated only once
- * and only calculated when first requested.
+ * この関数は最初の呼び出しで計算されたピクセル比率をキャッシュするため、処理は
+ * 一度しか実行されない。
  *
- * @return {number} The number of actual pixels per virtual pixel.
+ * @return {number} 仮想的なピクセルと実際のピクセルの比率。
  */
 goog.dom.getPixelRatio = goog.functions.cacheReturnValue(function() {
   var win = goog.dom.getWindow();
 
-  // devicePixelRatio does not work on Mobile firefox.
-  // TODO(user): Enable this check on a known working mobile Gecko version.
-  // Filed a bug: https://bugzilla.mozilla.org/show_bug.cgi?id=896804
+  // モバイル Firefox では `devicePixelRatio` が動作しない。
+  // TODO(user): このチェックによってモバイル版の Gecko で動作することが知られて
+  // いる。
+  // 報告されているバグ：`https://bugzilla.mozilla.org/show_bug.cgi?id=896804`
   var isFirefoxMobile = goog.userAgent.GECKO && goog.userAgent.MOBILE;
 
   if (goog.isDef(win.devicePixelRatio) && !isFirefoxMobile) {
@@ -2108,10 +2106,10 @@ goog.dom.getPixelRatio = goog.functions.cacheReturnValue(function() {
 
 
 /**
- * Calculates a mediaQuery to check if the current device supports the
- * given actual to virtual pixel ratio.
- * @param {number} pixelRatio The ratio of actual pixels to virtual pixels.
- * @return {number} pixelRatio if applicable, otherwise 0.
+ * デバイスが実際のピクセル数と仮想のピクセル数の比率をサポートしているならば、
+ * `mediaQuery` によってチェックする。
+ * @param {number} pixelRatio 実際のピクセル数と仮想的なピクセル数の比率。
+ * @return {number} 該当する `pixelRatio` 、なければ `0`。
  * @private
  */
 goog.dom.matchesPixelRatio_ = function(pixelRatio) {
@@ -2125,14 +2123,14 @@ goog.dom.matchesPixelRatio_ = function(pixelRatio) {
 
 
 /**
- * Create an instance of a DOM helper with a new document object.
- * @param {Document=} opt_document Document object to associate with this
- *     DOM helper.
+ * `document` オブジェクトをもつ DOM ヘルパーのインスタンスを作成する。
+ * @param {Document=} opt_document DOM ヘルパーと紐づく `Document` オブジェク
+ *     ト。
  * @constructor
  */
 goog.dom.DomHelper = function(opt_document) {
   /**
-   * Reference to the document object to use
+   * 利用する `document` オブジェクトへの参照。
    * @type {!Document}
    * @private
    */
@@ -2141,16 +2139,16 @@ goog.dom.DomHelper = function(opt_document) {
 
 
 /**
- * Gets the dom helper object for the document where the element resides.
- * @param {Node=} opt_node If present, gets the DomHelper for this node.
- * @return {!goog.dom.DomHelper} The DomHelper.
+ * 与えられた要素が属する `document` の DOM ヘルパーを返す。
+ * @param {Node=} opt_node 指定されればここから `DomHelper` を作成する。
+ * @return {!goog.dom.DomHelper} `DomHelper`。
  */
 goog.dom.DomHelper.prototype.getDomHelper = goog.dom.getDomHelper;
 
 
 /**
- * Sets the document object.
- * @param {!Document} document Document object.
+ * `document` オブジェクトを設定する。
+ * @param {!Document} document `Document` オブジェクト。
  */
 goog.dom.DomHelper.prototype.setDocument = function(document) {
   this.document_ = document;
