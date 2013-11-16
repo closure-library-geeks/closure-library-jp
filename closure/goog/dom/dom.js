@@ -22,9 +22,10 @@
  */
 
 
-// TODO(arv): Rename/refactor getTextContent and getRawTextContent. The problem
-// is that getTextContent should mimic the DOM3 textContent. We should add a
-// getInnerText (or getText) which tries to return the visible text, innerText.
+// TODO(arv): `getTextContent` と `getRawTextContent` は、リネームかリファクタ
+// したほうがよい。これは `getTextContent` は DOM 3 の `textContent` を模した方
+// が良いからだ。それと、表示されてる文字列を取得する `getInnerText` または
+// `getText` を追加した方がよい。
 
 
 goog.provide('goog.dom');
@@ -244,8 +245,8 @@ goog.dom.getRequiredElementByClass = function(className, opt_root) {
 
 
 /**
- * W3C Selectors API の標準化されていて、かつ高速であるネイティブ実装が利用でき
- * るかどうかを判定する（`http://www.w3.org/TR/selectors-api/`）。
+ * W3C Selectors API で標準化されている高速なネイティブ実装が利用できるかどうか
+ * を判定する（`http://www.w3.org/TR/selectors-api/`）。
  * @param {!(Element|Document)} parent 親要素。
  * @return {boolean} `parent.querySelector` API が利用できるかどうか。
  * @private
@@ -441,8 +442,8 @@ goog.dom.DIRECT_ATTRIBUTE_MAP_ = {
  * Safari 3 (tested in 522)
  *
  * docEl.clientWidth  スクロールバーを含まない viewport の幅。
- * docEl.clientHeight スクロールバーを含まない viewport の高（strictモード）。
- * body.clientHeight  スクロールバーを含まない viewport の高（quirksモード）。
+ * docEl.clientHeight スクロールバーを含まない viewport の高（strict モード）。
+ * body.clientHeight  スクロールバーを含まない viewport の高（quirks モード）。
  *
  * @param {Window=} opt_window 判定する `window` 要素。
  * @return {!goog.math.Size} `width` と `height` をもつオブジェクト。
@@ -480,7 +481,10 @@ goog.dom.getDocumentHeight = function() {
  * 与えられた `window` の `document` の高さを返す。
  *
  * この関数は opensocial gadget api からの転載である：
- * `gadgets.window.adjustHeight(opt_height)`
+ *
+ * ```
+ * gadgets.window.adjustHeight(opt_height)
+ * ```
  *
  * @private
  * @param {Window} win 高さを取得する `window`。
@@ -647,7 +651,7 @@ goog.dom.getWindow_ = function(doc) {
  * DOM ノードを指定した属性で作成して返す。また、可変長引数で子要素を追加でき
  * る。子要素は `childNodes` の先頭に追加される。
  *
- * 例： ```createDom('div', null, createDom('p'), createDom('p'));``` は 2 つの
+ * 例： ```createDom('div', null, createDom('p'), createDom('p'));``` は2つの
  * パラグラフ要素を持つ div 要素を返す。
  *
  * @param {string} tagName 作成する要素のタグ名。
@@ -677,8 +681,8 @@ goog.dom.createDom_ = function(doc, args) {
   var tagName = args[0];
   var attributes = args[1];
 
-  // Internet Explorer がやらかした：http://msdn.microsoft.com/workshop/author/
-  //                                 dhtml/reference/properties/name_2.asp
+  // Internet Explorer がやらかした：`http://msdn.microsoft.com/workshop/author/
+  //                                 dhtml/reference/properties/name_2.asp`
   // なので `type` 属性を `input` または `button` に設定できなくなった。
   if (!goog.dom.BrowserFeature.CAN_ADD_NAME_OR_TYPE_ATTRIBUTES && attributes &&
       (attributes.name || attributes.type)) {
@@ -1422,6 +1426,7 @@ goog.dom.compareParentsDescendantNodeIe_ = function(textNode, node) {
  * @param {Node} node1 比較するためのひとつめのノード。
  * @param {Node} node2 比較するためのふたつめのノード。
  * @return {number} -1 if node1 is before node2, +1 otherwise.
+ * @return {number} `node1` が `node2` よりも前にあれば `-1`、それ以外は `+1`。
  * @private
  */
 goog.dom.compareSiblingOrder_ = function(node1, node2) {
