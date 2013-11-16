@@ -1046,7 +1046,6 @@ goog.dom.insertChildAt = function(parent, child, index) {
 
 
 /**
- * Removes a node from its parent.
  * 子要素を親要素から除去する。
  * @param {Node} node 除去される子要素。
  * @return {Node} 除去されたノード。除去に失敗したときは `null`。
@@ -1208,7 +1207,7 @@ goog.dom.getNextNode = function(node) {
 
 
 /**
- * 与得られたノードとソースコード上で隣り合うノードのうち、前の方のノードを返
+ * 与えられたノードとソースコード上で隣り合うノードのうち、前の方のノードを返
  * す。
  * @param {Node} node ノード。
  * @return {Node} DOM ツリーの前にあたるノード。`node` が最後の要素であれば、
@@ -1264,7 +1263,6 @@ goog.dom.isWindow = function(obj) {
 
 
 /**
- * Returns an element's parent, if it's an Element.
  * 与えられた要素の親要素を返す（`Element` であれば）。
  * @param {Element} element DOM 要素。
  * @return {Element} 親要素。`Element` でなければ `null`。
@@ -1500,7 +1498,7 @@ goog.dom.getOwnerDocument = function(node) {
 /**
  * frame または iframe の `document` 要素を取得するためのクロスブラウザな関数。
  * @param {Element} frame frame オブジェクト。
- * @return {!Document} `frame` の `document` 要素。
+ * @return {!Document} `frame` が属する `document` 要素。
  */
 goog.dom.getFrameContentDocument = function(frame) {
   var doc = frame.contentDocument || frame.contentWindow.document;
@@ -1511,8 +1509,7 @@ goog.dom.getFrameContentDocument = function(frame) {
 /**
  * frame または iframe の `window` を取得するためのクロスブラウザな関数。
  * @param {Element} frame frame 要素。
- * @return {!Document} `frame` の `document` 要素。
- * @return {Window} `frame` の `window` 要素。
+ * @return {Window} `frame` が属する `window` 要素。
  */
 goog.dom.getFrameContentWindow = function(frame) {
   return frame.contentWindow ||
@@ -1695,10 +1692,9 @@ goog.dom.setFocusableTabIndex = function(element, enable) {
 
 
 /**
- * 要素がフォーカス可能かどうかを判定する。
- * キーボードフォーカスのためのタブインデックス（`tabIndex` > 0）をもつか、
- * ネイティブでキーボードフォーカスがサポートされている要素であれば `true` を
- * 返す。
+ * 要素がフォーカス可能かどうかを判定する。キーボードフォーカスのためのタブ
+ * インデックス（`tabIndex` > 0）をもつか、ネイティブでキーボードフォーカスが
+ * サポートされている要素であれば `true` を返す。
  * @param {Element} element 判定するための要素。
  * @return {boolean} この要素がキーボードフォーカスできるかどうか。
  */
@@ -1887,7 +1883,7 @@ goog.dom.getNodeTextLength = function(node) {
 
 /**
  * 与えられたノードの任意の祖先のノードからの文字列のオフセットを取得する。
- * この文字列長は `goog.dom.getNodeTextLength` の計算ルールと同じようにで計算
+ * この文字列長は `goog.dom.getNodeTextLength` の計算ルールと同じように計算
  * される。
  *
  * @param {Node} node オフセットを取得するためのノード。
@@ -2002,9 +1998,6 @@ goog.dom.getAncestorByTagNameAndClass = function(element, opt_tag, opt_class) {
 
 
 /**
- * Walks up the DOM hierarchy returning the first ancestor that has the passed
- * class name. If the passed element matches the specified criteria, the
- * element itself is returned.
  * DOM 階層を遡っていき、与えられたクラス名をもつ直近の祖先要素を返す。
  * 与えられた要素がこの条件にマッチするのであれば、この要素がそのまま返る。
  * @param {Node} element 開始点となるノード。
@@ -2508,383 +2501,372 @@ goog.dom.DomHelper.prototype.insertSiblingBefore = goog.dom.insertSiblingBefore;
 
 
 /**
- * Inserts a new node after an existing reference node (i.e., as the next
- * sibling). If the reference node has no parent, then does nothing.
- * @param {Node} newNode Node to insert.
- * @param {Node} refNode Reference node to insert after.
+ * 新しいノードを既に存在しているノード参照の前に追加する（つまり、弟要素とな
+ * る）。もしノード参照に親がいなければ、何もしない。
+ * @param {Node} newNode 挿入される新しいノード。
+ * @param {Node} refNode 挿入対象となるノードの参照。
  */
 goog.dom.DomHelper.prototype.insertSiblingAfter = goog.dom.insertSiblingAfter;
 
 
 /**
- * Insert a child at a given index. If index is larger than the number of child
- * nodes that the parent currently has, the node is inserted as the last child
- * node.
- * @param {Element} parent The element into which to insert the child.
- * @param {Node} child The element to insert.
- * @param {number} index The index at which to insert the new child node. Must
- *     not be negative.
+ * 要素を指定したインデックスに挿入する。インデックスが挿入対象の親オブジェクト
+ * の子要素数以上であれば、末尾に追加される。
+ * @param {Element} parent 子要素が挿入される親要素。
+ * @param {Node} child 挿入される子要素。
+ * @param {number} index 子要素を挿入する位置のインデックス。非負である必要があ
+ *     る。
  */
 goog.dom.DomHelper.prototype.insertChildAt = goog.dom.insertChildAt;
 
 
 /**
- * Removes a node from its parent.
- * @param {Node} node The node to remove.
- * @return {Node} The node removed if removed; else, null.
+ * 子要素を親要素から除去する。
+ * @param {Node} node 除去される子要素。
+ * @return {Node} 除去されたノード。除去に失敗したときは `null`。
  */
 goog.dom.DomHelper.prototype.removeNode = goog.dom.removeNode;
 
 
 /**
- * Replaces a node in the DOM tree. Will do nothing if {@code oldNode} has no
- * parent.
- * @param {Node} newNode Node to insert.
- * @param {Node} oldNode Node to replace.
+ * DOMツリーの中のノードを置換する。`oldNode` が親要素をもたなければ何もしない。
+ * @param {Node} newNode 挿入されるノード。
+ * @param {Node} oldNode 置換されるノード。
  */
 goog.dom.DomHelper.prototype.replaceNode = goog.dom.replaceNode;
 
 
 /**
- * Flattens an element. That is, removes it and replace it with its children.
- * @param {Element} element The element to flatten.
- * @return {Element|undefined} The original element, detached from the document
- *     tree, sans children, or undefined if the element was already not in the
- *     document.
+ * 要素を平坦化する（この要素が除去されたあと、子要素で置き換えられる）。
+ * 与えられた要素が `document` に存在しなければ何もしない。
+ * @param {Element} element 平坦化される要素。
+ * @return {Element|undefined} 子要素が除去された `element`。ドキュメントツリー
+ *     のなかに存在しなければ、`undefined`。
  */
 goog.dom.DomHelper.prototype.flattenElement = goog.dom.flattenElement;
 
 
 /**
- * Returns an array containing just the element children of the given element.
- * @param {Element} element The element whose element children we want.
- * @return {!(Array|NodeList)} An array or array-like list of just the element
- *     children of the given element.
+ * 与えられた要素の子要素を返す。
+ * @param {Element} element 子要素を取得するための要素。
+ * @return {!(Array|NodeList)} 子要素からなる配列または配列のようなオブジェク
+ *     ト。
  */
 goog.dom.DomHelper.prototype.getChildren = goog.dom.getChildren;
 
 
 /**
- * Returns the first child node that is an element.
- * @param {Node} node The node to get the first child element of.
- * @return {Element} The first child node of {@code node} that is an element.
+ * 与えられた要素の最初の子要素を返す。
+ * @param {Node} node 子要素を取得するための要素。
+ * @return {Element} `node` の最初の子要素。
  */
 goog.dom.DomHelper.prototype.getFirstElementChild =
     goog.dom.getFirstElementChild;
 
 
 /**
- * Returns the last child node that is an element.
- * @param {Node} node The node to get the last child element of.
- * @return {Element} The last child node of {@code node} that is an element.
+ * 与えられた要素の最後の子要素を返す。
+ * @param {Node} node 子要素を取得するための要素。
+ * @return {Element} `node` の最後の子要素。
  */
 goog.dom.DomHelper.prototype.getLastElementChild = goog.dom.getLastElementChild;
 
 
 /**
- * Returns the first next sibling that is an element.
- * @param {Node} node The node to get the next sibling element of.
- * @return {Element} The next sibling of {@code node} that is an element.
+ * 与えられた要素の直後の兄弟要素を返す。
+ * @param {Node} node 直後の兄弟要素を取得するための要素。
+ * @return {Element} `node` の直後の兄弟要素。
  */
 goog.dom.DomHelper.prototype.getNextElementSibling =
     goog.dom.getNextElementSibling;
 
 
 /**
- * Returns the first previous sibling that is an element.
- * @param {Node} node The node to get the previous sibling element of.
- * @return {Element} The first previous sibling of {@code node} that is
- *     an element.
+ * 与えられた要素の直前の兄弟要素を返す。
+ * @param {Node} node 直前の兄弟要素を取得するための要素。
+ * @return {Element} `node` の直前の兄弟要素。
  */
 goog.dom.DomHelper.prototype.getPreviousElementSibling =
     goog.dom.getPreviousElementSibling;
 
 
 /**
- * Returns the next node in source order from the given node.
- * @param {Node} node The node.
- * @return {Node} The next node in the DOM tree, or null if this was the last
- *     node.
+ * 与得られたノードとソースコード上で隣り合うノードのうち、後の方のノードを返
+ * す。
+ * @param {Node} node ノード。
+ * @return {Node} DOM ツリーの次にあたるノード。`node` が最後の要素であれば、
+ *     `null` が返る。
  */
 goog.dom.DomHelper.prototype.getNextNode = goog.dom.getNextNode;
 
 
 /**
- * Returns the previous node in source order from the given node.
- * @param {Node} node The node.
- * @return {Node} The previous node in the DOM tree, or null if this was the
- *     first node.
+ * 与えられたノードとソースコード上で隣り合うノードのうち、前の方のノードを返
+ * す。
+ * @param {Node} node ノード。
+ * @return {Node} DOM ツリーの前にあたるノード。`node` が最後の要素であれば、
+ *     `null` が返る。
  */
 goog.dom.DomHelper.prototype.getPreviousNode = goog.dom.getPreviousNode;
 
 
 /**
- * Whether the object looks like a DOM node.
- * @param {*} obj The object being tested for node likeness.
- * @return {boolean} Whether the object looks like a DOM node.
+ * オブジェクトが DOM ノードかどうかを判定する。
+ * @param {*} obj DOM ノードかどうかを判定するためのオブジェクト。
+ * @return {boolean} このオブジェクトか DOM ノードかどうか。
  */
 goog.dom.DomHelper.prototype.isNodeLike = goog.dom.isNodeLike;
 
 
 /**
- * Whether the object looks like an Element.
- * @param {*} obj The object being tested for Element likeness.
- * @return {boolean} Whether the object looks like an Element.
+ * オブジェクトが `Element` かどうか判定する。
+ * @param {*} obj `Element` かどうか判定するためのオブジェクト。
+ * @return {boolean} このオブジェクトが `Element` かどうか。
  */
 goog.dom.DomHelper.prototype.isElement = goog.dom.isElement;
 
 
 /**
- * Returns true if the specified value is a Window object. This includes the
- * global window for HTML pages, and iframe windows.
- * @param {*} obj Variable to test.
- * @return {boolean} Whether the variable is a window.
+ * 与えられたオブジェクトが `window` オブジェクトかどうか判定する。これは、
+ * HTML ページでグローバルな `window` と iframe の `window` の両方を含む。
+ * @param {*} obj 判定するためのオブジェクト。
+ * @return {boolean} オブジェクトが `window` かどうか。
  */
 goog.dom.DomHelper.prototype.isWindow = goog.dom.isWindow;
 
 
 /**
- * Returns an element's parent, if it's an Element.
- * @param {Element} element The DOM element.
- * @return {Element} The parent, or null if not an Element.
+ * 与えられた要素の親要素を返す（`Element` であれば）。
+ * @param {Element} element DOM 要素。
+ * @return {Element} 親要素。`Element` でなければ `null`。
  */
 goog.dom.DomHelper.prototype.getParentElement = goog.dom.getParentElement;
 
 
 /**
- * Whether a node contains another node.
- * @param {Node} parent The node that should contain the other node.
- * @param {Node} descendant The node to test presence of.
- * @return {boolean} Whether the parent node contains the descendent node.
+ * 与えられたノードが、もうひとつ与えられたノードを含んでいるかどうかを判定す
+ * る。
+ * @param {Node} parent `descendant` を含んでいるかどうか判定するためのノード。
+ * @param {Node} descendant 判定するためのノード。
+ * @return {boolean} `parent` が `descendent` を含んでいるかどうか。
  */
 goog.dom.DomHelper.prototype.contains = goog.dom.contains;
 
 
 /**
- * Compares the document order of two nodes, returning 0 if they are the same
- * node, a negative number if node1 is before node2, and a positive number if
- * node2 is before node1.  Note that we compare the order the tags appear in the
- * document so in the tree <b><i>text</i></b> the B node is considered to be
- * before the I node.
+ * 2つのノードのドキュメントの並び順を比較する。`0` なら同じノード、負の値なら
+ * `node1` は `node2` よりも前にあり、正の値なら `node1` は `node2` よりも後に
+ * ある。このメソッドはタグが現れる順を判定しているので、`<b><i>text</i></b>` の
+ * 場合、b ノードは i ノードよりも前にあると判断されることに注意。
  *
- * @param {Node} node1 The first node to compare.
- * @param {Node} node2 The second node to compare.
- * @return {number} 0 if the nodes are the same node, a negative number if node1
- *     is before node2, and a positive number if node2 is before node1.
+ * @param {Node} node1 比較するためのひとつめのノード。
+ * @param {Node} node2 比較するためのふたつめのノード。
+ * @return {number} 同じノードならば `0` 、`node1` が `node2` よりも前にあれば
+ *     負の値、`node2` が `node1` よりも前にあれば正の値。
  */
 goog.dom.DomHelper.prototype.compareNodeOrder = goog.dom.compareNodeOrder;
 
 
 /**
- * Find the deepest common ancestor of the given nodes.
- * @param {...Node} var_args The nodes to find a common ancestor of.
- * @return {Node} The common ancestor of the nodes, or null if there is none.
- *     null will only be returned if two or more of the nodes are from different
- *     documents.
+ * 与えられたノードの最深共通祖先を探す。
+ * @param {...Node} var_args 共通祖先を探するためのノード。
+ * @return {Node} 与えられたノードの共通祖先。なければ `null`。`null` の場合は、
+ *     少なくとも1つのノードが違う `document` に属している。
  */
 goog.dom.DomHelper.prototype.findCommonAncestor = goog.dom.findCommonAncestor;
 
 
 /**
- * Returns the owner document for a node.
- * @param {Node} node The node to get the document for.
- * @return {!Document} The document owning the node.
+ * ノードを所有している `document` を返す。
+ * @param {Node|Window} node `document` を取得するためのノード。
+ * @return {!Document} `node` を所有している `document`。
  */
 goog.dom.DomHelper.prototype.getOwnerDocument = goog.dom.getOwnerDocument;
 
 
 /**
- * Cross browser function for getting the document element of an iframe.
- * @param {Element} iframe Iframe element.
- * @return {!Document} The frame content document.
+ * frame または iframe の `document` 要素を取得するためのクロスブラウザな関数。
+ * @param {Element} frame frame オブジェクト。
+ * @return {!Document} `frame` の `document` 要素。
  */
 goog.dom.DomHelper.prototype.getFrameContentDocument =
     goog.dom.getFrameContentDocument;
 
 
 /**
- * Cross browser function for getting the window of a frame or iframe.
- * @param {Element} frame Frame element.
- * @return {Window} The window associated with the given frame.
+ * frame または iframe の `window` を取得するためのクロスブラウザな関数。
+ * @param {Element} frame frame 要素。
+ * @return {Window} `frame` が属する `window` 要素。
  */
 goog.dom.DomHelper.prototype.getFrameContentWindow =
     goog.dom.getFrameContentWindow;
 
 
 /**
- * Sets the text content of a node, with cross-browser support.
- * @param {Node} node The node to change the text content of.
- * @param {string|number} text The value that should replace the node's content.
+ * ノードにテキストコンテントを追加する（クロスブラウザ対応）。
+ * @param {Node} node テキストコンテントを追加するためのノード。
+ * @param {string|number} text ノードのテキストコンテントを置き換える文字列。
  */
 goog.dom.DomHelper.prototype.setTextContent = goog.dom.setTextContent;
 
 
 /**
- * Gets the outerHTML of a node, which islike innerHTML, except that it
- * actually contains the HTML of the node itself.
- * @param {Element} element The element to get the HTML of.
- * @return {string} The outerHTML of the given element.
+ * ノードの `outerHtml` を返す（`innerHtml` と似ているが、ノード自身のタグを含
+ * む）。
+ * @param {Element} element HTML を取得するための要素。
+ * @return {string} 与えられた要素の `outerHtml`。
  */
 goog.dom.DomHelper.prototype.getOuterHtml = goog.dom.getOuterHtml;
 
 
 /**
- * Finds the first descendant node that matches the filter function. This does
- * a depth first search.
- * @param {Node} root The root of the tree to search.
- * @param {function(Node) : boolean} p The filter function.
- * @return {Node|undefined} The found node or undefined if none is found.
+ * フィルタ関数でマッチした最初の子孫要素を返す（深さ優先探索）。 *
+ * @param {Node} root 検索範囲となるルート要素。
+ * @param {function(Node) : boolean} p フィルタ関数。
+ * @return {Node|undefined} 検索結果のノード。何も見つからなければ `undefined`。
  */
 goog.dom.DomHelper.prototype.findNode = goog.dom.findNode;
 
 
 /**
- * Finds all the descendant nodes that matches the filter function. This does a
- * depth first search.
- * @param {Node} root The root of the tree to search.
- * @param {function(Node) : boolean} p The filter function.
- * @return {Array.<Node>} The found nodes or an empty array if none are found.
+ * フィルタ関数でマッチしたすべてのの子孫要素を返す（深さ優先探索）。 *
+ * @param {Node} root 検索範囲となるルート要素。
+ * @param {function(Node) : boolean} p フィルタ関数。
+ * @return {Node|undefined} 検索結果のノード。何も見つからなければ空の配列。
  */
 goog.dom.DomHelper.prototype.findNodes = goog.dom.findNodes;
 
 
 /**
- * Returns true if the element has a tab index that allows it to receive
- * keyboard focus (tabIndex >= 0), false otherwise.  Note that some elements
- * natively support keyboard focus, even if they have no tab index.
- * @param {Element} element Element to check.
- * @return {boolean} Whether the element has a tab index that allows keyboard
- *     focus.
+ * 要素がキーボードフォーカスするための有効なタブインデックス（`tabIndex` >= 0）
+ * をもつかどうかを判定する。ただ、いくつかの要素はタブインデックスがなくても
+ * ネイティブでキーボードフォーカスが有効になっている。
+ * @param {Element} element 検索するための要素。
+ * @return {boolean} 要素をキーボードフォーカスできるかどうか。
  */
 goog.dom.DomHelper.prototype.isFocusableTabIndex = goog.dom.isFocusableTabIndex;
 
 
 /**
- * Enables or disables keyboard focus support on the element via its tab index.
- * Only elements for which {@link goog.dom.isFocusableTabIndex} returns true
- * (or elements that natively support keyboard focus, like form elements) can
- * receive keyboard focus.  See http://go/tabindex for more info.
- * @param {Element} element Element whose tab index is to be changed.
- * @param {boolean} enable Whether to set or remove a tab index on the element
- *     that supports keyboard focus.
+ * 与えられた要素のタブインデックスによるキーボードフォーカスを有効・無効にす
+ * る。この処理は `goog.dom.isFocusableTabIndex` が `true` となる要素、または
+ * ネイティブでキーボードフォーカスがサポートされている要素のみに有効である。
+ * `http://go/tabindex` を参照。
+ * @param {Element} element タブインデックスを変更される要素。
+ * @param {boolean} enable キーボードフォーカスのためのタブインデックスを設定・
+ *     除去するかどうか。
  */
 goog.dom.DomHelper.prototype.setFocusableTabIndex =
     goog.dom.setFocusableTabIndex;
 
 
 /**
- * Returns true if the element can be focused, i.e. it has a tab index that
- * allows it to receive keyboard focus (tabIndex >= 0), or it is an element
- * that natively supports keyboard focus.
- * @param {Element} element Element to check.
- * @return {boolean} Whether the element allows keyboard focus.
+ * 要素がフォーカス可能かどうかを判定する。キーボードフォーカスのためのタブ
+ * インデックス（`tabIndex` > 0）をもつか、ネイティブでキーボードフォーカスが
+ * サポートされている要素であれば `true` を返す。
+ * @param {Element} element 判定するための要素。
+ * @return {boolean} この要素がキーボードフォーカスできるかどうか。
  */
 goog.dom.DomHelper.prototype.isFocusable = goog.dom.isFocusable;
 
 
 /**
- * Returns the text contents of the current node, without markup. New lines are
- * stripped and whitespace is collapsed, such that each character would be
- * visible.
+ * 指定されたノードの内容の文字列を返す。マークアップや不可視の記号は含まれな
+ * い。改行は除去され、連続する空白文字は1文字の空白へと畳まれる。
  *
- * In browsers that support it, innerText is used.  Other browsers attempt to
- * simulate it via node traversal.  Line breaks are canonicalized in IE.
+ * ブラウザが `innerText` をサポートしていれば使う。それ以外の場合はノードを巡回
+ * することによって、死ミューレートする。IE でも改行は正規化される。
  *
- * @param {Node} node The node from which we are getting content.
- * @return {string} The text content.
+ * @param {Node} node 内容を取得するためのノード。
+ * @return {string} 内容の文字列。
  */
 goog.dom.DomHelper.prototype.getTextContent = goog.dom.getTextContent;
 
 
 /**
- * Returns the text length of the text contained in a node, without markup. This
- * is equivalent to the selection length if the node was selected, or the number
- * of cursor movements to traverse the node. Images & BRs take one space.  New
- * lines are ignored.
+ * 与えられたノードに含まれる文字列長（マークアップは含まれない）を返す。
+ * この値は、ノードに含まれる文字列を全て選択したときの選択された文字列の長さと
+ * 等しい。または、ノードの内容をカーソルでひとつずつ数えたものと等しいとも
+ * 言い換えられる。画像、改行タグは1つの空白文字と置き換えられる。改行は無視
+ * される。
  *
- * @param {Node} node The node whose text content length is being calculated.
- * @return {number} The length of {@code node}'s text content.
+ * @param {Node} node 内容の文字列長を取得したいノード。
+ * @return {number} `node` の内容の文字列長。
  */
 goog.dom.DomHelper.prototype.getNodeTextLength = goog.dom.getNodeTextLength;
 
 
 /**
- * Returns the text offset of a node relative to one of its ancestors. The text
- * length is the same as the length calculated by
- * {@code goog.dom.getNodeTextLength}.
+ * 与えられたノードの任意の祖先のノードからの文字列のオフセットを取得する。
+ * この文字列長は `goog.dom.getNodeTextLength` の計算ルールと同じように計算
+ * される。
  *
- * @param {Node} node The node whose offset is being calculated.
- * @param {Node=} opt_offsetParent Defaults to the node's owner document's body.
- * @return {number} The text offset.
+ * @param {Node} node オフセットを取得するためのノード。
+ * @param {Node=} opt_offsetParent オフセットの起点となるノード。省略時はノード
+ *     が属する `document` の `body`。
+ * @return {number} 文字列のオフセット。
  */
 goog.dom.DomHelper.prototype.getNodeTextOffset = goog.dom.getNodeTextOffset;
 
 
 /**
- * Returns the node at a given offset in a parent node.  If an object is
- * provided for the optional third parameter, the node and the remainder of the
- * offset will stored as properties of this object.
- * @param {Node} parent The parent node.
- * @param {number} offset The offset into the parent node.
- * @param {Object=} opt_result Object to be used to store the return value. The
- *     return value will be stored in the form {node: Node, remainder: number}
- *     if this object is provided.
- * @return {Node} The node at the given offset.
+ * 与えられたノードの親ノードからの文字列のオフセットを取得する。
+ * 第三引数にオブジェクトが指定された場合は、得られたノードとオフセットの余りが
+ * それぞれプロパティとして保持される。
+ * @param {Node} parent 親ノード。
+ * @param {number} offset 親ノードからのオフセット。
+ * @param {Object=} opt_result 戻り値を保持するオブジェクト。オブジェクトが指定
+ *     されていれば戻り値は `{node: Node, remainder: number}` の形式で保持
+ *     される。
+ * @return {Node} オフセットの上に見つかったノード。
  */
 goog.dom.DomHelper.prototype.getNodeAtOffset = goog.dom.getNodeAtOffset;
 
 
 /**
- * Returns true if the object is a {@code NodeList}.  To qualify as a NodeList,
- * the object must have a numeric length property and an item function (which
- * has type 'string' on IE for some reason).
- * @param {Object} val Object to test.
- * @return {boolean} Whether the object is a NodeList.
+ * オブジェクトが `NodeList` かどうかを判定する。オブジェクトが `length` という
+ * 数値のプロパティをもち、`item` 関数（IE では文字列型）をもてば `NodeList` と
+ * 判断する。
+ * @param {Object} val 判定するためのオブジェクト。
+ * @return {boolean} オブジェクトが `NodeList` かどうか。
  */
 goog.dom.DomHelper.prototype.isNodeList = goog.dom.isNodeList;
 
 
 /**
- * Walks up the DOM hierarchy returning the first ancestor that has the passed
- * tag name and/or class name. If the passed element matches the specified
- * criteria, the element itself is returned.
- * @param {Node} element The DOM node to start with.
- * @param {?(goog.dom.TagName|string)=} opt_tag The tag name to match (or
- *     null/undefined to match only based on class name).
- * @param {?string=} opt_class The class name to match (or null/undefined to
- *     match only based on tag name).
- * @return {Element} The first ancestor that matches the passed criteria, or
- *     null if no match is found.
+ * DOM 階層を遡っていき、与えられたタグ名かつクラス名をもつ直近の祖先要素を
+ * 返す。与えられた要素がこの条件にマッチするのであれば、この要素がそのまま
+ * 返る。
+ * @param {Node} element 開始点となるノード。
+ * @param {?(goog.dom.TagName|string)=} opt_tag マッチさせたいタグ名（ `null`、
+ *     または `undefined` が与えられるとクラス名のみのマッチになる）。
+ * @param {?string=} opt_class マッチさせたいクラス名（`null` または `undefined`
+ *     が与えられるとタグ名のみのマッチとなる）。
+ * @return {Element} 条件を満足する最初の祖先要素。なければ `null`。
  */
 goog.dom.DomHelper.prototype.getAncestorByTagNameAndClass =
     goog.dom.getAncestorByTagNameAndClass;
 
 
 /**
- * Walks up the DOM hierarchy returning the first ancestor that has the passed
- * class name. If the passed element matches the specified criteria, the
- * element itself is returned.
- * @param {Node} element The DOM node to start with.
- * @param {string} class The class name to match.
- * @return {Element} The first ancestor that matches the passed criteria, or
- *     null if none match.
+ * DOM 階層を遡っていき、与えられたクラス名をもつ直近の祖先要素を返す。
+ * 与えられた要素がこの条件にマッチするのであれば、この要素がそのまま返る。
+ * @param {Node} element 開始点となるノード。
+ * @param {string} class マッチさせたいクラス名。
+ * @return {Element} 条件を満足する最初の祖先要素。なければ `null`。
  */
 goog.dom.DomHelper.prototype.getAncestorByClass =
     goog.dom.getAncestorByClass;
 
 
 /**
- * Walks up the DOM hierarchy returning the first ancestor that passes the
- * matcher function.
- * @param {Node} element The DOM node to start with.
- * @param {function(Node) : boolean} matcher A function that returns true if the
- *     passed node matches the desired criteria.
- * @param {boolean=} opt_includeNode If true, the node itself is included in
- *     the search (the first call to the matcher will pass startElement as
- *     the node to test).
- * @param {number=} opt_maxSearchSteps Maximum number of levels to search up the
- *     dom.
- * @return {Node} DOM node that matched the matcher, or null if there was
- *     no match.
+ * DOM 階層を遡っていき、指定された関数でマッチした最初の疎遠要素を返す。
+ * @param {Node} element 開始点となる DOM ノード。
+ * @param {function(Node) : boolean} matcher 条件を満足したノードが渡されたとき
+ *     `true` を返す関数。
+ * @param {boolean=} opt_includeNode `true` であれば検索対象に自身を含める（
+ *     この場合、最初に `startElement` が最初に `matcher` 関数に渡される）。
+ * @param {number=} opt_maxSearchSteps 遡る階層の数の上限。
+ * @return {Node} `matcher` でマッチした DOM ノード。なければ `null`。
  */
 goog.dom.DomHelper.prototype.getAncestor = goog.dom.getAncestor;
