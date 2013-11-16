@@ -750,7 +750,8 @@ goog.dom.append_ = function(doc, parent, args, startIndex) {
 
   for (var i = startIndex; i < args.length; i++) {
     var arg = args[i];
-    // TODO(attila): Fix isArrayLike to return false for a text node.
+    // TODO(attila): `isArrayLike` がテキストノードには `false` を返すように修正
+    //     してね。
     if (goog.isArrayLike(arg) && !goog.dom.isNodeLike(arg)) {
       // もし、引数が本物の配列ではなくノードリストであれば複製して使う。
       // `forEach` は変更可能な `NodeList` を処理できないからである。
@@ -999,9 +1000,8 @@ goog.dom.append = function(parent, var_args) {
  * @param {Node} node 除去対象となるノード。
  */
 goog.dom.removeChildren = function(node) {
-  // 生のコレクションの走査は遅くなりがち。これはいまのところ最速のやり方であ
-  // る。二重括弧はコンパイラが strict で警告を出すことを防止するための手段であ
-  // る。
+  // 生のコレクションの走査は遅くなりがち。これは今のところ最速のやり方である。
+  // 二重括弧はコンパイラが strict で警告を出すことを防止するためのもの。
   var child;
   while ((child = node.firstChild)) {
     node.removeChild(child);
