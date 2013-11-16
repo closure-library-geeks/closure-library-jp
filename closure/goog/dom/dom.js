@@ -1425,7 +1425,6 @@ goog.dom.compareParentsDescendantNodeIe_ = function(textNode, node) {
  * 等しくない兄弟ノードの組におけるノードの位置を比較するユーティリティ関数。
  * @param {Node} node1 比較するためのひとつめのノード。
  * @param {Node} node2 比較するためのふたつめのノード。
- * @return {number} -1 if node1 is before node2, +1 otherwise.
  * @return {number} `node1` が `node2` よりも前にあれば `-1`、それ以外は `+1`。
  * @private
  */
