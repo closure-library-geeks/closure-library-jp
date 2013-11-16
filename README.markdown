@@ -6,8 +6,7 @@ http://code.google.com/closure/library
 
 ---
 
-Closure Library Geeks 翻訳チームより
-====================================
+### Closure Library Geeks 翻訳チームより
 
 このリポジトリは Closure Library の JsDoc アノテーションと一部コメントを邦訳したものです。
 
