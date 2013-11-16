@@ -175,7 +175,7 @@ goog.dom.$ = goog.dom.getElement;
  * が一つのクラスにしか属していないような場合にはこちらの方がより速く、エレガン
  * である。
  *
- * @see goog.dom.query
+ * @see `goog.dom.query`
  *
  * @param {?string=} opt_tag 要素のタグ名。
  * @param {?string=} opt_class クラス名（省略可能）。
@@ -191,7 +191,7 @@ goog.dom.getElementsByTagNameAndClass = function(opt_tag, opt_class, opt_el) {
 
 /**
  * 与えられたクラス名を持つ要素を返す。
- * @see {goog.dom.query}
+ * @see `goog.dom.query`
  * @param {string} className 検索に使うクラス名。
  * @param {(Document|Element)=} opt_el 検索対象となる要素（省略可能）。
  * @return { {length: number} } 見つかった要素からなる配列のようなオブジェクト。
@@ -210,7 +210,7 @@ goog.dom.getElementsByClass = function(className, opt_el) {
 
 /**
  * 与えられたクラス名を持つ最初の要素を返す。
- * @see {goog.dom.query}
+ * @see `goog.dom.query`
  * @param {string} className 検索に使うクラス名。
  * @param {(Document|Element)=} opt_el 検索対象となる要素（省略可能）。
  * @return { {length: number} } 見つかった要素。
@@ -230,7 +230,7 @@ goog.dom.getElementByClass = function(className, opt_el) {
 /**
  * 与えられた `className` をもつ要素が存在するか確認し、最初の要素を返す。
  *
- * @see {goog.dom.query}
+ * @see `goog.dom.query`
  * @param {string} className 探すためのクラス名。
  * @param {!Element|!Document=} opt_root 探索範囲となる要素（省略可能）。
  * @return {!Element} 与えられたクラス名を持つ最初の要素。
@@ -1573,7 +1573,7 @@ goog.dom.getOuterHtml = function(element) {
  * 要素を探す手段のうち、最も汎用的なものである。ただ、CSS セレクタ式によって
  * 複数のマッチ条件を素早く指定できる `goog.dom.query` という手段もある。
  * この手段では、必要となるコードがさらにコンパクトになることが多い。
- * @see goog.dom.query
+ * @see `goog.dom.query`
  *
  * @param {Node} root 検索範囲となるルート要素。
  * @param {function(Node) : boolean} p フィルタ関数。
@@ -1662,7 +1662,8 @@ goog.dom.PREDEFINED_TAG_VALUES_ = {'IMG': ' ', 'BR': '\n'};
  * ネイティブでキーボードフォーカスが有効になっている。
  * @param {Element} element 検索するための要素。
  * @return {boolean} 要素をキーボードフォーカスできるかどうか。
- * @see http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
+ * @see `http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-
+ * tabindex-values-with-javascript/`
  */
 goog.dom.isFocusableTabIndex = function(element) {
   return goog.dom.hasSpecifiedTabIndex_(element) &&
@@ -2156,8 +2157,8 @@ goog.dom.DomHelper.prototype.setDocument = function(document) {
 
 
 /**
- * Gets the document object being used by the dom library.
- * @return {!Document} Document object.
+ * DOM ライブラリを利用して `document` オブジェクトを返す。
+ * @return {!Document} `Document` オブジェクト。
  */
 goog.dom.DomHelper.prototype.getDocument = function() {
   return this.document_;
@@ -2165,10 +2166,11 @@ goog.dom.DomHelper.prototype.getDocument = function() {
 
 
 /**
- * Alias for {@code getElementById}. If a DOM node is passed in then we just
- * return that.
- * @param {string|Element} element Element ID or a DOM node.
- * @return {Element} The element with the given ID, or the node passed in.
+ * `getElementById` のエイリアス。DOM ノードが引数として渡された場合はそのまま
+ * 返す。
+ * @param {string|Element} element 要素の ID、または DOM ノード。
+ * @return {Element} 与えられた ID をもつ要素。または、引数で与えられたDOM
+ *     ノード。
  */
 goog.dom.DomHelper.prototype.getElement = function(element) {
   return goog.dom.getElementHelper_(this.document_, element);
@@ -2176,13 +2178,13 @@ goog.dom.DomHelper.prototype.getElement = function(element) {
 
 
 /**
- * Gets an element by id, asserting that the element is found.
+ * 与えられた ID をもつ要素を返す。要素が存在しなければ例外が発生する。
  *
- * This is used when an element is expected to exist, and should fail with
- * an assertion error if it does not (if assertions are enabled).
+ * これは、要素が存在すると期待されていて、かつ要素がその在師なかったときは例外
+ * を発生させたいときに使う。
  *
- * @param {string} id Element ID.
- * @return {!Element} The element with the given ID, if it exists.
+ * @param {string} id 要素の ID。
+ * @return {!Element} 与えられた ID をもつ要素（存在すれば）。
  */
 goog.dom.DomHelper.prototype.getRequiredElement = function(id) {
   return goog.dom.getRequiredElementHelper_(this.document_, id);
@@ -2190,27 +2192,27 @@ goog.dom.DomHelper.prototype.getRequiredElement = function(id) {
 
 
 /**
- * Alias for {@code getElement}.
- * @param {string|Element} element Element ID or a DOM node.
- * @return {Element} The element with the given ID, or the node passed in.
- * @deprecated Use {@link goog.dom.DomHelper.prototype.getElement} instead.
+ * `getElement` のエイリアス。
+ * @param {string|Element} element 要素の ID、または DOM ノード。
+ * @return {Element} 与えられた ID をもつ要素。または、引数で与えられたDOM
+ * @deprecated `goog.dom.DomHelper.prototype.getElement` を使うべき。
  */
 goog.dom.DomHelper.prototype.$ = goog.dom.DomHelper.prototype.getElement;
 
 
 /**
- * Looks up elements by both tag and class name, using browser native functions
- * ({@code querySelectorAll}, {@code getElementsByTagName} or
- * {@code getElementsByClassName}) where possible. The returned array is a live
- * NodeList or a static list depending on the code path taken.
+ * 要素をタグとクラス名から検索する。
+ * ブラウザのネイティブな関数（`querySelectorAll` や、`getElementsByTagName` 、
+ * `getElementsByClassName`）が利用可能であれば使う。戻り値の配列は与えられた
+ * コードによって `NodeList` か静的なリストのどちらかとなる。
  *
- * @see goog.dom.query
+ * @see `goog.dom.query`
  *
- * @param {?string=} opt_tag Element tag name or * for all tags.
- * @param {?string=} opt_class Optional class name.
- * @param {(Document|Element)=} opt_el Optional element to look in.
- * @return { {length: number} } Array-like list of elements (only a length
- *     property and numerical indices are guaranteed to exist).
+ * @param {?string=} opt_tag 要素のタグ名、または `*`（全てのタグ）。
+ * @param {?string=} opt_class クラス名（省略可能）。
+ * @param {(Document|Element)=} opt_el 検索範囲となる要素（省略可能）。
+ * @return { {length: number} } 得られた要素からなる配列のようなオブジェクト。
+ *     `length` プロパティと数字によるインデックスが存在することは保証される。
  */
 goog.dom.DomHelper.prototype.getElementsByTagNameAndClass = function(opt_tag,
                                                                      opt_class,
@@ -2221,11 +2223,11 @@ goog.dom.DomHelper.prototype.getElementsByTagNameAndClass = function(opt_tag,
 
 
 /**
- * Returns an array of all the elements with the provided className.
- * @see {goog.dom.query}
- * @param {string} className the name of the class to look for.
- * @param {Element|Document=} opt_el Optional element to look in.
- * @return { {length: number} } The items found with the class name provided.
+ * 与えられたクラス名を持つすべての要素を返す。
+ * @see `goog.dom.query`
+ * @param {string} className 検索したいクラス名。
+ * @param {(Document|Element)=} opt_el 検索範囲となる要素（省略可能）。
+ * @return { {length: number} } 与えられたクラス名を持つすべての要素。
  */
 goog.dom.DomHelper.prototype.getElementsByClass = function(className, opt_el) {
   var doc = opt_el || this.document_;
@@ -2234,11 +2236,11 @@ goog.dom.DomHelper.prototype.getElementsByClass = function(className, opt_el) {
 
 
 /**
- * Returns the first element we find matching the provided class name.
- * @see {goog.dom.query}
- * @param {string} className the name of the class to look for.
- * @param {(Element|Document)=} opt_el Optional element to look in.
- * @return {Element} The first item found with the class name provided.
+ * 与えられたクラス名を持つ最初の要素を返す。
+ * @see `goog.dom.query`
+ * @param {string} className 検索したいクラス名。
+ * @param {(Element|Document)=} opt_el 検索範囲となる要素（省略可能）。
+ * @return {Element} 与えられたクラス名を持つ最初の要素。
  */
 goog.dom.DomHelper.prototype.getElementByClass = function(className, opt_el) {
   var doc = opt_el || this.document_;
@@ -2247,14 +2249,13 @@ goog.dom.DomHelper.prototype.getElementByClass = function(className, opt_el) {
 
 
 /**
- * Ensures an element with the given className exists, and then returns the
- * first element with the provided className.
- * @see {goog.dom.query}
- * @param {string} className the name of the class to look for.
- * @param {(!Element|!Document)=} opt_root Optional element or document to look
- *     in.
- * @return {!Element} The first item found with the class name provided.
- * @throws {goog.asserts.AssertionError} Thrown if no element is found.
+ * 与えられたクラス名を持つ最初の要素を返す。要素が存在しなければ例外が発生
+ * する。
+ * @see `goog.dom.query`
+ * @param {string} className 検索したいクラス名。
+ * @param {(!Element|!Document)=} opt_root 検索範囲となる要素（省略可能）。
+ * @return {!Element} 与えられたクラス名を持つ最初の要素。
+ * @throws {goog.asserts.AssertionError} 要素が見つからなければ発生する。
  */
 goog.dom.DomHelper.prototype.getRequiredElementByClass = function(className,
                                                                   opt_root) {
@@ -2264,45 +2265,45 @@ goog.dom.DomHelper.prototype.getRequiredElementByClass = function(className,
 
 
 /**
- * Alias for {@code getElementsByTagNameAndClass}.
- * @deprecated Use DomHelper getElementsByTagNameAndClass.
- * @see goog.dom.query
+ * `getElementsByTagNameAndClass` のエイリアス。
+ * @deprecated `getElementsByTagNameAndClass` を使うべき。
+ * @see `goog.dom.query`
  *
- * @param {?string=} opt_tag Element tag name.
- * @param {?string=} opt_class Optional class name.
- * @param {Element=} opt_el Optional element to look in.
- * @return { {length: number} } Array-like list of elements (only a length
- *     property and numerical indices are guaranteed to exist).
+ * @param {?string=} opt_tag 要素のタグ名。
+ * @param {?string=} opt_class クラス名（省略可能）。
+ * @param {Element=} opt_el 検索範囲となる要素（省略可能）。
+ * @return { {length: number} } 得られた要素からなる配列のようなオブジェクト。
+ *     `length` プロパティと数字によるインデックスが存在することは保証される。
  */
 goog.dom.DomHelper.prototype.$$ =
     goog.dom.DomHelper.prototype.getElementsByTagNameAndClass;
 
 
 /**
- * Sets a number of properties on a node.
- * @param {Element} element DOM node to set properties on.
- * @param {Object} properties Hash of property:value pairs.
+ * 複数のプロパティをノードに設定する。
+ * @param {Element} element DOM ノードを設定したいノード。
+ * @param {Object} properties プロパティ名と値からなるハッシュ。
  */
 goog.dom.DomHelper.prototype.setProperties = goog.dom.setProperties;
 
 
 /**
- * Gets the dimensions of the viewport.
- * @param {Window=} opt_window Optional window element to test. Defaults to
- *     the window of the Dom Helper.
- * @return {!goog.math.Size} Object with values 'width' and 'height'.
+ * viewport の寸法を返す。
+ * @param {Window=} opt_window 調べたい `window` 要素（省略可能）。省略時はこの
+ *     `window` の `DomHelper`。
+ * @return {!goog.math.Size} `'width'` と `'height'` をもつオブジェクト。
  */
 goog.dom.DomHelper.prototype.getViewportSize = function(opt_window) {
-  // TODO(arv): This should not take an argument. That breaks the rule of a
-  // a DomHelper representing a single frame/window/document.
+  // TODO(arv): この関数は引数を取るべきだ。これは `frame`/`window`/`document`
+  // を `DomHelper` として扱うルールに違反している。
   return goog.dom.getViewportSize(opt_window || this.getWindow());
 };
 
 
 /**
- * Calculates the height of the document.
+ * この `document` の高さを計算する。
  *
- * @return {number} The height of the document.
+ * @return {number} この `document` の高さ。
  */
 goog.dom.DomHelper.prototype.getDocumentHeight = function() {
   return goog.dom.getDocumentHeight_(this.getWindow());
@@ -2310,35 +2311,40 @@ goog.dom.DomHelper.prototype.getDocumentHeight = function() {
 
 
 /**
- * Typedef for use with goog.dom.createDom and goog.dom.append.
+ * `goog.dom.createDom` と `goog.dom.append` で用いる型定義。
  * @typedef {Object|string|Array|NodeList}
  */
 goog.dom.Appendable;
 
 
 /**
- * Returns a dom node with a set of attributes.  This function accepts varargs
- * for subsequent nodes to be added.  Subsequent nodes will be added to the
- * first node as childNodes.
+ * 与えられた属性をもつ DOM ノードを作成して返す。また、後続の可変長引数にノード
+ * を与えることによって、作成されるノードの子要素を指定できる。
  *
- * So:
- * <code>createDom('div', null, createDom('p'), createDom('p'));</code>
- * would return a div with two child paragraphs
+ * たとえば、
  *
- * An easy way to move all child nodes of an existing element to a new parent
- * element is:
- * <code>createDom('div', null, oldElement.childNodes);</code>
- * which will remove all child nodes from the old element and add them as
- * child nodes of the new DIV.
+ * ```
+ * createDom('div', null, createDom('p'), createDom('p'));
+ * ```
  *
- * @param {string} tagName Tag to create.
- * @param {Object|string=} opt_attributes If object, then a map of name-value
- *     pairs for attributes. If a string, then this is the className of the new
- *     element.
- * @param {...goog.dom.Appendable} var_args Further DOM nodes or
- *     strings for text nodes. If one of the var_args is an array or
- *     NodeList, its elements will be added as childNodes instead.
- * @return {!Element} Reference to a DOM node.
+ * は2つのパラグラフを子要素に持つ `div` を返す。
+ *
+ * また、ある要素のすべての子要素を新しい要素の子要素にするときは、次のように
+ * 書く：
+ *
+ * ```
+ * createDom('div', null, oldElement.childNodes);
+ * ```
+ *
+ * これは、元の要素から全ての子要素を取り除き、新しい `DIV` の子要素として移す。
+ *
+ * @param {string} tagName 作成するタグ名。
+ * @param {Object|string=} opt_attributes 属性名と属性値からなるオブジェクト。
+ *     文字列の場合は、`className` の値となる。
+ * @param {...goog.dom.Appendable} var_args DOM ノード、テキストノード代わりの
+ *     文字列。もし、`var_args` の最初の引数が配列か `NodeList` であれば、これら
+ *     に含まれるすべての要素が `childNodes` に追加される。
+ * @return {!Element} DOM ノードへの参照。
  */
 goog.dom.DomHelper.prototype.createDom = function(tagName,
                                                   opt_attributes,
@@ -2348,24 +2354,23 @@ goog.dom.DomHelper.prototype.createDom = function(tagName,
 
 
 /**
- * Alias for {@code createDom}.
- * @param {string} tagName Tag to create.
- * @param {(Object|string)=} opt_attributes If object, then a map of name-value
- *     pairs for attributes. If a string, then this is the className of the new
- *     element.
- * @param {...goog.dom.Appendable} var_args Further DOM nodes or strings for
- *     text nodes.  If one of the var_args is an array, its children will be
- *     added as childNodes instead.
- * @return {!Element} Reference to a DOM node.
- * @deprecated Use {@link goog.dom.DomHelper.prototype.createDom} instead.
+ * `createDom` へのエイリアス。
+ * @param {string} tagName 作成するタグ名。
+ * @param {Object|string=} opt_attributes 属性名と属性値からなるオブジェクト。
+ *     文字列の場合は、`className` の値となる。
+ * @param {...goog.dom.Appendable} var_args DOM ノード、テキストノード代わりの
+ *     文字列。もし、`var_args` の最初の引数が配列か `NodeList` であれば、これら
+ *     に含まれるすべての要素が `childNodes` に追加される。
+ * @return {!Element} DOM ノードへの参照。
+ * @deprecated `goog.dom.DomHelper.prototype.createDom` を使うべき。
  */
 goog.dom.DomHelper.prototype.$dom = goog.dom.DomHelper.prototype.createDom;
 
 
 /**
- * Creates a new element.
- * @param {string} name Tag name.
- * @return {!Element} The new element.
+ * 新しい要素を作成して返す。
+ * @param {string} name タグ名。
+ * @return {!Element} 新しい要素。
  */
 goog.dom.DomHelper.prototype.createElement = function(name) {
   return this.document_.createElement(name);
@@ -2373,9 +2378,9 @@ goog.dom.DomHelper.prototype.createElement = function(name) {
 
 
 /**
- * Creates a new text node.
- * @param {number|string} content Content.
- * @return {!Text} The new text node.
+ * 新しいテキストノードを作成して返す。
+ * @param {number|string} content 内容。
+ * @return {!Text} 新しいテキストノード。
  */
 goog.dom.DomHelper.prototype.createTextNode = function(content) {
   return this.document_.createTextNode(String(content));
@@ -2383,11 +2388,11 @@ goog.dom.DomHelper.prototype.createTextNode = function(content) {
 
 
 /**
- * Create a table.
- * @param {number} rows The number of rows in the table.  Must be >= 1.
- * @param {number} columns The number of columns in the table.  Must be >= 1.
- * @param {boolean=} opt_fillWithNbsp If true, fills table entries with nsbps.
- * @return {!Element} The created table.
+ * 表（テーブル）を作成する。
+ * @param {number} rows 表の行数（1よりも大きい必要がある）。
+ * @param {number} columns 表の列数（1よりも大きい必要がある）。
+ * @param {boolean=} opt_fillWithNbsp `true` であれば、セルを `nbsp` で埋める。
+ * @return {!Element} 作成された表。
  */
 goog.dom.DomHelper.prototype.createTable = function(rows, columns,
     opt_fillWithNbsp) {
@@ -2397,13 +2402,12 @@ goog.dom.DomHelper.prototype.createTable = function(rows, columns,
 
 
 /**
- * Converts an HTML string into a node or a document fragment.  A single Node
- * is used if the {@code htmlString} only generates a single node.  If the
- * {@code htmlString} generates multiple nodes then these are put inside a
- * {@code DocumentFragment}.
+ * HTML 文字列をノード、または `DocumentFragment` に変換する。`htmlString` が
+ * ひとつのノードしか作成しなければ、ノードが返る。`htmlString` が複数のノードを
+ * 作成したときは、これらのノードをもつ `DocumentFragment` が返る。
  *
- * @param {string} htmlString The HTML string to convert.
- * @return {!Node} The resulting node.
+ * @param {string} htmlString 変換される HTML 文字列。
+ * @return {!Node} 作成されたノード。
  */
 goog.dom.DomHelper.prototype.htmlToDocumentFragment = function(htmlString) {
   return goog.dom.htmlToDocumentFragment_(this.document_, htmlString);
@@ -2411,9 +2415,9 @@ goog.dom.DomHelper.prototype.htmlToDocumentFragment = function(htmlString) {
 
 
 /**
- * Returns true if the browser is in "CSS1-compatible" (standards-compliant)
- * mode, false otherwise.
- * @return {boolean} True if in CSS1-compatible mode.
+ * ブラウザが標準的な CSS1 互換モードならば `true` を返す。それ以外は `false` を
+ * 返す。
+ * @return {boolean} CSS1 互換モードであれば `true`。
  */
 goog.dom.DomHelper.prototype.isCss1CompatMode = function() {
   return goog.dom.isCss1CompatMode_(this.document_);
@@ -2421,8 +2425,8 @@ goog.dom.DomHelper.prototype.isCss1CompatMode = function() {
 
 
 /**
- * Gets the window object associated with the document.
- * @return {!Window} The window associated with the given document.
+ * この `document` が属している `window` を返す。
+ * @return {!Window} この `document` が属している `window`。
  */
 goog.dom.DomHelper.prototype.getWindow = function() {
   return goog.dom.getWindow_(this.document_);
@@ -2430,8 +2434,8 @@ goog.dom.DomHelper.prototype.getWindow = function() {
 
 
 /**
- * Gets the document scroll element.
- * @return {Element} Scrolling element.
+ * この `document` のスクロール要素を返す。
+ * @return {Element} スクロール要素。
  */
 goog.dom.DomHelper.prototype.getDocumentScrollElement = function() {
   return goog.dom.getDocumentScrollElement_(this.document_);
@@ -2439,8 +2443,9 @@ goog.dom.DomHelper.prototype.getDocumentScrollElement = function() {
 
 
 /**
- * Gets the document scroll distance as a coordinate object.
- * @return {!goog.math.Coordinate} Object with properties 'x' and 'y'.
+ * この `document` のスクロール位置を座標オブジェクトで返す。
+ * @return {!goog.math.Coordinate} `'x'` と `'y'` というプロパティをもつ
+ *     オブジェクト。
  */
 goog.dom.DomHelper.prototype.getDocumentScroll = function() {
   return goog.dom.getDocumentScroll_(this.document_);
@@ -2448,9 +2453,9 @@ goog.dom.DomHelper.prototype.getDocumentScroll = function() {
 
 
 /**
- * Determines the active element in the given document.
- * @param {Document=} opt_doc The document to look in.
- * @return {Element} The active element.
+ * この `document` でアクティブな要素を返す。
+ * @param {Document=} opt_doc 検索範囲となる `document`。
+ * @return {Element} アクティブな要素。
  */
 goog.dom.DomHelper.prototype.getActiveElement = function(opt_doc) {
   return goog.dom.getActiveElement(opt_doc || this.document_);
@@ -2458,46 +2463,46 @@ goog.dom.DomHelper.prototype.getActiveElement = function(opt_doc) {
 
 
 /**
- * Appends a child to a node.
- * @param {Node} parent Parent.
- * @param {Node} child Child.
+ * ノードに子要素を追加する。
+ * @param {Node} parent 親要素。
+ * @param {Node} child 子要素。
  */
 goog.dom.DomHelper.prototype.appendChild = goog.dom.appendChild;
 
 
 /**
- * Appends a node with text or other nodes.
- * @param {!Node} parent The node to append nodes to.
- * @param {...goog.dom.Appendable} var_args The things to append to the node.
- *     If this is a Node it is appended as is.
- *     If this is a string then a text node is appended.
- *     If this is an array like object then fields 0 to length - 1 are appended.
+ * ノードに子要素または文字列を追加する。
+ * @param {!Node} parent 追加される対象のノード。
+ * @param {...goog.dom.Appendable} var_args ノードに追加されるもの。
+ *     もしノードであれば、そのまま追加される。
+ *     もし文字列であれば、テキストノードとして追加される。
+ *     もし配列のようなオブジェクトであれば、`0` から `length - 1` までの
+ *     フィールドが追加される。
  */
 goog.dom.DomHelper.prototype.append = goog.dom.append;
 
 
 /**
- * Determines if the given node can contain children, intended to be used for
- * HTML generation.
+ * 与えられたノードが子をもてるかどうかを判定する。HTML 生成に使われる。
  *
- * @param {Node} node The node to check.
- * @return {boolean} Whether the node can contain children.
+ * @param {Node} node 判定したいノード。
+ * @return {boolean} このノードが子を持てるかどうか。
  */
 goog.dom.DomHelper.prototype.canHaveChildren = goog.dom.canHaveChildren;
 
 
 /**
- * Removes all the child nodes on a DOM node.
- * @param {Node} node Node to remove children from.
+ * この DOM ノードからすべての子ノードを除去する。
+ * @param {Node} node 子要素を除去する対象となるノード。
  */
 goog.dom.DomHelper.prototype.removeChildren = goog.dom.removeChildren;
 
 
 /**
- * Inserts a new node before an existing reference node (i.e., as the previous
- * sibling). If the reference node has no parent, then does nothing.
- * @param {Node} newNode Node to insert.
- * @param {Node} refNode Reference node to insert before.
+ * ノードを既存のノードの参照の前（ようするに兄要素として）に挿入する。
+ * もし与えられたノードの参照が親を持たなければ何もしない。
+ * @param {Node} newNode 挿入されるノード。
+ * @param {Node} refNode 挿入される位置の基準となるノードへの参照。
  */
 goog.dom.DomHelper.prototype.insertSiblingBefore = goog.dom.insertSiblingBefore;
 
