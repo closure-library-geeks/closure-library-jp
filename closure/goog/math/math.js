@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * @fileoverview Additional mathematical functions.
+ * @fileoverview 追加の数学の関数。
  */
 
 goog.provide('goog.math');
@@ -23,9 +23,9 @@ goog.require('goog.asserts');
 
 
 /**
- * Returns a random integer greater than or equal to 0 and less than {@code a}.
- * @param {number} a  The upper bound for the random integer (exclusive).
- * @return {number} A random integer N such that 0 <= N < a.
+ * 0以上、 `a` より小さいランダムな整数を返す。
+ * @param {number} a ランダムな整数の上限(この値を含まない)。
+ * @return {number} `0 <= N < a` となるランダムな整数 `N` 。
  */
 goog.math.randomInt = function(a) {
   return Math.floor(Math.random() * a);
@@ -33,11 +33,10 @@ goog.math.randomInt = function(a) {
 
 
 /**
- * Returns a random number greater than or equal to {@code a} and less than
- * {@code b}.
- * @param {number} a  The lower bound for the random number (inclusive).
- * @param {number} b  The upper bound for the random number (exclusive).
- * @return {number} A random number N such that a <= N < b.
+ * `a` 以上で `b` より小さいランダムな数を返す。
+ * @param {number} a ランダムな数の下限(この値を含む)。
+ * @param {number} b ランダムな数の上限(この値を含まない)。
+ * @return {number} `a <= N <b` となるランダムな数 `N` 。
  */
 goog.math.uniformRandom = function(a, b) {
   return a + Math.random() * (b - a);
@@ -58,17 +57,15 @@ goog.math.clamp = function(value, min, max) {
 
 
 /**
- * The % operator in JavaScript returns the remainder of a / b, but differs from
- * some other languages in that the result will have the same sign as the
- * dividend. For example, -1 % 8 == -1, whereas in some other languages
- * (such as Python) the result would be 7. This function emulates the more
- * correct modulo behavior, which is useful for certain applications such as
- * calculating an offset index in a circular list.
+ * JavaScriptの `%` 演算子は `a / b` の余りを返すが、結果が被除数と同じ符号に
+ * なる点が、他のいくつかの言語とは異なる。例えば、 `-1 % 8 == -1` となるが、
+ * 他の言語(例えばPython)での結果は7になる。この関数は、moduloのより正しい
+ * 挙動を再現するため、循環リストのインデックスの計算など特定の用途に便利である。
  *
- * @param {number} a The dividend.
- * @param {number} b The divisor.
- * @return {number} a % b where the result is between 0 and b (either 0 <= x < b
- *     or b < x <= 0, depending on the sign of b).
+ * @param {number} a 非除数。
+ * @param {number} b 除数。
+ * @return {number} 結果が0と `b` の間となる( `b` の符号によって `0 <= x < b`
+ *     または `b < x <= 0` となる) `a % b` の結果。
  */
 goog.math.modulo = function(a, b) {
   var r = a % b;
@@ -106,10 +103,10 @@ goog.math.nearlyEquals = function(a, b, opt_tolerance) {
 
 
 /**
- * Standardizes an angle to be in range [0-360). Negative angles become
- * positive, and values greater than 360 are returned modulo 360.
- * @param {number} angle Angle in degrees.
- * @return {number} Standardized angle.
+ * 角度を `0-360)` の範囲に収まるように正規化する。負の角度は正になり、360より
+ * 大きい値は360で割った余りが返る。
+ * @param {number} angle 角度、単位は度。
+ * @return {number} 正規化された角度。
  */
 goog.math.standardAngle = function(angle) {
   return goog.math.modulo(angle, 360);
@@ -117,9 +114,9 @@ goog.math.standardAngle = function(angle) {
 
 
 /**
- * Converts degrees to radians.
- * @param {number} angleDegrees Angle in degrees.
- * @return {number} Angle in radians.
+ * 度をラジアンに変換する。
+ * @param {number} angleDegrees 角度、単位は度。
+ * @return {number} ラジアンでの角度。
  */
 goog.math.toRadians = function(angleDegrees) {
   return angleDegrees * Math.PI / 180;
@@ -127,9 +124,9 @@ goog.math.toRadians = function(angleDegrees) {
 
 
 /**
- * Converts radians to degrees.
- * @param {number} angleRadians Angle in radians.
- * @return {number} Angle in degrees.
+ * ラジアンを度に変換する。
+ * @param {number} angleRadians 角度、単位はラジアン。
+ * @return {number} 度での角度。
  */
 goog.math.toDegrees = function(angleRadians) {
   return angleRadians * 180 / Math.PI;
