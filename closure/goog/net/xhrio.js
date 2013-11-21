@@ -13,18 +13,17 @@
 // limitations under the License.
 
 /**
- * @fileoverview Wrapper class for handling XmlHttpRequests.
+ * @fileoverview `XmlHttpRequests` 操作のためのラッパークラス。
  *
- * One off requests can be sent through goog.net.XhrIo.send() or an
- * instance can be created to send multiple requests.  Each request uses its
- * own XmlHttpRequest object and handles clearing of the event callback to
- * ensure no leaks.
+ * リクエスト送信が一回きりであれば `goog.net.XhrIo.send()` で送信できる。
+ * またはひとつのインスタンスで複数のリクエストを送信することもできる。
+ * リクエストごとにそれぞれの `XMLHttpRequest` オブジェクトが利用され、さらに
+ * イベントコールバックが消去されるので、メモリリークを防止できる。
  *
- * XhrIo is event based, it dispatches events when a request finishes, fails or
- * succeeds or when the ready-state changes. The ready-state or timeout event
- * fires first, followed by a generic completed event. Then the abort, error,
- * or success event is fired as appropriate. Lastly, the ready event will fire
- * to indicate that the object may be used to make another request.
+ * `XhrIo` はイベントで動作する。リクエストが完了したり成功・失敗、状態が遷移す
+ * るとイベントが発生する。ready 状態またはタイムアウトイベントが一般的な
+ * イベントよりも前に発生し、次に中止・エラー・成功イベントの発生が続き、最後に
+ * 次のリクエストに備えて ready イベントが発生する。
  *
  * The error event may also be called before completed and
  * ready-state-change if the XmlHttpRequest.open() or .send() methods throw.
