@@ -200,7 +200,6 @@ goog.net.XhrIo = function(opt_xmlHttpFactory) {
   this.withCredentials_ = false;
 
   /**
-   * True if we can use XMLHttpRequest's timeout directly.
    * XMLHttpRequest のタイムアウトが直接使えるとき `true`。
    * @type {boolean}
    * @private
@@ -211,22 +210,22 @@ goog.inherits(goog.net.XhrIo, goog.events.EventTarget);
 
 
 /**
- * Response types that may be requested for XMLHttpRequests.
+ * XMLHttpRequest で要求できる型。
  * @enum {string}
- * @see http://www.w3.org/TR/XMLHttpRequest/#the-responsetype-attribute
+ * @see `http://www.w3.org/TR/XMLHttpRequest/#the-responsetype-attribute`
  */
 goog.net.XhrIo.ResponseType = {
-  DEFAULT: '',
+  DFAULT: '',
   TEXT: 'text',
   DOCUMENT: 'document',
-  // Not supported as of Chrome 10.0.612.1 dev
+  // Chrome 10.0.612.1 dev ではサポートされていない。
   BLOB: 'blob',
   ARRAY_BUFFER: 'arraybuffer'
 };
 
 
 /**
- * A reference to the XhrIo logger
+ * XhrIo ロガーへの参照。
  * @type {goog.debug.Logger}
  * @private
  * @const
@@ -236,28 +235,27 @@ goog.net.XhrIo.prototype.logger_ =
 
 
 /**
- * The Content-Type HTTP header name
+ * Content-Type HTTP ヘッダー名。
  * @type {string}
  */
 goog.net.XhrIo.CONTENT_TYPE_HEADER = 'Content-Type';
 
 
 /**
- * The pattern matching the 'http' and 'https' URI schemes
+ * `'http'` または `'http'` URI スキームにマッチするパターン。
  * @type {!RegExp}
  */
 goog.net.XhrIo.HTTP_SCHEME_PATTERN = /^https?$/i;
 
 
 /**
- * The methods that typically come along with form data.  We set different
- * headers depending on whether the HTTP action is one of these.
+ * よく利用されるデータを送る方式。HTTP 操作によって異なるヘッダを使う。
  */
 goog.net.XhrIo.METHODS_WITH_FORM_DATA = ['POST', 'PUT'];
 
 
 /**
- * The Content-Type HTTP header value for a url-encoded form
+ * URL エンコードされた Content-Type HTTP ヘッダの値。
  * @type {string}
  */
 goog.net.XhrIo.FORM_CONTENT_TYPE =
@@ -265,9 +263,9 @@ goog.net.XhrIo.FORM_CONTENT_TYPE =
 
 
 /**
- * The XMLHttpRequest Level two timeout delay ms property name.
+ * 実際の XMLHttpRequest でのタイムアウトまでのミリ秒が指定されるプロパティ名。
  *
- * @see http://www.w3.org/TR/XMLHttpRequest/#the-timeout-attribute
+ * @see `http://www.w3.org/TR/XMLHttpRequest/#the-timeout-attribute`
  *
  * @type {string}
  * @private
@@ -277,9 +275,9 @@ goog.net.XhrIo.XHR2_TIMEOUT_ = 'timeout';
 
 
 /**
- * The XMLHttpRequest Level two ontimeout handler property name.
+ * 実際の XMLHttpRequest でのタイムアウトイベントハンドラのプロパティ名。
  *
- * @see http://www.w3.org/TR/XMLHttpRequest/#the-timeout-attribute
+ * @see `http://www.w3.org/TR/XMLHttpRequest/#the-timeout-attribute`
  *
  * @type {string}
  * @private
@@ -289,9 +287,9 @@ goog.net.XhrIo.XHR2_ON_TIMEOUT_ = 'ontimeout';
 
 
 /**
- * All non-disposed instances of goog.net.XhrIo created
- * by {@link goog.net.XhrIo.send} are in this Array.
- * @see goog.net.XhrIo.cleanup
+ * `goog.net.XhrIo.send` によって作成され、まだ破棄されていない `goog.net.XhrIo`
+ * インスタンスの配列。
+ * @see `goog.net.XhrIo.cleanup`
  * @type {!Array.<!goog.net.XhrIo>}
  * @private
  */
@@ -299,21 +297,24 @@ goog.net.XhrIo.sendInstances_ = [];
 
 
 /**
- * Static send that creates a short lived instance of XhrIo to send the
- * request.
- * @see goog.net.XhrIo.cleanup
- * @param {string|goog.Uri} url Uri to make request to.
- * @param {Function=} opt_callback Callback function for when request is
- *     complete.
- * @param {string=} opt_method Send method, default: GET.
+ * 静的な関数でリクエストを送信する。このリクエストのために作成される `XhrIo`
+ * は短時間に破棄される。
+ * @see `goog.net.XhrIo.cleanup`
+ * @param {string|goog.Uri} url リクエストを送信する URI。
+ * @param {Function=} opt_callback リクエストが完了した差異のコールバック。
+ * @param {string=} opt_method 送信方式。省略時は `GET`。
  * @param {ArrayBuffer|Blob|Document|FormData|GearsBlob|string=} opt_content
- *     Body data.
- * @param {Object|goog.structs.Map=} opt_headers Map of headers to add to the
- *     request.
- * @param {number=} opt_timeoutInterval Number of milliseconds after which an
- *     incomplete request will be aborted; 0 means no timeout is set.
+ *     送信内容。
+ * @param {Object|goog.structs.Map=} opt_headers リクエストに追加されるヘッダの
+ *     マップ。
+ * @param {number=} opt_timeoutInterval 未完了のリクエストが中止されるまでの
+ *     時間。`0` の場合、タイムアウトは設定されない。
  * @param {boolean=} opt_withCredentials Whether to send credentials with the
  *     request. Default to false. See {@link goog.net.XhrIo#setWithCredentials}.
+ *
+ * @param {boolean=} opt_withCredentials リクエストと一緒にクレデンシャルを送信
+ *     するかどうか。省略時は `false`。`goog.net.XhrIo#setWithCredentials` を
+ *     参照。
  */
 goog.net.XhrIo.send = function(url, opt_callback, opt_method, opt_content,
                                opt_headers, opt_timeoutInterval,
@@ -335,20 +336,17 @@ goog.net.XhrIo.send = function(url, opt_callback, opt_method, opt_content,
 
 
 /**
- * Disposes all non-disposed instances of goog.net.XhrIo created by
- * {@link goog.net.XhrIo.send}.
- * {@link goog.net.XhrIo.send} cleans up the goog.net.XhrIo instance
- * it creates when the request completes or fails.  However, if
- * the request never completes, then the goog.net.XhrIo is not disposed.
- * This can occur if the window is unloaded before the request completes.
- * We could have {@link goog.net.XhrIo.send} return the goog.net.XhrIo
- * it creates and make the client of {@link goog.net.XhrIo.send} be
- * responsible for disposing it in this case.  However, this makes things
- * significantly more complicated for the client, and the whole point
- * of {@link goog.net.XhrIo.send} is that it's simple and easy to use.
- * Clients of {@link goog.net.XhrIo.send} should call
- * {@link goog.net.XhrIo.cleanup} when doing final
- * cleanup on window unload.
+ * `goog.net.XhrIo.send` によって作成されまだ破棄されていない `goog.net.XhrIo`
+ * インスタンスをすべて破棄する。
+ * `goog.net.XhrIo.send` はリクエストの完了・失敗時に作成した `goog.net.XhrIo`
+ * を破棄するが、リクエストがいつまでも完了にならない場合、`goog.net.XhrIo` は
+ * 破棄されない。これは、リクエストが完了する前にウィンドウが unload されるとき
+ * に起こりうる。本来であれば、 `goog.net.XhrIo.send` の返値は作成された
+ * `goog.net.XhrIo` インスタンスであるから、これを破棄するのはクライアントの
+ * 責任範囲である。しかし、これはクライアントにとって複雑になってしまうので、
+ * `goog.net.XhrIo` のシンプルかつ簡単な利用を妨げる。そこで、クライアントは
+ * ウィンドウの unload 時に `goog.net.XhrIo.cleanup` を実行すればよいように
+ * した。
  */
 goog.net.XhrIo.cleanup = function() {
   var instances = goog.net.XhrIo.sendInstances_;
