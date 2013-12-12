@@ -36,7 +36,6 @@
  *
  */
 
-
 goog.provide('goog.net.XhrIo');
 goog.provide('goog.net.XhrIo.ResponseType');
 
@@ -78,7 +77,8 @@ goog.net.XhrIo = function(opt_xmlHttpFactory) {
 
   /**
    * 省略可能な XMLHttpRequest ファクトリ。
-   * @private {goog.net.XmlHttpFactory}
+   * @type {goog.net.XmlHttpFactory}
+   * @private
    */
   this.xmlHttpFactory_ = opt_xmlHttpFactory || null;
 
@@ -106,94 +106,104 @@ goog.net.XhrIo = function(opt_xmlHttpFactory) {
   this.xhrOptions_ = null;
 
   /**
-   * Last URL that was requested.
-   * @private {string|goog.Uri}
+   * 最後にリクエストされた URL。
+   * @type {string|goog.Uri}
+   * @private
    */
   this.lastUri_ = '';
 
   /**
-   * Method for the last request.
-   * @private {string}
+   * 最後のリクエストのメソッド。
+   * @type {string}
+   * @private
    */
   this.lastMethod_ = '';
 
   /**
-   * Last error code.
-   * @private {!goog.net.ErrorCode}
+   * 最後のエラーコード。
+   * @type {!goog.net.ErrorCode}
+   * @private
    */
   this.lastErrorCode_ = goog.net.ErrorCode.NO_ERROR;
 
   /**
-   * Last error message.
-   * @private {Error|string}
+   * 最後のエラーメッセージ。
+   * @type {Error|string}
+   * @private
    */
   this.lastError_ = '';
 
   /**
-   * Used to ensure that we don't dispatch an multiple ERROR events. This can
-   * happen in IE when it does a synchronous load and one error is handled in
-   * the ready statte change and one is handled due to send() throwing an
-   * exception.
-   * @private {boolean}
+   * 複数回エラーイベントを発生させないために使う。この現象は IE の同期読み込み
+   * で、ready 状態から変化したときにエラーが発生し、かつ `send()` での処理が
+   * 例外を発生させたときに起こりうる。
+   * @type {boolean}
+   * @private
    */
   this.errorDispatched_ = false;
 
   /**
-   * Used to make sure we don't fire the complete event from inside a send call.
-   * @private {boolean}
+   * 完了イベントを送信中に発生させないために使う。
+   * @type {boolean}
+   * @private
    */
   this.inSend_ = false;
 
   /**
-   * Used in determining if a call to {@link #onReadyStateChange_} is from
-   * within a call to this.xhr_.open.
-   * @private {boolean}
+   * `this.xhr_.open` の中で `onReadyStateChange_` が呼ばれたのかどうかを判定す
+   * るために使う。
+   * @type {boolean}
+   * @private
    */
   this.inOpen_ = false;
 
   /**
-   * Used in determining if a call to {@link #onReadyStateChange_} is from
-   * within a call to this.xhr_.abort.
-   * @private {boolean}
+   * `this.xhr_.abort` の中で `onReadyStateChange_` が呼ばれたのかどうかを判定す
+   * るために使う。
+   * @type {boolean}
+   * @private
    */
   this.inAbort_ = false;
 
   /**
-   * Number of milliseconds after which an incomplete request will be aborted
-   * and a {@link goog.net.EventType.TIMEOUT} event raised; 0 means no timeout
-   * is set.
-   * @private {number}
+   * リクエストが中止され、`goog.net.EventType.TIMEOUT` が発生するまでの時間
+   * （ミリ秒）。`0` はときはタイムアウトが設定されていない状態。
+   * @type {number}
+   * @private
    */
   this.timeoutInterval_ = 0;
 
   /**
-   * Timer to track request timeout.
-   * @private {?number}
+   * リクエストのタイムアウトまでの時間を測定するタイマー。
+   * @type {?number}
+   * @private
    */
   this.timeoutId_ = null;
 
   /**
-   * The requested type for the response. The empty string means use the default
-   * XHR behavior.
-   * @private {goog.net.XhrIo.ResponseType}
+   * レスポンスに要求された型。空文字列は XHR の標準の挙動を意味する。
+   * @type {goog.net.XhrIo.ResponseType}
+   * @private
    */
   this.responseType_ = goog.net.XhrIo.ResponseType.DEFAULT;
 
   /**
-   * Whether a "credentialed" request is to be sent (one that is aware of
-   * cookies and authentication). This is applicable only for cross-domain
-   * requests and more recent browsers that support this part of the HTTP Access
-   * Control standard.
+   * 送信するリクエストをクレデンシャルにするかどうか（クッキーや認証情報を避け
+   * られる）。これはクロスドメインのリクエストのとき、かつ HTTP Access
+   * Control 標準の一部をサポートしている新しいブラウザのみで有効になる。
    *
-   * @see http://www.w3.org/TR/XMLHttpRequest/#the-withcredentials-attribute
+   * @see `http://www.w3.org/TR/XMLHttpRequest/#the-withcredentials-attribute`
    *
-   * @private {boolean}
+   * @type {boolean}
+   * @private
    */
   this.withCredentials_ = false;
 
   /**
    * True if we can use XMLHttpRequest's timeout directly.
-   * @private {boolean}
+   * XMLHttpRequest のタイムアウトが直接使えるとき `true`。
+   * @type {boolean}
+   * @private
    */
   this.useXhr2Timeout_ = false;
 };
@@ -217,7 +227,8 @@ goog.net.XhrIo.ResponseType = {
 
 /**
  * A reference to the XhrIo logger
- * @private {goog.debug.Logger}
+ * @type {goog.debug.Logger}
+ * @private
  * @const
  */
 goog.net.XhrIo.prototype.logger_ =
@@ -258,7 +269,8 @@ goog.net.XhrIo.FORM_CONTENT_TYPE =
  *
  * @see http://www.w3.org/TR/XMLHttpRequest/#the-timeout-attribute
  *
- * @private {string}
+ * @type {string}
+ * @private
  * @const
  */
 goog.net.XhrIo.XHR2_TIMEOUT_ = 'timeout';
@@ -269,7 +281,8 @@ goog.net.XhrIo.XHR2_TIMEOUT_ = 'timeout';
  *
  * @see http://www.w3.org/TR/XMLHttpRequest/#the-timeout-attribute
  *
- * @private {string}
+ * @type {string}
+ * @private
  * @const
  */
 goog.net.XhrIo.XHR2_ON_TIMEOUT_ = 'ontimeout';
@@ -279,7 +292,8 @@ goog.net.XhrIo.XHR2_ON_TIMEOUT_ = 'ontimeout';
  * All non-disposed instances of goog.net.XhrIo created
  * by {@link goog.net.XhrIo.send} are in this Array.
  * @see goog.net.XhrIo.cleanup
- * @private {!Array.<!goog.net.XhrIo>}
+ * @type {!Array.<!goog.net.XhrIo>}
+ * @private
  */
 goog.net.XhrIo.sendInstances_ = [];
 
