@@ -23,16 +23,16 @@
  * `XhrIo` はイベントで動作する。リクエストが完了したり成功・失敗、状態が遷移す
  * るとイベントが発生する。ready 状態またはタイムアウトイベントが一般的な
  * イベントよりも前に発生し、次に中止・エラー・成功イベントの発生が続き、最後に
- * 次のリクエストに備えて ready イベントが発生する。
+ * 次回のリクエストに備えて ready イベントが発生する。
  *
- * The error event may also be called before completed and
- * ready-state-change if the XmlHttpRequest.open() or .send() methods throw.
+ * `XMLHttpRequest.open()` または `.send()` が例外を発生させたとき、エラー
+ * イベントは完了前か ready-state-change の前に発生する。
  *
- * This class does not support multiple requests, queuing, or prioritization.
+ * このクラスは同時複数のリクエストやキュー、優先度などの機能を提供しない。
  *
- * Tested = IE6, FF1.5, Safari, Opera 8.5
+ * 検証済み：IE6, FF1.5, Safari, Opera 8.5
  *
- * TODO(user): Error cases aren't playing nicely in Safari.
+ * TODO(user): Safari のとき、エラーがうまくない。
  *
  */
 
@@ -60,9 +60,9 @@ goog.require('goog.userAgent');
 
 
 /**
- * Basic class for handling XMLHttpRequests.
- * @param {goog.net.XmlHttpFactory=} opt_xmlHttpFactory Factory to use when
- *     creating XMLHttpRequest objects.
+ * XMLHttpRequest を操作するための基本クラス。
+ * @param {goog.net.XmlHttpFactory=} opt_xmlHttpFactory XMLHttpRequest を
+ *     作成するためのファクトリ。
  * @constructor
  * @extends {goog.events.EventTarget}
  */
@@ -70,35 +70,38 @@ goog.net.XhrIo = function(opt_xmlHttpFactory) {
   goog.base(this);
 
   /**
-   * Map of default headers to add to every request, use:
-   * XhrIo.headers.set(name, value)
+   * リクエストに毎回追加されるデフォルトのヘッダからなるマップ。使い方：
+   * `XhrIo.headers.set(name, value)`
    * @type {!goog.structs.Map}
    */
   this.headers = new goog.structs.Map();
 
   /**
-   * Optional XmlHttpFactory
+   * 省略可能な XMLHttpRequest ファクトリ。
    * @private {goog.net.XmlHttpFactory}
    */
   this.xmlHttpFactory_ = opt_xmlHttpFactory || null;
 
   /**
-   * Whether XMLHttpRequest is active.  A request is active from the time send()
-   * is called until onReadyStateChange() is complete, or error() or abort()
-   * is called.
-   * @private {boolean}
+   * XMLHttpRequest がアクティブかどうか。リクエストがアクティブなタイミングは、
+   * `send()` が呼び出されたが `onReadyStateChange()` が未完了のとき、または
+   * `error()` か `abort()` が呼び出されたとき。
+   * @type {boolean}
+   * @private
    */
   this.active_ = false;
 
   /**
-   * The XMLHttpRequest object that is being used for the transfer.
-   * @private {goog.net.XhrLike.OrNative|GearsHttpRequest}
+   * 通信につかう XMLHttpRequest オブジェクト。
+   * @type {goog.net.XhrLike.OrNative|GearsHttpRequest}
+   * @private
    */
   this.xhr_ = null;
 
   /**
-   * The options to use with the current XMLHttpRequest object.
-   * @private {Object}
+   * 現在の XMLHttpRequest のためのオプション。
+   * @type {Object}
+   * @private
    */
   this.xhrOptions_ = null;
 
