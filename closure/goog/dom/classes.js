@@ -13,14 +13,13 @@
 // limitations under the License.
 
 /**
- * @fileoverview Utilities for adding, removing and setting classes.  Prefer
- * {@link goog.dom.classlist} over these utilities since goog.dom.classlist
- * conforms closer to the semantics of Element.classList, is faster (uses
- * native methods rather than parsing strings on every call) and compiles
- * to smaller code as a result.
+ * @fileoverview クラスの追加・削除・設定を行うユーティリティ.
+ * javascript標準のElement.classListよりもgoog.dom.classlist
+ * に近い実装のため、処理が高速 (毎回文字列解析するのではなく
+ * ネイティブメソッドを利用)かつコンパイルの圧縮性能が高くなっている.
  *
- * Note: these utilities are meant to operate on HTMLElements and
- * will not work on elements with differing interfaces (such as SVGElements).
+ * Note: このユーティリティはHTMLElementの操作をおこなうものであり、
+ * その他のインターフェイスでは動作しない.(例： SVGElements では動作しない).
  *
  */
 
@@ -31,9 +30,9 @@ goog.require('goog.array');
 
 
 /**
- * Sets the entire class name of an element.
- * @param {Node} element DOM node to set class of.
- * @param {string} className Class name(s) to apply to element.
+ * クラス名を要素にセット(上書き)する.
+ * @param {Node} element クラスをセットするDOMノード.
+ * @param {string} className 適用するクラス名(複数クラス可).
  */
 goog.dom.classes.set = function(element, className) {
   element.className = className;
@@ -41,10 +40,11 @@ goog.dom.classes.set = function(element, className) {
 
 
 /**
- * Gets an array of class names on an element
- * @param {Node} element DOM node to get class of.
- * @return {!Array} Class names on {@code element}. Some browsers add extra
- *     properties to the array. Do not depend on any of these!
+ * 要素が持っているクラス名のリストを返す
+ * @param {Node} element クラスを取得するDOMノード.
+ * @return {!Array} elementのクラス名. 
+ *     ブラウザによってArrayに特別なプロパティが追加されることが有るが、
+ *     それらのプロパティには依存しない.
  */
 goog.dom.classes.get = function(element) {
   var className = element.className;
@@ -56,10 +56,12 @@ goog.dom.classes.get = function(element) {
 
 
 /**
- * Adds a class or classes to an element. Does not add multiples of class names.
- * @param {Node} element DOM node to add class to.
- * @param {...string} var_args Class names to add.
- * @return {boolean} Whether class was added (or all classes were added).
+ * クラス(複数可)を要素に追加する.
+ * クラス名が重複して登録されることはない.
+ * @param {Node} クラスを追加するDOMノード.
+ * @param {...string} 追加するクラス(複数可).
+ * @return {boolean} クラスがすべて追加されれば(もしくは存在していれば)
+ * Trueを返す.
  */
 goog.dom.classes.add = function(element, var_args) {
   var classes = goog.dom.classes.get(element);
@@ -72,11 +74,10 @@ goog.dom.classes.add = function(element, var_args) {
 
 
 /**
- * Removes a class or classes from an element.
- * @param {Node} element DOM node to remove class from.
- * @param {...string} var_args Class name(s) to remove.
- * @return {boolean} Whether all classes in {@code var_args} were found and
- *     removed.
+ * クラス(複数可)を要素から削除する.
+ * @param {Node} クラスを削除するDOMノード.
+ * @param {...string} 削除するクラス(複数可).
+ * @return {boolean} var_argsのクラスがすべて存在し、削除できればTrueを返す.
  */
 goog.dom.classes.remove = function(element, var_args) {
   var classes = goog.dom.classes.get(element);
@@ -88,12 +89,11 @@ goog.dom.classes.remove = function(element, var_args) {
 
 
 /**
- * Helper method for {@link goog.dom.classes.add} and
- * {@link goog.dom.classes.addRemove}. Adds one or more classes to the supplied
- * classes array.
- * @param {Array.<string>} classes All class names for the element, will be
- *     updated to have the classes supplied in {@code args} added.
- * @param {Array.<string>} args Class names to add.
+ * goog.dom.classes.add と goog.dom.classes.addRemoveの
+ * ヘルパーメソッド. クラス配列に１つ以上のクラスを追加する.
+ * @param {Array.<string>} classes element要素のすべてのクラス名が入った
+ *     クラス配列.この引数に args を追加する.
+ * @param {Array.<string>} args 追加するクラス名の配列
  * @private
  */
 goog.dom.classes.add_ = function(classes, args) {
@@ -106,12 +106,12 @@ goog.dom.classes.add_ = function(classes, args) {
 
 
 /**
- * Helper method for {@link goog.dom.classes.remove} and
- * {@link goog.dom.classes.addRemove}. Calculates the difference of two arrays.
- * @param {!Array.<string>} arr1 First array.
- * @param {!Array.<string>} arr2 Second array.
- * @return {!Array.<string>} The first array without the elements of the second
- *     array.
+ * goog.dom.classes.remove と goog.dom.classes.addRemoveのヘルパーメソッド.
+ * 2つの配列の差分を返す.
+ * @param {!Array.<string>} arr1 1つ目の配列.
+ * @param {!Array.<string>} arr2 2つ目の配列.
+ * @return {!Array.<string>} 1つ目の配列の要素の内、２つ目の配列に無い
+ *     要素の配列.
  * @private
  */
 goog.dom.classes.getDifference_ = function(arr1, arr2) {
@@ -122,12 +122,12 @@ goog.dom.classes.getDifference_ = function(arr1, arr2) {
 
 
 /**
- * Switches a class on an element from one to another without disturbing other
- * classes. If the fromClass isn't removed, the toClass won't be added.
- * @param {Node} element DOM node to swap classes on.
- * @param {string} fromClass Class to remove.
- * @param {string} toClass Class to add.
- * @return {boolean} Whether classes were switched.
+ * クラス名を入れ替える. 入れ替え対象外のクラスは保持される.
+ * fromClassが削除されなければ、toClassは追加されない.
+ * @param {Node} element クラスを入れ替える対象のDOMノード.
+ * @param {string} fromClass 削除するクラス名.
+ * @param {string} toClass 追加するクラス名.
+ * @return {boolean} クラスを入れ替える事ができればTrueを返す.
  */
 goog.dom.classes.swap = function(element, fromClass, toClass) {
   var classes = goog.dom.classes.get(element);
@@ -150,20 +150,19 @@ goog.dom.classes.swap = function(element, fromClass, toClass) {
 
 
 /**
- * Adds zero or more classes to an element and removes zero or more as a single
- * operation. Unlike calling {@link goog.dom.classes.add} and
- * {@link goog.dom.classes.remove} separately, this is more efficient as it only
- * parses the class property once.
+ * クラスの追加と削除を１度に行う.(追加・削除どちらのクラスも0個以上)
+ * goog.dom.classes.add と goog.dom.classes.remove を個別に呼ぶことと異なり、 
+ * 1度で効率的にクラスの書き換えを行う.
  *
- * If a class is in both the remove and add lists, it will be added. Thus,
- * you can use this instead of {@link goog.dom.classes.swap} when you have
- * more than two class names that you want to swap.
+ * もし同じクラスが削除・追加の両方のリストにある場合、クラスは追加される.
+ * 従って、このメソッドを使えば goog.dom.classes.swap の代わりに2つ以上の
+ * クラスを入れ替える事ができる.
  *
- * @param {Node} element DOM node to swap classes on.
- * @param {?(string|Array.<string>)} classesToRemove Class or classes to
- *     remove, if null no classes are removed.
- * @param {?(string|Array.<string>)} classesToAdd Class or classes to add, if
- *     null no classes are added.
+ * @param {Node} element クラスを入れ替える対象のDOMノード.
+ * @param {?(string|Array.<string>)} classesToRemove 削除するクラス(複数可). 
+ *     nullにすればクラスは削除されません.
+ * @param {?(string|Array.<string>)} classesToAdd 追加するクラス(複数可). 
+ *     nullにすればクラスは追加されません.
  */
 goog.dom.classes.addRemove = function(element, classesToRemove, classesToAdd) {
   var classes = goog.dom.classes.get(element);
@@ -185,10 +184,10 @@ goog.dom.classes.addRemove = function(element, classesToRemove, classesToAdd) {
 
 
 /**
- * Returns true if an element has a class.
- * @param {Node} element DOM node to test.
- * @param {string} className Class name to test for.
- * @return {boolean} Whether element has the class.
+ * 要素がクラス名を持っているかどうかを返す.
+ * @param {Node} element 確認対象のDOMノード.
+ * @param {string} className 確認するクラス名.
+ * @return {boolean} element が className を持っていればTrueを返す.
  */
 goog.dom.classes.has = function(element, className) {
   return goog.array.contains(goog.dom.classes.get(element), className);
@@ -196,11 +195,10 @@ goog.dom.classes.has = function(element, className) {
 
 
 /**
- * Adds or removes a class depending on the enabled argument.
- * @param {Node} element DOM node to add or remove the class on.
- * @param {string} className Class name to add or remove.
- * @param {boolean} enabled Whether to add or remove the class (true adds,
- *     false removes).
+ * enabled引数に従ってクラスを追加または削除します.
+ * @param {Node} element 追加・削除する対象のDOMノード.
+ * @param {string} className 追加・削除するクラス名.
+ * @param {boolean} enabled 追加するか、削除するか (true で追加, false で削除).
  */
 goog.dom.classes.enable = function(element, className, enabled) {
   if (enabled) {
@@ -212,13 +210,13 @@ goog.dom.classes.enable = function(element, className, enabled) {
 
 
 /**
- * Removes a class if an element has it, and adds it the element doesn't have
- * it.  Won't affect other classes on the node.
- * @param {Node} element DOM node to toggle class on.
- * @param {string} className Class to toggle.
- * @return {boolean} True if class was added, false if it was removed
- *     (in other words, whether element has the class after this function has
- *     been called).
+ * 要素がクラスを持っていれば削除し、持ってなければ追加します.
+ * 他のクラス名には影響しません.
+ * @param {Node} element クラスを切り替える対象のDOMノード.
+ * @param {string} className 切り替えるクラス.
+ * @return {boolean} 追加されたらTrue, 削除されたらFalseを返します. 
+ *     (言い換えると、このメソッドを呼んだあとに element が  className
+ *      を持っているかどうかを返します.)
  */
 goog.dom.classes.toggle = function(element, className) {
   var add = !goog.dom.classes.has(element, className);
