@@ -13,13 +13,13 @@
 // limitations under the License.
 
 /**
- * @fileoverview ƒNƒ‰ƒX‚Ì’Ç‰ÁEíœEİ’è‚ğs‚¤ƒ†[ƒeƒBƒŠƒeƒB‚Å‚·B
- * javascript•W€‚ÌElement.classList‚æ‚è‚àgoog.dom.classlist {@link goog.dom.classlist}
- * ‚É‹ß‚¢À‘•‚Ì‚½‚ßAˆ—‚ª‚‘¬ (–ˆ‰ñ•¶š—ñ‰ğÍ‚·‚é‚Ì‚Å‚Í‚È‚­ƒlƒCƒeƒBƒuƒƒ\ƒbƒh‚ğ—˜—p‚µ‚Ä‚¢‚Ü‚·)
- * ‚©‚ÂƒRƒ“ƒpƒCƒ‹‚Ìˆ³k«”\‚ª‚‚­‚È‚Á‚Ä‚¢‚Ü‚·B
+ * @fileoverview ã‚¯ãƒ©ã‚¹ã®è¿½åŠ ãƒ»å‰Šé™¤ãƒ»è¨­å®šã‚’è¡Œã†ãƒ¦ãƒ¼ãƒ†ã‚£ãƒªãƒ†ã‚£.
+ * javascriptæ¨™æº–ã®Element.classListã‚ˆã‚Šã‚‚goog.dom.classlist
+ * ã«è¿‘ã„å®Ÿè£…ã®ãŸã‚ã€å‡¦ç†ãŒé«˜é€Ÿ (æ¯å›æ–‡å­—åˆ—è§£æã™ã‚‹ã®ã§ã¯ãªã
+ * ãƒã‚¤ãƒ†ã‚£ãƒ–ãƒ¡ã‚½ãƒƒãƒ‰ã‚’åˆ©ç”¨)ã‹ã¤ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ã®åœ§ç¸®æ€§èƒ½ãŒé«˜ããªã£ã¦ã„ã‚‹.
  *
- * Note: ‚±‚Ìƒ†[ƒeƒBƒŠƒeƒB‚ÍHTMLElement‚Ì‘€ì‚ğ‚¨‚±‚È‚¤‚à‚Ì‚Å‚ ‚èA
- * ‚»‚Ì‘¼‚ÌƒCƒ“ƒ^[ƒtƒFƒCƒX‚Å‚Í“®ì‚µ‚Ü‚¹‚ñB(—áF SVGElements ‚Å‚Í“®ì‚µ‚Ü‚¹‚ñ).
+ * Note: ã“ã®ãƒ¦ãƒ¼ãƒ†ã‚£ãƒªãƒ†ã‚£ã¯HTMLElementã®æ“ä½œã‚’ãŠã“ãªã†ã‚‚ã®ã§ã‚ã‚Šã€
+ * ãã®ä»–ã®ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ã‚¤ã‚¹ã§ã¯å‹•ä½œã—ãªã„.(ä¾‹ï¼š SVGElements ã§ã¯å‹•ä½œã—ãªã„).
  *
  */
 
@@ -30,9 +30,9 @@ goog.require('goog.array');
 
 
 /**
- * ƒNƒ‰ƒX–¼‚ğelement—v‘f‚ÉƒZƒbƒg(ã‘‚«)‚µ‚Ü‚·
- * @param {Node} element ƒNƒ‰ƒX‚ğƒZƒbƒg‚·‚éDOMƒm[ƒh.
- * @param {string} className “K—p‚·‚éƒNƒ‰ƒX–¼(•¡”ƒNƒ‰ƒX‰Â).
+ * ã‚¯ãƒ©ã‚¹åã‚’è¦ç´ ã«ã‚»ãƒƒãƒˆ(ä¸Šæ›¸ã)ã™ã‚‹.
+ * @param {Node} element ã‚¯ãƒ©ã‚¹ã‚’ã‚»ãƒƒãƒˆã™ã‚‹DOMãƒãƒ¼ãƒ‰.
+ * @param {string} className é©ç”¨ã™ã‚‹ã‚¯ãƒ©ã‚¹å(è¤‡æ•°ã‚¯ãƒ©ã‚¹å¯).
  */
 goog.dom.classes.set = function(element, className) {
   element.className = className;
@@ -40,11 +40,11 @@ goog.dom.classes.set = function(element, className) {
 
 
 /**
- * ƒNƒ‰ƒX–¼‚ÌƒŠƒXƒg‚ğ•Ô‚µ‚Ü‚·
- * @param {Node} element ƒNƒ‰ƒX‚ğæ“¾‚·‚éDOMƒm[ƒh.
- * @return {!Array} {@code element}‚ÌƒNƒ‰ƒX–¼. 
- *     ƒuƒ‰ƒEƒU‚É‚æ‚Á‚ÄArray‚É“Á•Ê‚ÈƒvƒƒpƒeƒB‚ª’Ç‰Á‚³‚ê‚é‚±‚Æ‚ª—L‚è‚Ü‚·‚ªA
- *     ‚»‚ê‚ç‚ÌƒvƒƒpƒeƒB‚É‚ÍˆË‘¶‚µ‚Ü‚¹‚ñB
+ * è¦ç´ ãŒæŒã£ã¦ã„ã‚‹ã‚¯ãƒ©ã‚¹åã®ãƒªã‚¹ãƒˆã‚’è¿”ã™
+ * @param {Node} element ã‚¯ãƒ©ã‚¹ã‚’å–å¾—ã™ã‚‹DOMãƒãƒ¼ãƒ‰.
+ * @return {!Array} elementã®ã‚¯ãƒ©ã‚¹å. 
+ *     ãƒ–ãƒ©ã‚¦ã‚¶ã«ã‚ˆã£ã¦Arrayã«ç‰¹åˆ¥ãªãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ãŒè¿½åŠ ã•ã‚Œã‚‹ã“ã¨ãŒæœ‰ã‚‹ãŒã€
+ *     ãã‚Œã‚‰ã®ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ã«ã¯ä¾å­˜ã—ãªã„.
  */
 goog.dom.classes.get = function(element) {
   var className = element.className;
@@ -56,10 +56,12 @@ goog.dom.classes.get = function(element) {
 
 
 /**
- * ƒNƒ‰ƒX(•¡”‰Â)‚ğelement—v‘f‚É’Ç‰Á‚µ‚Ü‚·BƒNƒ‰ƒX–¼‚ªd•¡‚µ‚Ä“o˜^‚³‚ê‚é‚±‚Æ‚Í‚ ‚è‚Ü‚¹‚ñB
- * @param {Node} ƒNƒ‰ƒX‚ğ’Ç‰Á‚·‚éDOMƒm[ƒh.
- * @param {...string} ’Ç‰Á‚·‚éƒNƒ‰ƒX(•¡”‰Â).
- * @return {boolean} ƒNƒ‰ƒX‚ª‚·‚×‚Ä’Ç‰Á‚³‚ê‚ê‚Î(‚à‚µ‚­‚Í‘¶İ‚µ‚Ä‚¢‚ê‚Î)True‚ğ•Ô‚µ‚Ü‚·.
+ * ã‚¯ãƒ©ã‚¹(è¤‡æ•°å¯)ã‚’è¦ç´ ã«è¿½åŠ ã™ã‚‹.
+ * ã‚¯ãƒ©ã‚¹åãŒé‡è¤‡ã—ã¦ç™»éŒ²ã•ã‚Œã‚‹ã“ã¨ã¯ãªã„.
+ * @param {Node} ã‚¯ãƒ©ã‚¹ã‚’è¿½åŠ ã™ã‚‹DOMãƒãƒ¼ãƒ‰.
+ * @param {...string} è¿½åŠ ã™ã‚‹ã‚¯ãƒ©ã‚¹(è¤‡æ•°å¯).
+ * @return {boolean} ã‚¯ãƒ©ã‚¹ãŒã™ã¹ã¦è¿½åŠ ã•ã‚Œã‚Œã°(ã‚‚ã—ãã¯å­˜åœ¨ã—ã¦ã„ã‚Œã°)
+ * Trueã‚’è¿”ã™.
  */
 goog.dom.classes.add = function(element, var_args) {
   var classes = goog.dom.classes.get(element);
@@ -72,11 +74,10 @@ goog.dom.classes.add = function(element, var_args) {
 
 
 /**
- * ƒNƒ‰ƒX(•¡”‰Â)‚ğelement—v‘f‚©‚çíœ‚µ‚Ü‚·B
- * @param {Node} ƒNƒ‰ƒX‚ğíœ‚·‚éDOMƒm[ƒh.
- * @param {...string} íœ‚·‚éƒNƒ‰ƒX(•¡”‰Â).
- * @return {boolean} {@code var_args}‚ÌƒNƒ‰ƒX‚ª‚·‚×‚Ä‘¶İ‚µA
- *     íœ‚Å‚«‚ê‚ÎTrue‚ğ•Ô‚µ‚Ü‚·B
+ * ã‚¯ãƒ©ã‚¹(è¤‡æ•°å¯)ã‚’è¦ç´ ã‹ã‚‰å‰Šé™¤ã™ã‚‹.
+ * @param {Node} ã‚¯ãƒ©ã‚¹ã‚’å‰Šé™¤ã™ã‚‹DOMãƒãƒ¼ãƒ‰.
+ * @param {...string} å‰Šé™¤ã™ã‚‹ã‚¯ãƒ©ã‚¹(è¤‡æ•°å¯).
+ * @return {boolean} var_argsã®ã‚¯ãƒ©ã‚¹ãŒã™ã¹ã¦å­˜åœ¨ã—ã€å‰Šé™¤ã§ãã‚Œã°Trueã‚’è¿”ã™.
  */
 goog.dom.classes.remove = function(element, var_args) {
   var classes = goog.dom.classes.get(element);
@@ -88,11 +89,11 @@ goog.dom.classes.remove = function(element, var_args) {
 
 
 /**
- * {@link goog.dom.classes.add} ‚Æ {@link goog.dom.classes.addRemove}‚Ìƒwƒ‹ƒp[ƒƒ\ƒbƒh‚Å‚·B
- * ƒNƒ‰ƒX”z—ñ‚É‚P‚ÂˆÈã‚ÌƒNƒ‰ƒX‚ğ’Ç‰Á‚µ‚Ü‚·B
- * @param {Array.<string>} classes element—v‘f‚Ì‚·‚×‚Ä‚ÌƒNƒ‰ƒX–¼‚ª“ü‚Á‚½ƒNƒ‰ƒX”z—ñB
- *     ‚±‚Ìˆø”‚É {@code args} ‚ğ’Ç‰Á‚µ‚Ü‚·B
- * @param {Array.<string>} args ’Ç‰Á‚·‚éƒNƒ‰ƒX–¼‚Ì”z—ñ
+ * goog.dom.classes.add ã¨ goog.dom.classes.addRemoveã®
+ * ãƒ˜ãƒ«ãƒ‘ãƒ¼ãƒ¡ã‚½ãƒƒãƒ‰. ã‚¯ãƒ©ã‚¹é…åˆ—ã«ï¼‘ã¤ä»¥ä¸Šã®ã‚¯ãƒ©ã‚¹ã‚’è¿½åŠ ã™ã‚‹.
+ * @param {Array.<string>} classes elementè¦ç´ ã®ã™ã¹ã¦ã®ã‚¯ãƒ©ã‚¹åãŒå…¥ã£ãŸ
+ *     ã‚¯ãƒ©ã‚¹é…åˆ—.ã“ã®å¼•æ•°ã« args ã‚’è¿½åŠ ã™ã‚‹.
+ * @param {Array.<string>} args è¿½åŠ ã™ã‚‹ã‚¯ãƒ©ã‚¹åã®é…åˆ—
  * @private
  */
 goog.dom.classes.add_ = function(classes, args) {
@@ -105,12 +106,12 @@ goog.dom.classes.add_ = function(classes, args) {
 
 
 /**
- * {@link goog.dom.classes.remove} ‚Æ {@link goog.dom.classes.addRemove}‚Ìƒwƒ‹ƒp[ƒƒ\ƒbƒh‚Å‚·B
- * 2‚Â‚Ì”z—ñ‚Ì·•ª‚ğ•Ô‚µ‚Ü‚·B
- * @param {!Array.<string>} arr1 1‚Â–Ú‚Ì”z—ñ.
- * @param {!Array.<string>} arr2 2‚Â–Ú‚Ì”z—ñ.
- * @return {!Array.<string>} 1‚Â–Ú‚Ì”z—ñ‚Ì—v‘f‚Ì“àA‚Q‚Â–Ú‚Ì”z—ñ‚É–³‚¢
- *     —v‘f‚Ì”z—ñB
+ * goog.dom.classes.remove ã¨ goog.dom.classes.addRemoveã®ãƒ˜ãƒ«ãƒ‘ãƒ¼ãƒ¡ã‚½ãƒƒãƒ‰.
+ * 2ã¤ã®é…åˆ—ã®å·®åˆ†ã‚’è¿”ã™.
+ * @param {!Array.<string>} arr1 1ã¤ç›®ã®é…åˆ—.
+ * @param {!Array.<string>} arr2 2ã¤ç›®ã®é…åˆ—.
+ * @return {!Array.<string>} 1ã¤ç›®ã®é…åˆ—ã®è¦ç´ ã®å†…ã€ï¼’ã¤ç›®ã®é…åˆ—ã«ç„¡ã„
+ *     è¦ç´ ã®é…åˆ—.
  * @private
  */
 goog.dom.classes.getDifference_ = function(arr1, arr2) {
@@ -121,12 +122,12 @@ goog.dom.classes.getDifference_ = function(arr1, arr2) {
 
 
 /**
- * ƒNƒ‰ƒX–¼‚ğ“ü‚ê‘Ö‚¦‚Ü‚·B“ü‚ê‘Ö‚¦‘ÎÛŠO‚ÌƒNƒ‰ƒX‚Í•Û‚³‚ê‚Ü‚·B
- * fromClass‚ªíœ‚³‚ê‚È‚¯‚ê‚ÎAtoClass‚Í’Ç‰Á‚³‚ê‚Ü‚¹‚ñB
- * @param {Node} element ƒNƒ‰ƒX‚ğ“ü‚ê‘Ö‚¦‚é‘ÎÛ‚ÌDOMƒm[ƒh.
- * @param {string} fromClass íœ‚·‚éƒNƒ‰ƒX–¼.
- * @param {string} toClass ’Ç‰Á‚·‚éƒNƒ‰ƒX–¼.
- * @return {boolean} ƒNƒ‰ƒX‚ğ“ü‚ê‘Ö‚¦‚é–‚ª‚Å‚«‚ê‚ÎTrue‚ğ•Ô‚µ‚Ü‚·B
+ * ã‚¯ãƒ©ã‚¹åã‚’å…¥ã‚Œæ›¿ãˆã‚‹. å…¥ã‚Œæ›¿ãˆå¯¾è±¡å¤–ã®ã‚¯ãƒ©ã‚¹ã¯ä¿æŒã•ã‚Œã‚‹.
+ * fromClassãŒå‰Šé™¤ã•ã‚Œãªã‘ã‚Œã°ã€toClassã¯è¿½åŠ ã•ã‚Œãªã„.
+ * @param {Node} element ã‚¯ãƒ©ã‚¹ã‚’å…¥ã‚Œæ›¿ãˆã‚‹å¯¾è±¡ã®DOMãƒãƒ¼ãƒ‰.
+ * @param {string} fromClass å‰Šé™¤ã™ã‚‹ã‚¯ãƒ©ã‚¹å.
+ * @param {string} toClass è¿½åŠ ã™ã‚‹ã‚¯ãƒ©ã‚¹å.
+ * @return {boolean} ã‚¯ãƒ©ã‚¹ã‚’å…¥ã‚Œæ›¿ãˆã‚‹äº‹ãŒã§ãã‚Œã°Trueã‚’è¿”ã™.
  */
 goog.dom.classes.swap = function(element, fromClass, toClass) {
   var classes = goog.dom.classes.get(element);
@@ -149,17 +150,19 @@ goog.dom.classes.swap = function(element, fromClass, toClass) {
 
 
 /**
- * ƒNƒ‰ƒX‚Ì’Ç‰Á‚Æíœ‚ğ‚P“x‚És‚¢‚Ü‚·B(’Ç‰ÁEíœ‚Ç‚¿‚ç‚ÌƒNƒ‰ƒX‚à0ŒÂˆÈã)
- * {@link goog.dom.classes.add} ‚Æ {@link goog.dom.classes.remove} ‚ğŒÂ•Ê‚ÉŒÄ‚Ô‚±‚Æ‚ÆˆÙ‚È‚èA 
- * 1“x‚ÅŒø—¦“I‚ÉƒNƒ‰ƒX‚Ì‘‚«Š·‚¦‚ğs‚¦‚Ü‚·B
+ * ã‚¯ãƒ©ã‚¹ã®è¿½åŠ ã¨å‰Šé™¤ã‚’ï¼‘åº¦ã«è¡Œã†.(è¿½åŠ ãƒ»å‰Šé™¤ã©ã¡ã‚‰ã®ã‚¯ãƒ©ã‚¹ã‚‚0å€‹ä»¥ä¸Š)
+ * goog.dom.classes.add ã¨ goog.dom.classes.remove ã‚’å€‹åˆ¥ã«å‘¼ã¶ã“ã¨ã¨ç•°ãªã‚Šã€ 
+ * 1åº¦ã§åŠ¹ç‡çš„ã«ã‚¯ãƒ©ã‚¹ã®æ›¸ãæ›ãˆã‚’è¡Œã†.
  *
- * ‚à‚µ“¯‚¶ƒNƒ‰ƒX‚ªíœE’Ç‰Á‚Ì—¼•û‚ÌƒŠƒXƒg‚É‚ ‚éê‡AƒNƒ‰ƒX‚Í’Ç‰Á‚³‚ê‚Ü‚·B
- * ]‚Á‚ÄA‚±‚Ìƒƒ\ƒbƒh‚ğg‚¦‚Î{@link goog.dom.classes.swap} ‚Ì‘ã‚í‚è‚É2‚ÂˆÈã‚ÌƒNƒ‰ƒX‚ğ“ü‚ê‘Ö‚¦‚é–‚ª‚Å‚«‚Ü‚·B
- * 
+ * ã‚‚ã—åŒã˜ã‚¯ãƒ©ã‚¹ãŒå‰Šé™¤ãƒ»è¿½åŠ ã®ä¸¡æ–¹ã®ãƒªã‚¹ãƒˆã«ã‚ã‚‹å ´åˆã€ã‚¯ãƒ©ã‚¹ã¯è¿½åŠ ã•ã‚Œã‚‹.
+ * å¾“ã£ã¦ã€ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã‚’ä½¿ãˆã° goog.dom.classes.swap ã®ä»£ã‚ã‚Šã«2ã¤ä»¥ä¸Šã®
+ * ã‚¯ãƒ©ã‚¹ã‚’å…¥ã‚Œæ›¿ãˆã‚‹äº‹ãŒã§ãã‚‹.
  *
- * @param {Node} element ƒNƒ‰ƒX‚ğ“ü‚ê‘Ö‚¦‚é‘ÎÛ‚ÌDOMƒm[ƒh.
- * @param {?(string|Array.<string>)} classesToRemove íœ‚·‚éƒNƒ‰ƒX(•¡”‰Â). null‚É‚·‚ê‚ÎƒNƒ‰ƒX‚Ííœ‚³‚ê‚Ü‚¹‚ñB
- * @param {?(string|Array.<string>)} classesToAdd ’Ç‰Á‚·‚éƒNƒ‰ƒX(•¡”‰Â). null‚É‚·‚ê‚ÎƒNƒ‰ƒX‚Í’Ç‰Á‚³‚ê‚Ü‚¹‚ñB
+ * @param {Node} element ã‚¯ãƒ©ã‚¹ã‚’å…¥ã‚Œæ›¿ãˆã‚‹å¯¾è±¡ã®DOMãƒãƒ¼ãƒ‰.
+ * @param {?(string|Array.<string>)} classesToRemove å‰Šé™¤ã™ã‚‹ã‚¯ãƒ©ã‚¹(è¤‡æ•°å¯). 
+ *     nullã«ã™ã‚Œã°ã‚¯ãƒ©ã‚¹ã¯å‰Šé™¤ã•ã‚Œã¾ã›ã‚“.
+ * @param {?(string|Array.<string>)} classesToAdd è¿½åŠ ã™ã‚‹ã‚¯ãƒ©ã‚¹(è¤‡æ•°å¯). 
+ *     nullã«ã™ã‚Œã°ã‚¯ãƒ©ã‚¹ã¯è¿½åŠ ã•ã‚Œã¾ã›ã‚“.
  */
 goog.dom.classes.addRemove = function(element, classesToRemove, classesToAdd) {
   var classes = goog.dom.classes.get(element);
@@ -181,10 +184,10 @@ goog.dom.classes.addRemove = function(element, classesToRemove, classesToAdd) {
 
 
 /**
- * element—v‘f‚ªƒNƒ‰ƒX–¼‚ğ‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©‚ğ•Ô‚µ‚Ü‚·B
- * @param {Node} element Šm”F‘ÎÛ‚ÌDOMƒm[ƒh.
- * @param {string} className Šm”F‚·‚éƒNƒ‰ƒX–¼.
- * @return {boolean} {@code element} ‚ª {@code className} ‚ğ‚Á‚Ä‚¢‚ê‚ÎTrue‚ğ•Ô‚µ‚Ü‚·B
+ * è¦ç´ ãŒã‚¯ãƒ©ã‚¹åã‚’æŒã£ã¦ã„ã‚‹ã‹ã©ã†ã‹ã‚’è¿”ã™.
+ * @param {Node} element ç¢ºèªå¯¾è±¡ã®DOMãƒãƒ¼ãƒ‰.
+ * @param {string} className ç¢ºèªã™ã‚‹ã‚¯ãƒ©ã‚¹å.
+ * @return {boolean} element ãŒ className ã‚’æŒã£ã¦ã„ã‚Œã°Trueã‚’è¿”ã™.
  */
 goog.dom.classes.has = function(element, className) {
   return goog.array.contains(goog.dom.classes.get(element), className);
@@ -192,10 +195,10 @@ goog.dom.classes.has = function(element, className) {
 
 
 /**
- * enabledˆø”‚É]‚Á‚ÄƒNƒ‰ƒX‚ğ’Ç‰Á‚Ü‚½‚Ííœ‚µ‚Ü‚·B
- * @param {Node} element ’Ç‰ÁEíœ‚·‚é‘ÎÛ‚ÌDOMƒm[ƒh.
- * @param {string} className ’Ç‰ÁEíœ‚·‚éƒNƒ‰ƒX–¼.
- * @param {boolean} enabled ’Ç‰Á‚·‚é‚©Aíœ‚·‚é‚© (true ‚Å’Ç‰Á, false ‚Åíœ).
+ * enabledå¼•æ•°ã«å¾“ã£ã¦ã‚¯ãƒ©ã‚¹ã‚’è¿½åŠ ã¾ãŸã¯å‰Šé™¤ã—ã¾ã™.
+ * @param {Node} element è¿½åŠ ãƒ»å‰Šé™¤ã™ã‚‹å¯¾è±¡ã®DOMãƒãƒ¼ãƒ‰.
+ * @param {string} className è¿½åŠ ãƒ»å‰Šé™¤ã™ã‚‹ã‚¯ãƒ©ã‚¹å.
+ * @param {boolean} enabled è¿½åŠ ã™ã‚‹ã‹ã€å‰Šé™¤ã™ã‚‹ã‹ (true ã§è¿½åŠ , false ã§å‰Šé™¤).
  */
 goog.dom.classes.enable = function(element, className, enabled) {
   if (enabled) {
@@ -207,13 +210,13 @@ goog.dom.classes.enable = function(element, className, enabled) {
 
 
 /**
- * elment‚ªƒNƒ‰ƒX‚ğ‚Á‚Ä‚¢‚ê‚Îíœ‚µA‚Á‚Ä‚È‚¯‚ê‚Î’Ç‰Á‚µ‚Ü‚·B
- * ‘¼‚ÌƒNƒ‰ƒX–¼‚É‚Í‰e‹¿‚µ‚Ü‚¹‚ñB
- * @param {Node} element ƒNƒ‰ƒX‚ğØ‚è‘Ö‚¦‚é‘ÎÛ‚ÌDOMƒm[ƒh.
- * @param {string} className Ø‚è‘Ö‚¦‚éƒNƒ‰ƒX.
- * @return {boolean} ’Ç‰Á‚³‚ê‚½‚çTrue, íœ‚³‚ê‚½‚çFalse‚ğ•Ô‚µ‚Ü‚·B 
- *     (Œ¾‚¢Š·‚¦‚é‚ÆA‚±‚Ìƒƒ\ƒbƒh‚ğŒÄ‚ñ‚¾‚ ‚Æ‚É{@code element} ‚ª {@code className}
- *      ‚ğ‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©‚ğ•Ô‚µ‚Ü‚·B).
+ * è¦ç´ ãŒã‚¯ãƒ©ã‚¹ã‚’æŒã£ã¦ã„ã‚Œã°å‰Šé™¤ã—ã€æŒã£ã¦ãªã‘ã‚Œã°è¿½åŠ ã—ã¾ã™.
+ * ä»–ã®ã‚¯ãƒ©ã‚¹åã«ã¯å½±éŸ¿ã—ã¾ã›ã‚“.
+ * @param {Node} element ã‚¯ãƒ©ã‚¹ã‚’åˆ‡ã‚Šæ›¿ãˆã‚‹å¯¾è±¡ã®DOMãƒãƒ¼ãƒ‰.
+ * @param {string} className åˆ‡ã‚Šæ›¿ãˆã‚‹ã‚¯ãƒ©ã‚¹.
+ * @return {boolean} è¿½åŠ ã•ã‚ŒãŸã‚‰True, å‰Šé™¤ã•ã‚ŒãŸã‚‰Falseã‚’è¿”ã—ã¾ã™. 
+ *     (è¨€ã„æ›ãˆã‚‹ã¨ã€ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã‚’å‘¼ã‚“ã ã‚ã¨ã« element ãŒ  className
+ *      ã‚’æŒã£ã¦ã„ã‚‹ã‹ã©ã†ã‹ã‚’è¿”ã—ã¾ã™.)
  */
 goog.dom.classes.toggle = function(element, className) {
   var add = !goog.dom.classes.has(element, className);
